@@ -8,17 +8,12 @@ FILE_EXT="cpp|cc|h|hpp|cxx|c++|c"
 # Run clang-format
 clang-format -dry-run --style=file:./.clang-format -Werror $(git ls-files | grep -E "\.($FILE_EXT)$") 2> error.log
 
-# print badly formatted file names, if any
+# print badly formatted file names
+# line example: src/utils/Matrix.cpp:285:17: error: code should be clang-formatted [-Wclang-format-violations]
+# expected: src/utils/Matrix.cpp
+
 if [ -s error.log ]; then
-    cat error.log | grep -E "\.($FILE_EXT):[0-9]+:[0-9]+: error:" | awk -F ":" '{print $1}' | sort | uniq > error_files.log
-    # annotate the files with error, for github actions
-    (
-        while read file; do
-            echo "::error file=$file::clang-format check failed"
-        done
-    ) < error_files.log
-    rm error_files.log
-    rm error.log
+    echo "The following files are not clang-formatted:"
+    cat error.log | grep -E "\.($FILE_EXT):[0-9]+:[0-9]+: error:" | awk -F ":" '{print $1}' | sort | uniq
     exit 1
 fi
-rm error.log

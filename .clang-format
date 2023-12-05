@@ -1,0 +1,17 @@
+---
+Language: Cpp
+BasedOnStyle: LLVM
+
+# custom
+BreakBeforeBraces: Linux
+BreakConstructorInitializers: AfterColon
+ColumnLimit: 120
+ConstructorInitializerIndentWidth: 4
+IndentWidth: 4
+PackConstructorInitializers: Never
+PointerAlignment: Right
+UseTab: Never
+AlwaysBreakTemplateDeclarations: Yes
+# never put a short function on one line
+
+AllowShortFunctionsOnASingleLine: None
