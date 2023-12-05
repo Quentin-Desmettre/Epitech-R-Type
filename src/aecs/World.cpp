@@ -12,12 +12,12 @@ namespace aecs
 Entity &World::createEntity()
 {
     // Create entity
-    auto entity = std::make_unique<Entity>(*this);
-    _entities.push_back(std::move(entity));
+    auto entity = std::make_shared<Entity>(*this);
+    _entities.push_back(entity);
 
     // Notify systems
     onEntityAdded(*_entities.back());
-    return *_entities.back();
+    return *entity;
 }
 
 void World::destroyEntity(Entity &entity)

@@ -16,11 +16,12 @@ namespace aecs
 {
 
 class World;
+
 class Entity
 {
 
   public:
-    friend std::unique_ptr<Entity> std::make_unique<Entity>(World &world);
+    explicit Entity(World &world);
     Entity() = delete;
     ~Entity() = default;
 
@@ -73,7 +74,6 @@ class Entity
     }
 
   private:
-    explicit Entity(World &world);
 
     void notifyWorldEntityChanged();
 

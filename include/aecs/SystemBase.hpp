@@ -5,10 +5,10 @@
 #ifndef R_TYPE_SYSTEMBASE_HPP
 #define R_TYPE_SYSTEMBASE_HPP
 
-#include "Entity.hpp"
-
 namespace aecs
 {
+
+    class Entity;
 
 class ISystem
 {
