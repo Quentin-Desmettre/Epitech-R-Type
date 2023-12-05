@@ -24,4 +24,10 @@ void Entity::notifyWorldEntityChanged()
     _world.onEntityChanged(*this);
 }
 
+bool Entity::hasComponents(const std::vector<std::type_index> &components) const
+{
+    return std::ranges::all_of(components, [this](const auto &component) {
+        return _components.find(component) != _components.end();
+    });
+}
 } // namespace aecs

@@ -8,11 +8,12 @@
 
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-    _world(world),
+    ARenderSystem(world, entities, {
+        typeid(rtype::SpriteComponent),
+        typeid(rtype::PositionComponent)
+    }),
     _window(sf::VideoMode(800, 600), "R-Type")
 {
-    for (auto &[_id, entity] : entities)
-        RenderSystem::onEntityAdded(entity);
 }
 
 std::vector<rtype::RenderSystem::RenderInput> rtype::RenderSystem::render()
@@ -43,22 +44,4 @@ std::vector<rtype::RenderSystem::RenderInput> rtype::RenderSystem::render()
 bool rtype::RenderSystem::isOpen() const
 {
     return _window.isOpen();
-}
-
-void rtype::RenderSystem::onEntityAdded(const aecs::EntityPtr &entity)
-{
-    if (entity->hasComponent<rtype::SpriteComponent>() && entity->hasComponent<PositionComponent>())
-        _entitiesMap[entity->getId()] = entity;
-}
-
-void rtype::RenderSystem::onEntityRemoved(const aecs::EntityPtr &entity)
-{
-    if (entity->hasComponent<rtype::SpriteComponent>() && entity->hasComponent<PositionComponent>())
-        _entitiesMap.erase(entity->getId());
-}
-
-void rtype::RenderSystem::onEntityModified(const aecs::EntityPtr &entity)
-{
-    if (entity->hasComponent<rtype::SpriteComponent>() && entity->hasComponent<PositionComponent>())
-        _entitiesMap[entity->getId()] = entity;
 }

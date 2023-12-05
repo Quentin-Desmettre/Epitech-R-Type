@@ -12,7 +12,7 @@
 
 namespace rtype
 {
-class RenderSystem : public aecs::IRenderSystem
+class RenderSystem : public aecs::ARenderSystem
 {
   public:
     RenderSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
@@ -21,14 +21,7 @@ class RenderSystem : public aecs::IRenderSystem
     std::vector<RenderInput> render() override;
     [[nodiscard]] bool isOpen() const override;
 
-    void onEntityAdded(const aecs::EntityPtr &entity) override;
-    void onEntityRemoved(const aecs::EntityPtr &entity) override;
-    void onEntityModified(const aecs::EntityPtr &entity) override;
-
   private:
-    aecs::World &_world;
-    std::map<std::size_t, aecs::EntityPtr> _entitiesMap;
-
     sf::RenderWindow _window;
 };
 } // namespace rtype

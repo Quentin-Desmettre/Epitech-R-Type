@@ -46,7 +46,7 @@ class World
     template <typename T, typename... Args>
     T &registerRenderSystem(Args &&...args)
     {
-        static_assert(std::is_base_of_v<IRenderSystem, T>, "T must inherit from IRenderSystem");
+        static_assert(std::is_base_of_v<ARenderSystem, T>, "T must inherit from ARenderSystem");
 
         // To avoid changes in the entities vector while building the system
         const auto &constRefEntities = _entities;
@@ -58,7 +58,7 @@ class World
     template <typename T, typename... Args>
     T &registerSystem(int priority, Args &&...args)
     {
-        static_assert(std::is_base_of_v<ILogicSystem, T>, "T must inherit from ILogicSystem");
+        static_assert(std::is_base_of_v<ALogicSystem, T>, "T must inherit from ALogicSystem");
 
         // To avoid changes in the entities vector while building the system
         const auto &constRefEntities = _entities;
@@ -71,7 +71,7 @@ class World
     template <typename T>
     void setSystemPriority(int priority)
     {
-        static_assert(std::is_base_of_v<ILogicSystem, T>, "T must inherit from ILogicSystem");
+        static_assert(std::is_base_of_v<ALogicSystem, T>, "T must inherit from ALogicSystem");
 
         _systems[typeid(T)].second = priority;
         sortSystems();
@@ -80,7 +80,7 @@ class World
     template <typename T>
     void removeSystem()
     {
-        static_assert(std::is_base_of_v<ILogicSystem, T>, "T must inherit from ILogicSystem");
+        static_assert(std::is_base_of_v<ALogicSystem, T>, "T must inherit from ALogicSystem");
 
         _systems.erase(typeid(T));
         sortSystems();
@@ -95,11 +95,11 @@ class World
     void onEntityChanged(const Entity &entity);
 
     std::map<std::size_t, EntityPtr> _entities;
-    std::map<std::type_index, std::pair<std::shared_ptr<ILogicSystem>, int>> _systems;
-    std::vector<std::pair<ILogicSystem *, int>> _sortedSystems;
+    std::map<std::type_index, std::pair<std::shared_ptr<ALogicSystem>, int>> _systems;
+    std::vector<std::pair<ALogicSystem *, int>> _sortedSystems;
 
-    std::shared_ptr<IRenderSystem> _renderSystem;
-    std::vector<IRenderSystem::RenderInput> _renderInputs;
+    std::shared_ptr<ARenderSystem> _renderSystem;
+    std::vector<ARenderSystem::RenderInput> _renderInputs;
     std::mutex _renderInputsMutex;
 };
 } // namespace aecs

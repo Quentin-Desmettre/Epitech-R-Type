@@ -12,6 +12,7 @@ set(SHARED_SRC
         src/aecs/Entity.cpp
         include/aecs/Entity.hpp
         src/aecs/World.cpp
+        src/aecs/SystemBase.cpp
         include/aecs/SystemBase.hpp)
 set(SERVER_SRC src/server/main.cpp)
 set(CLIENT_SRC src/client/main.cpp

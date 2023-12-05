@@ -11,6 +11,7 @@
 #include <memory>
 #include <typeindex>
 #include <vector>
+#include <algorithm>
 
 namespace aecs
 {
@@ -58,6 +59,8 @@ class Entity
 
         return _components.find(typeid(T)) != _components.end();
     }
+
+    [[nodiscard]] bool hasComponents(const std::vector<std::type_index> &components) const;
 
     template <typename T>
     [[nodiscard]] const T &getComponent() const

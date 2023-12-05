@@ -13,18 +13,19 @@
 
 namespace rtype {
 
-    class PhysicsSystem: public aecs::ILogicSystem {
+class PhysicsSystem: public aecs::ALogicSystem {
     public:
         PhysicsSystem(aecs::World &world,
-                      const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-                _world(world)
+                      const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities):
+                ALogicSystem(world, entities, {
+                    typeid(PositionComponent),
+                    typeid(VelocityComponent)
+                })
         {
-            for (auto &[_id, entity] : entities)
-                PhysicsSystem::onEntityAdded(entity);
         }
         ~PhysicsSystem() override = default;
 
-        void update(const std::vector<aecs::IRenderSystem::RenderInput> &inputs) override {
+        void update(const std::vector<aecs::ARenderSystem::RenderInput> &inputs) override {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &position = entity->getComponent<PositionComponent>();
                 auto &velocity = entity->getComponent<VelocityComponent>();
@@ -38,27 +39,6 @@ namespace rtype {
                     velocity.y = -velocity.y;
             }
         }
-
-        void onEntityAdded(const aecs::EntityPtr &entity) override {
-            if (entity->hasComponent<PositionComponent>() && entity->hasComponent<VelocityComponent>()) {
-                _entitiesMap[entity->getId()] = entity;
-            }
-        }
-
-        void onEntityRemoved(const aecs::EntityPtr &entity) override {
-            if (!entity->hasComponent<PositionComponent>() || !entity->hasComponent<VelocityComponent>())
-                _entitiesMap.erase(entity->getId());
-        }
-
-        void onEntityModified(const aecs::EntityPtr &entity) override {
-            if (entity->hasComponent<PositionComponent>() && entity->hasComponent<VelocityComponent>())
-                _entitiesMap[entity->getId()] = entity;
-        }
-
-    private:
-        aecs::World &_world;
-        std::map<std::size_t, aecs::EntityPtr> _entitiesMap;
-
     };
 
 } // rtype
