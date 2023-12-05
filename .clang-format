@@ -15,3 +15,4 @@ AlwaysBreakTemplateDeclarations: Yes
 # never put a short function on one line
 
 AllowShortFunctionsOnASingleLine: None
+AllowShortLambdasOnASingleLine: None

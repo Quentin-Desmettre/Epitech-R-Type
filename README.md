@@ -5,13 +5,13 @@
 ### 1. Create a new ECS instance
 
 ```c++
-eacs::World world;
+aecs::World world;
 ```
 
 ### 2. Create an entity
 
 ```c++
-eacs::Entity &entity = world.createEntity();
+aecs::Entity &entity = world.createEntity();
 ```
 
 ### 3. Attach a component to an entity
@@ -24,7 +24,7 @@ world.addComponent<Position>(entity, 10, 20);
 
 ### 4. Add some systems
 
-Each system constructor **_MUST_** take as their first parameter a `std::vector<std::shared_ptr<Entity>>`.
+Each system constructor **_MUST_** take as their 2 first parameters a `aecs::World&` and a `std::vector<std::shared_ptr<Entity>>`.
 This vector contains all the entities; It is then the system's job to filter the entities it needs.
 
 Also, when you create/destroy/modify an entity, the `onEntityAdded`/`onEntityRemoved`/`onEntityModified` methods of

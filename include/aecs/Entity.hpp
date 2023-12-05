@@ -23,6 +23,8 @@ class Entity
   public:
     explicit Entity(World &world);
     Entity() = delete;
+    Entity(const Entity &) = delete;
+    Entity(Entity &&) = delete;
     ~Entity() = default;
 
     [[nodiscard]] std::size_t getId() const;
@@ -32,10 +34,10 @@ class Entity
     {
         static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
 
-        auto component = std::make_unique<T>(std::forward<Args>(args)...);
-        _components.emplace(typeid(T), std::move(component));
+        auto component = std::make_shared<T>(std::forward<Args>(args)...);
+        _components.emplace(typeid(T), component);
         notifyWorldEntityChanged();
-        return _components[typeid(T)];
+        return *component;
     }
 
     template <typename T>
@@ -70,18 +72,22 @@ class Entity
     {
         static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
 
-        return _components.at(typeid(T));
+        auto *component = dynamic_cast<T *>(_components.at(typeid(T)).get());
+        if (!component)
+            throw std::runtime_error("Invalid component type");
+        return *component;
     }
 
   private:
-
     void notifyWorldEntityChanged();
 
     std::size_t _id;
     static std::size_t _idCounter;
     World &_world;
-    std::map<std::type_index, std::unique_ptr<AbstractComponent>> _components;
+    std::map<std::type_index, std::shared_ptr<AbstractComponent>> _components;
 };
+
+typedef std::shared_ptr<Entity> EntityPtr;
 
 } // namespace aecs
 

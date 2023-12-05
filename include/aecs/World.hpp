@@ -10,9 +10,9 @@
 #include <cstddef>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <typeindex>
 #include <vector>
-#include <mutex>
 
 namespace aecs
 {
@@ -44,24 +44,28 @@ class World
     void render();
 
     template <typename T, typename... Args>
-    void registerRenderSystem(Args &&...args)
+    T &registerRenderSystem(Args &&...args)
     {
         static_assert(std::is_base_of_v<IRenderSystem, T>, "T must inherit from IRenderSystem");
 
         // To avoid changes in the entities vector while building the system
         const auto &constRefEntities = _entities;
-        _renderSystem = std::make_unique<T>(constRefEntities, std::forward<Args>(args)...);
+        const auto &built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
+        _renderSystem = built;
+        return *built;
     }
 
     template <typename T, typename... Args>
-    void registerSystem(int priority, Args &&...args)
+    T &registerSystem(int priority, Args &&...args)
     {
         static_assert(std::is_base_of_v<ILogicSystem, T>, "T must inherit from ILogicSystem");
 
         // To avoid changes in the entities vector while building the system
         const auto &constRefEntities = _entities;
-        _systems[typeid(T)] = {std::make_unique<T>(constRefEntities, std::forward<Args>(args)...), priority};
+        const auto &built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
+        _systems[typeid(T)] = {built, priority};
         sortSystems();
+        return *built;
     }
 
     template <typename T>
@@ -85,15 +89,16 @@ class World
   private:
     void sortSystems();
 
-    void onEntityAdded(Entity &entity);
-    void onEntityRemoved(Entity &entity);
-    void onEntityChanged(Entity &entity);
+    void onEntityAdded(const EntityPtr &entity);
+    void onEntityRemoved(const EntityPtr &entity);
+    void onEntityChanged(const EntityPtr &entity);
+    void onEntityChanged(const Entity &entity);
 
-    std::vector<std::shared_ptr<Entity>> _entities;
-    std::map<std::type_index, std::pair<std::unique_ptr<ILogicSystem>, int>> _systems;
+    std::map<std::size_t, EntityPtr> _entities;
+    std::map<std::type_index, std::pair<std::shared_ptr<ILogicSystem>, int>> _systems;
     std::vector<std::pair<ILogicSystem *, int>> _sortedSystems;
 
-    std::unique_ptr<IRenderSystem> _renderSystem;
+    std::shared_ptr<IRenderSystem> _renderSystem;
     std::vector<IRenderSystem::RenderInput> _renderInputs;
     std::mutex _renderInputsMutex;
 };

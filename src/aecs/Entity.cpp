@@ -7,7 +7,7 @@
 
 namespace aecs
 {
-    std::size_t Entity::_idCounter = 0;
+std::size_t Entity::_idCounter = 0;
 Entity::Entity(World &world) :
     _id(_idCounter++),
     _world(world)

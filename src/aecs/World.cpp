@@ -13,45 +13,49 @@ Entity &World::createEntity()
 {
     // Create entity
     auto entity = std::make_shared<Entity>(*this);
-    _entities.push_back(entity);
+    _entities[entity->getId()] = entity;
 
     // Notify systems
-    onEntityAdded(*_entities.back());
+    onEntityAdded(entity);
     return *entity;
 }
 
 void World::destroyEntity(Entity &entity)
 {
     // Notify systems
-    onEntityRemoved(entity);
+    onEntityRemoved(_entities[entity.getId()]);
 
     // Remove entity
-    _entities.erase(std::remove_if(_entities.begin(), _entities.end(),
-                                   [&entity](const std::shared_ptr<Entity> &entityPtr) {
-                                       return entityPtr->getId() == entity.getId();
-                                   }),
-                    _entities.end());
+    _entities.erase(entity.getId());
 }
 
-void World::onEntityAdded(Entity &entity)
+void World::onEntityAdded(const EntityPtr &entity)
 {
     // Notify systems
     for (auto &[_, systemPair] : _systems)
-        systemPair.first->onEntityAdded(*_entities.back());
+        systemPair.first->onEntityAdded(entity);
+    _renderSystem->onEntityAdded(entity);
 }
 
-void World::onEntityRemoved(Entity &entity)
+void World::onEntityRemoved(const EntityPtr &entity)
 {
     // Notify systems
     for (auto &[_, systemPair] : _systems)
         systemPair.first->onEntityRemoved(entity);
+    _renderSystem->onEntityRemoved(entity);
 }
 
-void World::onEntityChanged(Entity &entity)
+void World::onEntityChanged(const EntityPtr &entity)
 {
     // Notify systems
     for (auto &[_, systemPair] : _systems)
         systemPair.first->onEntityModified(entity);
+    _renderSystem->onEntityModified(entity);
+}
+
+void World::onEntityChanged(const aecs::Entity &entity)
+{
+    onEntityChanged(_entities[entity.getId()]);
 }
 
 void World::sortSystems()
@@ -64,8 +68,9 @@ void World::sortSystems()
         _sortedSystems.emplace_back(systemPair.first.get(), systemPair.second);
 
     // Sort the list
-    std::sort(_sortedSystems.begin(), _sortedSystems.end(),
-              [](const auto &a, const auto &b) { return a.second < b.second; });
+    std::sort(_sortedSystems.begin(), _sortedSystems.end(), [](const auto &a, const auto &b) {
+        return a.second < b.second;
+    });
 }
 
 void World::update()
