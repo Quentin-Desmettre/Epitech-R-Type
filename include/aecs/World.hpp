@@ -17,91 +17,91 @@
 namespace aecs
 {
 
-class World
-{
-  public:
-    friend class Entity;
-    World() = default;
-    ~World() = default;
-
-    Entity &createEntity();
-
-    template <typename T, typename... Args>
-    T &addComponent(Entity &entity, Args &&...args)
+    class World
     {
-        return entity.addComponent<T>(std::forward<Args>(args)...);
-    }
+      public:
+        friend class Entity;
+        World() = default;
+        ~World() = default;
 
-    template <typename T>
-    void removeComponent(Entity &entity)
-    {
-        entity.removeComponent<T>();
-    }
+        Entity &createEntity();
 
-    void destroyEntity(Entity &entity);
+        template <typename T, typename... Args>
+        T &addComponent(Entity &entity, Args &&...args)
+        {
+            return entity.addComponent<T>(std::forward<Args>(args)...);
+        }
 
-    void update();
-    void render();
+        template <typename T>
+        void removeComponent(Entity &entity)
+        {
+            entity.removeComponent<T>();
+        }
 
-    template <typename T, typename... Args>
-    T &registerRenderSystem(Args &&...args)
-    {
-        static_assert(std::is_base_of_v<ARenderSystem, T>, "T must inherit from ARenderSystem");
+        void destroyEntity(Entity &entity);
 
-        // To avoid changes in the entities vector while building the system
-        const auto &constRefEntities = _entities;
-        const auto &built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
-        _renderSystem = built;
-        return *built;
-    }
+        void update();
+        void render();
 
-    template <typename T, typename... Args>
-    T &registerSystem(int priority, Args &&...args)
-    {
-        static_assert(std::is_base_of_v<ALogicSystem, T>, "T must inherit from ALogicSystem");
+        template <typename T, typename... Args>
+        T &registerRenderSystem(Args &&...args)
+        {
+            static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
 
-        // To avoid changes in the entities vector while building the system
-        const auto &constRefEntities = _entities;
-        const auto &built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
-        _systems[typeid(T)] = {built, priority};
-        sortSystems();
-        return *built;
-    }
+            // To avoid changes in the entities vector while building the system
+            const auto &constRefEntities = _entities;
+            const auto &built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
+            _renderSystem = built;
+            return *built;
+        }
 
-    template <typename T>
-    void setSystemPriority(int priority)
-    {
-        static_assert(std::is_base_of_v<ALogicSystem, T>, "T must inherit from ALogicSystem");
+        template <typename T, typename... Args>
+        T &registerSystem(int priority, Args &&...args)
+        {
+            static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
 
-        _systems[typeid(T)].second = priority;
-        sortSystems();
-    }
+            // To avoid changes in the entities vector while building the system
+            const auto &constRefEntities = _entities;
+            const auto &built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
+            _systems[typeid(T)] = {built, priority};
+            sortSystems();
+            return *built;
+        }
 
-    template <typename T>
-    void removeSystem()
-    {
-        static_assert(std::is_base_of_v<ALogicSystem, T>, "T must inherit from ALogicSystem");
+        template <typename T>
+        void setSystemPriority(int priority)
+        {
+            static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
 
-        _systems.erase(typeid(T));
-        sortSystems();
-    }
+            _systems[typeid(T)].second = priority;
+            sortSystems();
+        }
 
-  private:
-    void sortSystems();
+        template <typename T>
+        void removeSystem()
+        {
+            static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
 
-    void onEntityAdded(const EntityPtr &entity);
-    void onEntityRemoved(const EntityPtr &entity);
-    void onEntityChanged(const EntityPtr &entity);
-    void onEntityChanged(const Entity &entity);
+            _systems.erase(typeid(T));
+            sortSystems();
+        }
 
-    std::map<std::size_t, EntityPtr> _entities;
-    std::map<std::type_index, std::pair<std::shared_ptr<ALogicSystem>, int>> _systems;
-    std::vector<std::pair<ALogicSystem *, int>> _sortedSystems;
+      private:
+        void sortSystems();
 
-    std::shared_ptr<ARenderSystem> _renderSystem;
-    std::vector<ARenderSystem::RenderInput> _renderInputs;
-    std::mutex _renderInputsMutex;
-};
+        void onEntityAdded(const EntityPtr &entity);
+        void onEntityRemoved(const EntityPtr &entity);
+        void onEntityChanged(const EntityPtr &entity);
+        void onEntityChanged(const Entity &entity);
+
+        std::map<std::size_t, EntityPtr> _entities;
+        std::map<std::type_index, std::pair<std::shared_ptr<ISystem>, int>> _systems;
+        std::vector<std::pair<ISystem *, int>> _sortedSystems;
+
+        std::shared_ptr<ISystem> _renderSystem;
+        std::vector<RenderInput> _renderInputs;
+        std::mutex _renderInputsMutex;
+    };
 } // namespace aecs
 
 #endif // EPITECH_R_TYPE_WORLD_HPP

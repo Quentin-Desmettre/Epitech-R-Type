@@ -12,21 +12,21 @@
 namespace rtype
 {
 
-class RTypeClient
-{
-  public:
-    RTypeClient(int renderRefreshRate, int logicRefreshRate);
-    ~RTypeClient() = default;
+    class RTypeClient
+    {
+      public:
+        RTypeClient(int renderRefreshRate, int logicRefreshRate);
+        ~RTypeClient() = default;
 
-    void run();
+        void run();
 
-  private:
-    static void infinteLoop(int refreshRate, std::function<bool()> &&run, std::function<void()> &&function);
-    aecs::World _world;
-    int _renderRefreshRate;
-    int _logicRefreshRate;
-    RenderSystem &_renderSystem;
-};
+      private:
+        static void infinteLoop(int refreshRate, std::function<bool()> &&run, std::function<void()> &&function);
+        aecs::World _world;
+        int _renderRefreshRate;
+        int _logicRefreshRate;
+        RenderSystem &_renderSystem;
+    };
 
 } // namespace rtype
 

@@ -3,12 +3,12 @@
 //
 
 #include "rtype/RTypeClient.hpp"
+#include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/VelocityComponent.hpp"
+#include "rtype/systems/PhysicsSystem.hpp"
 #include <chrono>
 #include <thread>
-#include "rtype/systems/PhysicsSystem.hpp"
-#include "rtype/components/PositionComponent.hpp"
-#include "rtype/components/VelocityComponent.hpp"
 
 rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world(),
@@ -27,14 +27,14 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
 void rtype::RTypeClient::run()
 {
     // Launch a thread for logic
-    std::thread{
-        &RTypeClient::infinteLoop, _logicRefreshRate,
-        [this]() {
-            return _renderSystem.isOpen();
-        },
-        [this]() {
-            _world.update();
-        }}.detach();
+    std::thread{&RTypeClient::infinteLoop, _logicRefreshRate,
+                [this]() {
+                    return _renderSystem.isOpen();
+                },
+                [this]() {
+                    _world.update();
+                }}
+        .detach();
 
     // Render in the main thread
     infinteLoop(

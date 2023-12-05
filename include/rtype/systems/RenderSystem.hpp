@@ -12,18 +12,18 @@
 
 namespace rtype
 {
-class RenderSystem : public aecs::ARenderSystem
-{
-  public:
-    RenderSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
-    ~RenderSystem() override = default;
+    class RenderSystem : public aecs::ARenderSystem
+    {
+      public:
+        RenderSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
+        ~RenderSystem() override = default;
 
-    std::vector<RenderInput> render() override;
-    [[nodiscard]] bool isOpen() const override;
+        std::vector<aecs::RenderInput> render() override;
+        [[nodiscard]] bool isOpen() const override;
 
-  private:
-    sf::RenderWindow _window;
-};
+      private:
+        sf::RenderWindow _window;
+    };
 } // namespace rtype
 
 #endif // R_TYPE_RENDERSYSTEM_HPP

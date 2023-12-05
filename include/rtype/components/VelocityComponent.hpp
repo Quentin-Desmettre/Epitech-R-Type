@@ -7,14 +7,20 @@
 
 #include "aecs/AbstractComponent.hpp"
 
-namespace rtype {
-    class VelocityComponent: public aecs::AbstractComponent {
-    public:
-        VelocityComponent(float x, float y) : x(x), y(y) {}
+namespace rtype
+{
+    class VelocityComponent : public aecs::AbstractComponent
+    {
+      public:
+        VelocityComponent(float x, float y) :
+            x(x),
+            y(y)
+        {
+        }
 
         float x;
         float y;
     };
-}
+} // namespace rtype
 
-#endif //R_TYPE_VELOCITYCOMPONENT_HPP
+#endif // R_TYPE_VELOCITYCOMPONENT_HPP

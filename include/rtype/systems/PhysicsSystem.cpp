@@ -4,5 +4,6 @@
 
 #include "PhysicsSystem.hpp"
 
-namespace rtype {
-} // rtype
+namespace rtype
+{
+} // namespace rtype

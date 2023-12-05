@@ -7,14 +7,20 @@
 
 #include "aecs/AbstractComponent.hpp"
 
-namespace rtype {
-    class PositionComponent: public aecs::AbstractComponent {
-    public:
-        PositionComponent(float x, float y) : x(x), y(y) {}
+namespace rtype
+{
+    class PositionComponent : public aecs::AbstractComponent
+    {
+      public:
+        PositionComponent(float x, float y) :
+            x(x),
+            y(y)
+        {
+        }
 
         float x;
         float y;
     };
-}
+} // namespace rtype
 
-#endif //R_TYPE_POSITIONCOMPONENT_HPP
+#endif // R_TYPE_POSITIONCOMPONENT_HPP

@@ -11,21 +11,20 @@
 #include "rtype/components/VelocityComponent.hpp"
 #include <iostream>
 
-namespace rtype {
+namespace rtype
+{
 
-class PhysicsSystem: public aecs::ALogicSystem {
-    public:
-        PhysicsSystem(aecs::World &world,
-                      const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities):
-                ALogicSystem(world, entities, {
-                    typeid(PositionComponent),
-                    typeid(VelocityComponent)
-                })
+    class PhysicsSystem : public aecs::ALogicSystem
+    {
+      public:
+        PhysicsSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+            ALogicSystem(world, entities, {typeid(PositionComponent), typeid(VelocityComponent)})
         {
         }
         ~PhysicsSystem() override = default;
 
-        void update(const std::vector<aecs::ARenderSystem::RenderInput> &inputs) override {
+        void update(const std::vector<aecs::RenderInput> &inputs) override
+        {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &position = entity->getComponent<PositionComponent>();
                 auto &velocity = entity->getComponent<VelocityComponent>();
@@ -41,6 +40,6 @@ class PhysicsSystem: public aecs::ALogicSystem {
         }
     };
 
-} // rtype
+} // namespace rtype
 
-#endif //R_TYPE_PHYSICSSYSTEM_HPP
+#endif // R_TYPE_PHYSICSSYSTEM_HPP

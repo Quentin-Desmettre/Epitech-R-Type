@@ -9,11 +9,11 @@
 
 namespace aecs
 {
-class AbstractComponent
-{
-  public:
-    virtual ~AbstractComponent() = 0;
-};
+    class AbstractComponent
+    {
+      public:
+        virtual ~AbstractComponent() = 0;
+    };
 } // namespace aecs
 
 #endif // R_TYPE_ABSTRACTCOMPONENT_HPP

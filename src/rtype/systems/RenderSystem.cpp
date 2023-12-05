@@ -3,22 +3,19 @@
 //
 
 #include "rtype/systems/RenderSystem.hpp"
-#include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/SpriteComponent.hpp"
 
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-    ARenderSystem(world, entities, {
-        typeid(rtype::SpriteComponent),
-        typeid(rtype::PositionComponent)
-    }),
+    ARenderSystem(world, entities, {typeid(rtype::SpriteComponent), typeid(rtype::PositionComponent)}),
     _window(sf::VideoMode(800, 600), "R-Type")
 {
 }
 
-std::vector<rtype::RenderSystem::RenderInput> rtype::RenderSystem::render()
+std::vector<aecs::RenderInput> rtype::RenderSystem::render()
 {
-    std::vector<RenderInput> inputs;
+    std::vector<aecs::RenderInput> inputs;
 
     // Poll events
     sf::Event event{};

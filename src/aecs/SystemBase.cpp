@@ -7,12 +7,13 @@
 
 namespace aecs
 {
-    ASystem::ASystem(aecs::World &world, const std::map<std::size_t, EntityPtr> &entities, const std::vector<std::type_index> &componentsNeeded):
+    ASystem::ASystem(aecs::World &world, const std::map<std::size_t, EntityPtr> &entities,
+                     const std::vector<std::type_index> &componentsNeeded) :
         _world(world),
         _componentsNeeded(componentsNeeded)
     {
         for (auto &[_, entity] : entities)
-            onEntityAdded(entity);
+            ASystem::onEntityAdded(entity);
     }
 
     void ASystem::onEntityAdded(const aecs::EntityPtr &entity)
@@ -34,4 +35,4 @@ namespace aecs
         else
             _entitiesMap.erase(entity->getId());
     }
-}
+} // namespace aecs

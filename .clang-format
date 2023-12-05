@@ -16,3 +16,4 @@ AlwaysBreakTemplateDeclarations: Yes
 
 AllowShortFunctionsOnASingleLine: None
 AllowShortLambdasOnASingleLine: None
+NamespaceIndentation: All

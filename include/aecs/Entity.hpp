@@ -6,91 +6,91 @@
 #define R_TYPE_ENTITY_HPP
 
 #include "AbstractComponent.hpp"
+#include <algorithm>
 #include <cstddef>
 #include <map>
 #include <memory>
 #include <typeindex>
 #include <vector>
-#include <algorithm>
 
 namespace aecs
 {
 
-class World;
+    class World;
 
-class Entity
-{
-
-  public:
-    explicit Entity(World &world);
-    Entity() = delete;
-    Entity(const Entity &) = delete;
-    Entity(Entity &&) = delete;
-    ~Entity() = default;
-
-    [[nodiscard]] std::size_t getId() const;
-
-    template <typename T, typename... Args>
-    T &addComponent(Args &&...args)
+    class Entity
     {
-        static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
 
-        auto component = std::make_shared<T>(std::forward<Args>(args)...);
-        _components.emplace(typeid(T), component);
-        notifyWorldEntityChanged();
-        return *component;
-    }
+      public:
+        explicit Entity(World &world);
+        Entity() = delete;
+        Entity(const Entity &) = delete;
+        Entity(Entity &&) = delete;
+        ~Entity() = default;
 
-    template <typename T>
-    void removeComponent()
-    {
-        static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
+        [[nodiscard]] std::size_t getId() const;
 
-        if (!hasComponent<T>())
-            return;
-        notifyWorldEntityChanged();
-        _components.erase(typeid(T));
-    }
+        template <typename T, typename... Args>
+        T &addComponent(Args &&...args)
+        {
+            static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
 
-    template <typename T>
-    [[nodiscard]] bool hasComponent() const
-    {
-        static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
+            auto component = std::make_shared<T>(std::forward<Args>(args)...);
+            _components.emplace(typeid(T), component);
+            notifyWorldEntityChanged();
+            return *component;
+        }
 
-        return _components.find(typeid(T)) != _components.end();
-    }
+        template <typename T>
+        void removeComponent()
+        {
+            static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
 
-    [[nodiscard]] bool hasComponents(const std::vector<std::type_index> &components) const;
+            if (!hasComponent<T>())
+                return;
+            notifyWorldEntityChanged();
+            _components.erase(typeid(T));
+        }
 
-    template <typename T>
-    [[nodiscard]] const T &getComponent() const
-    {
-        static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
+        template <typename T>
+        [[nodiscard]] bool hasComponent() const
+        {
+            static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
 
-        return _components.at(typeid(T));
-    }
+            return _components.find(typeid(T)) != _components.end();
+        }
 
-    template <typename T>
-    [[nodiscard]] T &getComponent()
-    {
-        static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
+        [[nodiscard]] bool hasComponents(const std::vector<std::type_index> &components) const;
 
-        auto *component = dynamic_cast<T *>(_components.at(typeid(T)).get());
-        if (!component)
-            throw std::runtime_error("Invalid component type");
-        return *component;
-    }
+        template <typename T>
+        [[nodiscard]] const T &getComponent() const
+        {
+            static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
 
-  private:
-    void notifyWorldEntityChanged();
+            return _components.at(typeid(T));
+        }
 
-    std::size_t _id;
-    static std::size_t _idCounter;
-    World &_world;
-    std::map<std::type_index, std::shared_ptr<AbstractComponent>> _components;
-};
+        template <typename T>
+        [[nodiscard]] T &getComponent()
+        {
+            static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
 
-typedef std::shared_ptr<Entity> EntityPtr;
+            auto *component = dynamic_cast<T *>(_components.at(typeid(T)).get());
+            if (!component)
+                throw std::runtime_error("Invalid component type");
+            return *component;
+        }
+
+      private:
+        void notifyWorldEntityChanged();
+
+        std::size_t _id;
+        static std::size_t _idCounter;
+        World &_world;
+        std::map<std::type_index, std::shared_ptr<AbstractComponent>> _components;
+    };
+
+    typedef std::shared_ptr<Entity> EntityPtr;
 
 } // namespace aecs
 
