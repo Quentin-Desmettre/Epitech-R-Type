@@ -24,15 +24,13 @@ world.addComponent<Position>(entity, 10, 20);
 
 ### 4. Add some systems
 
-Each system **_MUST_** take as their first parameter an `std::vector<std::shared_ptr<Entity>>`.
+Each system constructor **_MUST_** take as their first parameter a `std::vector<std::shared_ptr<Entity>>`.
 This vector contains all the entities; It is then the system's job to filter the entities it needs.
 
 Also, when you create/destroy/modify an entity, the `onEntityAdded`/`onEntityRemoved`/`onEntityModified` methods of
 every system are called respectively, with the entity as parameter. It is then the system's job to filter the entities.
 
-An entity is considered modified when a component is added/removed.
-
-```c++
+An entity is considered modified when a component is added/removed to it.
 
 ```c++
 world.registerSystem<MoveSystem>(priority, /* Additional params to pass to ctor */);
@@ -58,13 +56,19 @@ world.render();
 // Destroy an entity
 world.destroyEntity(entity);
 
-// Remove components from an entity
-entity.removeComponent<Position>();
-world.removeComponent<Position>(entity);
-
 // Check if an entity has a component
 entity.hasComponent<Position>();
 
 // Get a component from an entity
 entity.getComponent<Position>();
+
+// Remove components from an entity
+entity.removeComponent<Position>();
+world.removeComponent<Position>(entity);
+
+// Change system priority
+world.setSystemPriority<MoveSystem>(priority);
+
+// Remove a system
+world.removeSystem<MoveSystem>();
 ```
