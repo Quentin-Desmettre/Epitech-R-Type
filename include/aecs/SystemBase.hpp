@@ -36,9 +36,9 @@ namespace aecs
         [[nodiscard]] virtual bool isOpen() const = 0;
     };
 
-    class ASystem: public ISystem
+    class ASystem : public ISystem
     {
-    public:
+      public:
         ASystem(aecs::World &world, const std::map<std::size_t, EntityPtr> &entities,
                 const std::vector<std::type_index> &componentsNeeded);
         ~ASystem() override = default;
@@ -47,7 +47,7 @@ namespace aecs
         void onEntityRemoved(const aecs::EntityPtr &entity) final;
         void onEntityModified(const aecs::EntityPtr &entity) final;
 
-    protected:
+      protected:
         aecs::World &_world;
         std::map<std::size_t, aecs::EntityPtr> _entitiesMap;
         std::vector<std::type_index> _componentsNeeded;
