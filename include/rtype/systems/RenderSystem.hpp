@@ -5,10 +5,32 @@
 #ifndef R_TYPE_RENDERSYSTEM_HPP
 #define R_TYPE_RENDERSYSTEM_HPP
 
+#include "aecs/SystemBase.hpp"
+#include "aecs/World.hpp"
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
 
-class RenderSystem {
+namespace rtype
+{
+class RenderSystem : public aecs::IRenderSystem
+{
+  public:
+    RenderSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
+    ~RenderSystem() override = default;
 
+    std::vector<RenderInput> render() override;
+    [[nodiscard]] bool isOpen() const override;
+
+    void onEntityAdded(const aecs::EntityPtr &entity) override;
+    void onEntityRemoved(const aecs::EntityPtr &entity) override;
+    void onEntityModified(const aecs::EntityPtr &entity) override;
+
+  private:
+    aecs::World &_world;
+    std::map<std::size_t, aecs::EntityPtr> _entitiesMap;
+
+    sf::RenderWindow _window;
 };
+} // namespace rtype
 
-
-#endif //R_TYPE_RENDERSYSTEM_HPP
+#endif // R_TYPE_RENDERSYSTEM_HPP

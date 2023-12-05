@@ -5,12 +5,16 @@
 #ifndef R_TYPE_POSITIONCOMPONENT_HPP
 #define R_TYPE_POSITIONCOMPONENT_HPP
 
+#include "aecs/AbstractComponent.hpp"
 
+namespace rtype {
+    class PositionComponent: public aecs::AbstractComponent {
+    public:
+        PositionComponent(float x, float y) : x(x), y(y) {}
 
-class PositionComponent {
-
-};
-
-
+        float x;
+        float y;
+    };
+}
 
 #endif //R_TYPE_POSITIONCOMPONENT_HPP

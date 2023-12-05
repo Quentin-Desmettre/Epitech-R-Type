@@ -2,10 +2,13 @@
 // Created by qdesmettre on 05/12/23.
 //
 
-#include "RTypeClient.hpp"
+#include "rtype/RTypeClient.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include <chrono>
 #include <thread>
+#include "rtype/systems/PhysicsSystem.hpp"
+#include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/VelocityComponent.hpp"
 
 rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world(),
@@ -15,6 +18,10 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
 {
     auto &tmp = _world.createEntity();
     tmp.addComponent<SpriteComponent>("assets/sprites/ship.png", sf::Vector2f{200, 200});
+    tmp.addComponent<PositionComponent>(0, 0);
+    tmp.addComponent<VelocityComponent>(5, 5);
+
+    _world.registerSystem<PhysicsSystem>(0);
 }
 
 void rtype::RTypeClient::run()

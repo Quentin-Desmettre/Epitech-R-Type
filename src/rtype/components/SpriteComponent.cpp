@@ -2,7 +2,7 @@
 // Created by qdesmettre on 05/12/23.
 //
 
-#include "SpriteComponent.hpp"
+#include "rtype/components/SpriteComponent.hpp"
 
 rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size)
 {

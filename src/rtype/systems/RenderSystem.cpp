@@ -2,9 +2,9 @@
 // Created by qdesmettre on 05/12/23.
 //
 
-#include "RenderSystem.hpp"
+#include "rtype/systems/RenderSystem.hpp"
 #include "rtype/components/SpriteComponent.hpp"
-#include <iostream>
+#include "rtype/components/PositionComponent.hpp"
 
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
@@ -32,6 +32,8 @@ std::vector<rtype::RenderSystem::RenderInput> rtype::RenderSystem::render()
     _window.clear();
     for (auto &[id, entity] : _entitiesMap) {
         auto &sprite = entity->getComponent<rtype::SpriteComponent>();
+        auto &pos = entity->getComponent<PositionComponent>();
+        sprite.sprite.setPosition(pos.x, pos.y);
         _window.draw(sprite.sprite);
     }
     _window.display();
@@ -45,18 +47,18 @@ bool rtype::RenderSystem::isOpen() const
 
 void rtype::RenderSystem::onEntityAdded(const aecs::EntityPtr &entity)
 {
-    if (entity->hasComponent<rtype::SpriteComponent>())
+    if (entity->hasComponent<rtype::SpriteComponent>() && entity->hasComponent<PositionComponent>())
         _entitiesMap[entity->getId()] = entity;
 }
 
 void rtype::RenderSystem::onEntityRemoved(const aecs::EntityPtr &entity)
 {
-    if (entity->hasComponent<rtype::SpriteComponent>())
+    if (entity->hasComponent<rtype::SpriteComponent>() && entity->hasComponent<PositionComponent>())
         _entitiesMap.erase(entity->getId());
 }
 
 void rtype::RenderSystem::onEntityModified(const aecs::EntityPtr &entity)
 {
-    if (entity->hasComponent<rtype::SpriteComponent>())
+    if (entity->hasComponent<rtype::SpriteComponent>() && entity->hasComponent<PositionComponent>())
         _entitiesMap[entity->getId()] = entity;
 }

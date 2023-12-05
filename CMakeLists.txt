@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(include)
 
-set(SHARED_SRC src/shared/main.cpp
+set(SHARED_SRC
         include/aecs/World.hpp
         include/aecs/AbstractComponent.hpp
         src/aecs/AbstractComponent.cpp
@@ -15,6 +15,16 @@ set(SHARED_SRC src/shared/main.cpp
         include/aecs/SystemBase.hpp)
 set(SERVER_SRC src/server/main.cpp)
 set(CLIENT_SRC src/client/main.cpp
+        src/rtype/RTypeClient.cpp
+        include/rtype/RTypeClient.hpp
+        src/rtype/systems/RenderSystem.cpp
+        include/rtype/systems/RenderSystem.hpp
+        src/rtype/components/SpriteComponent.cpp
+        include/rtype/components/SpriteComponent.hpp
+        include/rtype/components/PositionComponent.hpp
+        include/rtype/components/VelocityComponent.hpp
+        include/rtype/systems/PhysicsSystem.cpp
+        include/rtype/systems/PhysicsSystem.hpp
 )
 
 include(FetchContent)
