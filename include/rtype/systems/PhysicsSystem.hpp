@@ -9,6 +9,7 @@
 #include "aecs/World.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
+#include "rtype/components/SpriteComponent.hpp"
 #include <iostream>
 
 namespace rtype
@@ -18,24 +19,37 @@ namespace rtype
     {
       public:
         PhysicsSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {typeid(PositionComponent), typeid(VelocityComponent)})
+            ALogicSystem(world, entities, {typeid(PositionComponent), typeid(VelocityComponent), typeid(SpriteComponent)})
         {
         }
         ~PhysicsSystem() override = default;
 
-        void update(const std::vector<aecs::RenderInput> &inputs) override
+        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &position = entity->getComponent<PositionComponent>();
                 auto &velocity = entity->getComponent<VelocityComponent>();
+                auto &sprite = entity->getComponent<SpriteComponent>();
 
-                position.x += velocity.x;
-                position.y += velocity.y;
 
-                if (position.x > 600 || position.x < 0)
-                    velocity.x = -velocity.x;
-                if (position.y > 400 || position.y < 0)
-                    velocity.y = -velocity.y;
+                position.x += velocity.x * deltaTime;
+                position.y += velocity.y * deltaTime;
+                if (position.x < 0 && velocity.x < 0) {
+                    position.x = 0;
+                    velocity.x = 0;
+                }
+                if (position.y < 0 && velocity.y < 0) {
+                    position.y = 0;
+                    velocity.y = 0;
+                }
+                if (position.x > 960 - sprite._size.x && velocity.x > 0) {
+                    position.x = 960 - sprite._size.x;
+                    velocity.x = 0;
+                }
+                if (position.y > 540 - sprite._size.y && velocity.y > 0) {
+                    position.y = 540 - sprite._size.y;
+                    velocity.y = 0;
+                }
             }
         }
     };
