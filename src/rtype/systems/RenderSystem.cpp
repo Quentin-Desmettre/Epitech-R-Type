@@ -9,7 +9,7 @@
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
     ARenderSystem(world, entities, {typeid(rtype::SpriteComponent), typeid(rtype::PositionComponent)}),
-    _window(sf::VideoMode(800, 600), "R-Type")
+    _window(sf::VideoMode(1440, 810), "R-Type")
 {
 }
 
@@ -22,12 +22,14 @@ std::vector<aecs::RenderInput> rtype::RenderSystem::render()
     while (_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             _window.close();
-        else if (event.type == sf::Event::KeyPressed)
-            inputs.emplace_back(event.key.code);
+    }
+    for (int i = 0; i < sf::Keyboard::KeyCount; i++) {
+        if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(i)))
+            inputs.push_back(static_cast<aecs::RenderInput>(i));
     }
 
     // Render
-    _window.clear();
+    _window.clear(sf::Color(63, 63, 63));
     for (auto &[id, entity] : _entitiesMap) {
         auto &sprite = entity->getComponent<rtype::SpriteComponent>();
         auto &pos = entity->getComponent<PositionComponent>();

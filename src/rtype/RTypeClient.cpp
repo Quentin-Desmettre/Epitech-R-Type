@@ -43,7 +43,7 @@ void rtype::RTypeClient::run()
             return _renderSystem.isOpen();
         },
         [this]() {
-            _renderSystem.render();
+            _world.render();
         });
 }
 
