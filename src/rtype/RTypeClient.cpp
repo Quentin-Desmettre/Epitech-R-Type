@@ -6,7 +6,11 @@
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
+#include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/PlayerComponent.hpp"
 #include "rtype/systems/PhysicsSystem.hpp"
+#include "rtype/systems/ControlPlayerSystem.hpp"
+#include "rtype/systems/AnimPlayerSystem.hpp"
 #include <chrono>
 #include <thread>
 
@@ -17,11 +21,15 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _renderSystem(_world.registerRenderSystem<RenderSystem>())
 {
     auto &tmp = _world.createEntity();
-    tmp.addComponent<SpriteComponent>("assets/sprites/ship.png", sf::Vector2f{200, 200});
+    tmp.addComponent<SpriteComponent>("assets/sprites/Player2.png", sf::Vector2f{96, 96}, sf::IntRect(0, 0, 96, 96));
     tmp.addComponent<PositionComponent>(0, 0);
-    tmp.addComponent<VelocityComponent>(5, 5);
+    tmp.addComponent<VelocityComponent>(0, 0);
+    tmp.addComponent<MyPlayerComponent>();
+    tmp.addComponent<PlayerComponent>();
 
-    _world.registerSystem<PhysicsSystem>(0);
+    _world.registerSystem<ControlPlayerSystem>(0);
+    _world.registerSystem<AnimPlayerSystem>(0);
+    _world.registerSystem<PhysicsSystem>(1);
 }
 
 void rtype::RTypeClient::run()

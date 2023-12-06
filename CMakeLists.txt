@@ -14,7 +14,10 @@ set(SHARED_SRC
         src/aecs/World.cpp
         src/aecs/SystemBase.cpp
         include/aecs/SystemBase.hpp)
-set(SERVER_SRC src/server/main.cpp)
+set(SERVER_SRC src/server/main.cpp
+        include/rtype/components/MyPlayerComponent.hpp
+        include/rtype/systems/ControlPlayerSystem.hpp
+        include/rtype/systems/AnimPlayerSystem.hpp)
 set(CLIENT_SRC src/client/main.cpp
         src/rtype/RTypeClient.cpp
         include/rtype/RTypeClient.hpp
@@ -26,6 +29,9 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/components/VelocityComponent.hpp
         include/rtype/systems/PhysicsSystem.cpp
         include/rtype/systems/PhysicsSystem.hpp
+        include/rtype/components/MyPlayerComponent.hpp
+        include/rtype/systems/ControlPlayerSystem.hpp
+        include/rtype/systems/AnimPlayerSystem.hpp
 )
 
 include(FetchContent)
