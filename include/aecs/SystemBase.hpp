@@ -29,7 +29,7 @@ namespace aecs
         virtual void onEntityModified(const aecs::EntityPtr &entity) = 0;
 
         // For logic systems
-        virtual void update(const std::vector<RenderInput> &inputs) = 0;
+        virtual void update(const std::vector<RenderInput> &inputs, float deltaTime) = 0;
 
         // For render systems
         virtual std::vector<RenderInput> render() = 0;
@@ -64,7 +64,7 @@ namespace aecs
         ~ARenderSystem() override = default;
 
         // For logic systems ONLY
-        void update(const std::vector<RenderInput> &inputs) override
+        void update(const std::vector<RenderInput> &inputs, float deltaTime) override
         {
             throw std::runtime_error("IRenderSystem::update() should not be called");
         }
