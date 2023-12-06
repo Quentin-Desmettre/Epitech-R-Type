@@ -75,12 +75,14 @@ namespace aecs
 
     void World::update()
     {
+        float deltaTime = clock.getElapsedTime().asSeconds() * 10;
+        clock.restart();
         // Lock inputs
         std::lock_guard<std::mutex> lock(_renderInputsMutex);
 
         // Update systems
         for (auto &[system, _] : _sortedSystems)
-            system->update(_renderInputs);
+            system->update(_renderInputs, deltaTime);
 
         // Clear
         _renderInputs.clear();

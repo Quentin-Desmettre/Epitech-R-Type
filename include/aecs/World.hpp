@@ -12,6 +12,7 @@
 #include <memory>
 #include <mutex>
 #include <typeindex>
+#include <SFML/Graphics.hpp>
 #include <vector>
 
 namespace aecs
@@ -99,6 +100,7 @@ namespace aecs
         std::vector<std::pair<ISystem *, int>> _sortedSystems;
 
         std::shared_ptr<ISystem> _renderSystem;
+        sf::Clock clock;
         std::vector<RenderInput> _renderInputs;
         std::mutex _renderInputsMutex;
     };
