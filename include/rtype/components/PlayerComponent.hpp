@@ -12,6 +12,8 @@ namespace rtype
     class PlayerComponent : public aecs::AbstractComponent
     {
       public:
+        PlayerComponent() = default;
+        ~PlayerComponent() override = default;
     };
 } // namespace rtype
 

@@ -35,14 +35,13 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
 void rtype::RTypeClient::run()
 {
     // Launch a thread for logic
-    std::thread{&RTypeClient::infinteLoop, _logicRefreshRate,
+    std::thread _logicThread = std::thread{&RTypeClient::infinteLoop, _logicRefreshRate,
                 [this]() {
                     return _renderSystem.isOpen();
                 },
                 [this]() {
                     _world.update();
-                }}
-        .detach();
+                }};
 
     // Render in the main thread
     infinteLoop(
@@ -53,6 +52,7 @@ void rtype::RTypeClient::run()
         [this]() {
             _world.render();
         });
+    _logicThread.join();
 }
 
 void rtype::RTypeClient::infinteLoop(int refreshRate, std::function<bool()> &&run, std::function<void()> &&function)

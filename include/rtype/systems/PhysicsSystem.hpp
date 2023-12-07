@@ -42,12 +42,12 @@ namespace rtype
                     position.y = 0;
                     velocity.y = 0;
                 }
-                if (position.x > 960 - sprite._size.x && velocity.x > 0) {
-                    position.x = 960 - sprite._size.x;
+                if (position.x > 1440 - sprite._size.x && velocity.x > 0) {
+                    position.x = 1440 - sprite._size.x;
                     velocity.x = 0;
                 }
-                if (position.y > 540 - sprite._size.y && velocity.y > 0) {
-                    position.y = 540 - sprite._size.y;
+                if (position.y > 810 - sprite._size.y && velocity.y > 0) {
+                    position.y = 810 - sprite._size.y;
                     velocity.y = 0;
                 }
             }

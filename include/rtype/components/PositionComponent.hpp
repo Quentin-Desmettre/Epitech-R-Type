@@ -17,6 +17,7 @@ namespace rtype
             y(y)
         {
         }
+        ~PositionComponent() override = default;
 
         float x;
         float y;

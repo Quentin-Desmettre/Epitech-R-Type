@@ -17,6 +17,7 @@ namespace rtype
             y(y)
         {
         }
+        ~VelocityComponent() override = default;
 
         float x;
         float y;
