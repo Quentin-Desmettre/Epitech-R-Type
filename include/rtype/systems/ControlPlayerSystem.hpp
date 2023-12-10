@@ -11,6 +11,7 @@
 #include "rtype/components/VelocityComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/BulletComponent.hpp"
 #include <iostream>
 
 namespace rtype
@@ -29,9 +30,13 @@ namespace rtype
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &velocity = entity->getComponent<VelocityComponent>();
+                auto &my = entity->getComponent<MyPlayerComponent>();
+                my.timeSinceLastShoot += deltaTime;
 
                 velocity.x = 0;
                 velocity.y = 0;
+                bool space = false;
+                bool shift = false;
                 for (auto &input : inputs) {
                         if (input == sf::Keyboard::Key::Z) {
                                 velocity.y += -50;
@@ -45,6 +50,28 @@ namespace rtype
                         if (input == sf::Keyboard::Key::D) {
                                 velocity.x += 50;
                         }
+                        if (input == sf::Keyboard::Key::Space) {
+                            space = true;
+                        }
+                        if (input == sf::Keyboard::Key::LShift) {
+                            shift = true;
+                        }
+                }
+                if (space && !shift && my.timeSinceLastShoot > 6) {
+                    auto &bullet = _world.createEntity();
+                    bullet.addComponent<PositionComponent>(entity->getComponent<PositionComponent>().x + 48, entity->getComponent<PositionComponent>().y + 32);
+                    bullet.addComponent<VelocityComponent>(100, 0);
+                    bullet.addComponent<BulletComponent>();
+                    bullet.addComponent<SpriteComponent>("assets/sprites/Bullet.png", sf::Vector2f(20 * 3, 14 * 3), sf::IntRect(0, 0, 20, 14));
+                    my.timeSinceLastShoot = 0;
+                }
+                if (space && shift && my.timeSinceLastShoot > 6) {
+                    auto &bullet = _world.createEntity();
+                    bullet.addComponent<PositionComponent>(entity->getComponent<PositionComponent>().x + 48, entity->getComponent<PositionComponent>().y + 32);
+                    bullet.addComponent<VelocityComponent>(100, 0);
+                    bullet.addComponent<BulletComponent>();
+                    bullet.addComponent<SpriteComponent>("assets/sprites/Bullet.png", sf::Vector2f(20 * 3, 14 * 3), sf::IntRect(0, 0, 20, 14));
+                    my.timeSinceLastShoot = 0;
                 }
             }
         }
