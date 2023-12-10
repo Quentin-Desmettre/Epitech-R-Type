@@ -14,6 +14,7 @@ namespace rtype
       public:
         MyPlayerComponent() = default;
         ~MyPlayerComponent() override = default;
+        float timeSinceLastShoot = 0;
     };
 } // namespace rtype
 

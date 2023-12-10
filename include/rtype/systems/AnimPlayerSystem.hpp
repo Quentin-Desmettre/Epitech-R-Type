@@ -33,17 +33,17 @@ namespace rtype
                 sf::IntRect rect = sprite.sprite.getTextureRect();
                 sprite.time += deltaTime;
                 if (sprite.time > 1) {
-                    rect.left += 96;
-                    if (rect.left >= 96 * 7)
-                        rect.left = 0;
+                    rect.left += 32;
+                    if (rect.left >= 32 * 6)
+                        rect.left = -1;
                     sprite.time -= 1;
                 }
                 rect.top = 0;
 
                 if (velocity.y < 0)
-                    rect.top = 96;
+                    rect.top = 32;
                 if (velocity.y > 0)
-                    rect.top = 192;
+                    rect.top = 64;
                 sprite.sprite.setTextureRect(rect);
             }
         }

@@ -12,6 +12,8 @@
 #include "rtype/systems/PhysicsSystem.hpp"
 #include "rtype/systems/ControlPlayerSystem.hpp"
 #include "rtype/systems/AnimPlayerSystem.hpp"
+#include "rtype/systems/ParallaxSystem.hpp"
+#include "rtype/systems/BulletSystem.hpp"
 #include <chrono>
 #include <thread>
 
@@ -49,7 +51,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     player.addComponent<PlayerComponent>();
 
     _world.registerSystem<ControlPlayerSystem>(0);
-    _world.registerSystem<AnimPlayerSystem>(0);
+    _world.registerSystem<AnimPlayerSystem>(1);
     _world.registerSystem<PhysicsSystem>(1);
     _world.registerSystem<ParallaxSystem>(1);
     _world.registerSystem<BulletSystem>(1);

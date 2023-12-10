@@ -32,6 +32,10 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/components/MyPlayerComponent.hpp
         include/rtype/systems/ControlPlayerSystem.hpp
         include/rtype/systems/AnimPlayerSystem.hpp
+        include/rtype/components/ParallaxComponent.hpp
+        include/rtype/systems/ParallaxSystem.hpp
+        include/rtype/components/BulletComponent.hpp
+        include/rtype/systems/BulletSystem.hpp
 )
 
 include(FetchContent)
