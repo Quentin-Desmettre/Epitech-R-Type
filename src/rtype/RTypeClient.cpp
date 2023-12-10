@@ -7,6 +7,7 @@
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/ParallaxComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/systems/PhysicsSystem.hpp"
 #include "rtype/systems/ControlPlayerSystem.hpp"
@@ -20,16 +21,38 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _logicRefreshRate(logicRefreshRate),
     _renderSystem(_world.registerRenderSystem<RenderSystem>())
 {
-    auto &tmp = _world.createEntity();
-    tmp.addComponent<SpriteComponent>("assets/sprites/Player2.png", sf::Vector2f{96, 96}, sf::IntRect(0, 0, 96, 96));
-    tmp.addComponent<PositionComponent>(0, 0);
-    tmp.addComponent<VelocityComponent>(0, 0);
-    tmp.addComponent<MyPlayerComponent>();
-    tmp.addComponent<PlayerComponent>();
+    auto &back1 = _world.createEntity();
+    back1.addComponent<SpriteComponent>("assets/sprites/Back1.png", sf::Vector2f{1088, 640}, sf::IntRect {0, 0, 272 * 2 , 160});
+    back1.addComponent<PositionComponent>(0, 0);
+    back1.addComponent<ParallaxComponent>(sf::Vector2f(8, 0));
+    auto &back2 = _world.createEntity();
+    back2.addComponent<SpriteComponent>("assets/sprites/Back2.png", sf::Vector2f{1088, 640}, sf::IntRect {0, 0,272 * 2 , 160});
+    back2.addComponent<PositionComponent>(0, 0);
+    back2.addComponent<ParallaxComponent>(sf::Vector2f(5, 0));
+    auto &back3 = _world.createEntity();
+    back3.addComponent<SpriteComponent>("assets/sprites/Back3.png", sf::Vector2f{1088, 640}, sf::IntRect {0, 0,272 * 2 , 160});
+    back3.addComponent<PositionComponent>(0, 0);
+    back3.addComponent<ParallaxComponent>(sf::Vector2f(3, 0));
+    auto &back4 = _world.createEntity();
+    back4.addComponent<SpriteComponent>("assets/sprites/Back4.png", sf::Vector2f{1088, 640}, sf::IntRect {0, 0,272 * 2 , 160});
+    back4.addComponent<PositionComponent>(0, 0);
+    back4.addComponent<ParallaxComponent>(sf::Vector2f(12, 0));
+    auto &back5 = _world.createEntity();
+    back5.addComponent<SpriteComponent>("assets/sprites/Back5.png", sf::Vector2f{1088, 640}, sf::IntRect {0, 0,272 * 2 , 160});
+    back5.addComponent<PositionComponent>(0, 0);
+    back5.addComponent<ParallaxComponent>(sf::Vector2f(15, 0));
+    auto &player = _world.createEntity();
+    player.addComponent<SpriteComponent>("assets/sprites/PlayerNew.png", sf::Vector2f{96, 96}, sf::IntRect(0, 0, 32, 32));
+    player.addComponent<PositionComponent>(0, 0);
+    player.addComponent<VelocityComponent>(0, 0);
+    player.addComponent<MyPlayerComponent>();
+    player.addComponent<PlayerComponent>();
 
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(0);
     _world.registerSystem<PhysicsSystem>(1);
+    _world.registerSystem<ParallaxSystem>(1);
+    _world.registerSystem<BulletSystem>(1);
 }
 
 void rtype::RTypeClient::run()
