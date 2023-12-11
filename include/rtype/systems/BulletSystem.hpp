@@ -33,7 +33,7 @@ namespace rtype
 
                 sprite.time += deltaTime;
                 if (sprite.time > 1) {
-                    rect.left += 20;
+                    rect.left += rect.width;
                     sprite.time -= 1;
                 }
                 rect.top = 0;

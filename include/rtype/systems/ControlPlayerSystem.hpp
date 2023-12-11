@@ -21,7 +21,7 @@ namespace rtype
     {
       public:
         ControlPlayerSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {typeid(VelocityComponent), typeid(MyPlayerComponent)})
+            ALogicSystem(world, entities, {typeid(VelocityComponent), typeid(MyPlayerComponent), typeid(SpriteComponent), typeid(PositionComponent)})
         {
         }
         ~ControlPlayerSystem() override = default;
@@ -32,6 +32,8 @@ namespace rtype
                 auto &velocity = entity->getComponent<VelocityComponent>();
                 auto &my = entity->getComponent<MyPlayerComponent>();
                 my.timeSinceLastShoot += deltaTime;
+                auto &position = entity->getComponent<PositionComponent>();
+                auto &sprite = entity->getComponent<SpriteComponent>();
 
                 velocity.x = 0;
                 velocity.y = 0;
@@ -59,19 +61,33 @@ namespace rtype
                 }
                 if (space && !shift && my.timeSinceLastShoot > 6) {
                     auto &bullet = _world.createEntity();
-                    bullet.addComponent<PositionComponent>(entity->getComponent<PositionComponent>().x + 48, entity->getComponent<PositionComponent>().y + 32);
+                    bullet.addComponent<PositionComponent>(position.x + 48, position.y + 32);
                     bullet.addComponent<VelocityComponent>(100, 0);
                     bullet.addComponent<BulletComponent>();
                     bullet.addComponent<SpriteComponent>("assets/sprites/Bullet.png", sf::Vector2f(20 * 3, 14 * 3), sf::IntRect(0, 0, 20, 14));
                     my.timeSinceLastShoot = 0;
                 }
-                if (space && shift && my.timeSinceLastShoot > 6) {
+                if (shift && my.timeSinceLastShoot > 6) {
+                    my.timeInShift += deltaTime;
+                }
+                if (shift == false) {
+                    my.timeInShift = 0;
+                }
+                int color = 255 - (int)(float(std::min(6, int(my.timeInShift)) / 6.0 * 255));
+                // faire clignotter le sprite
+                if (my.timeInShift < 6 || int(my.timeInShift) % 2 == 0)
+                    sprite.sprite.setColor(sf::Color(255, color / 2 + 127, color / 2 + 127, 255));
+                else
+                    sprite.sprite.setColor(sf::Color(255, color / 4 + 191.25, color / 4 + 191.25, 255));
+
+                if (space && shift && my.timeInShift > 6) {
                     auto &bullet = _world.createEntity();
-                    bullet.addComponent<PositionComponent>(entity->getComponent<PositionComponent>().x + 48, entity->getComponent<PositionComponent>().y + 32);
+                    bullet.addComponent<PositionComponent>(position.x + 32, position.y + 2);
                     bullet.addComponent<VelocityComponent>(100, 0);
                     bullet.addComponent<BulletComponent>();
-                    bullet.addComponent<SpriteComponent>("assets/sprites/Bullet.png", sf::Vector2f(20 * 3, 14 * 3), sf::IntRect(0, 0, 20, 14));
+                    bullet.addComponent<SpriteComponent>("assets/sprites/BigBullet.png", sf::Vector2f(55 * 3, 29 * 3), sf::IntRect(0, 0, 55 , 29));
                     my.timeSinceLastShoot = 0;
+                    my.timeInShift = 0;
                 }
             }
         }

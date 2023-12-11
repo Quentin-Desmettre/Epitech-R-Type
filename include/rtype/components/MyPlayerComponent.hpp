@@ -15,6 +15,7 @@ namespace rtype
         MyPlayerComponent() = default;
         ~MyPlayerComponent() override = default;
         float timeSinceLastShoot = 0;
+        float timeInShift = 0;
     };
 } // namespace rtype
 
