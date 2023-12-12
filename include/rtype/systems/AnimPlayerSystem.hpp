@@ -31,13 +31,6 @@ namespace rtype
                 auto &velocity = entity->getComponent<VelocityComponent>();
                 auto &sprite = entity->getComponent<SpriteComponent>();
                 sf::IntRect rect = sprite.sprite.getTextureRect();
-                sprite.time += deltaTime;
-                if (sprite.time > 1) {
-                    rect.left += 32;
-                    if (rect.left >= 32 * 6)
-                        rect.left = -1;
-                    sprite.time -= 1;
-                }
                 rect.top = 0;
 
                 if (velocity.y < 0)

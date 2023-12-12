@@ -3,17 +3,12 @@
 //
 
 #include "rtype/RTypeClient.hpp"
-#include "rtype/components/PositionComponent.hpp"
-#include "rtype/components/SpriteComponent.hpp"
-#include "rtype/components/VelocityComponent.hpp"
-#include "rtype/components/MyPlayerComponent.hpp"
-#include "rtype/components/ParallaxComponent.hpp"
-#include "rtype/components/PlayerComponent.hpp"
 #include "rtype/systems/PhysicsSystem.hpp"
 #include "rtype/systems/ControlPlayerSystem.hpp"
 #include "rtype/systems/AnimPlayerSystem.hpp"
 #include "rtype/systems/ParallaxSystem.hpp"
 #include "rtype/systems/BulletSystem.hpp"
+#include "rtype/systems/AnimSystem.hpp"
 #include <chrono>
 #include <thread>
 #include "rtype/EntityFactory.hpp"
@@ -32,8 +27,11 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     EntityFactory::createBackground(5, sf::Vector2f(15, 0));
     auto &player = _world.createEntity();
     EntityFactory::createPlayer(true);
+    for (int i = 0; i < 6; i++)
+        EntityFactory::createEnemy(sf::Vector2f(100, 100 * i), sf::Vector2f(-8, 0));
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
+    _world.registerSystem<AnimSystem>(1);
     _world.registerSystem<PhysicsSystem>(1);
     _world.registerSystem<ParallaxSystem>(1);
     _world.registerSystem<BulletSystem>(1);

@@ -46,8 +46,8 @@ namespace rtype
                     position.x = 1440 - sprite._size.x;
                     velocity.x = 0;
                 }
-                if (position.y > 810 - sprite._size.y && velocity.y > 0) {
-                    position.y = 810 - sprite._size.y;
+                if (position.y > 640 - sprite._size.y && velocity.y > 0) {
+                    position.y = 640 - sprite._size.y;
                     velocity.y = 0;
                 }
             }

@@ -27,19 +27,6 @@ namespace rtype
 
         void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override
         {
-            for (auto &[_id, entity] : _entitiesMap) {
-                auto &sprite = entity->getComponent<SpriteComponent>();
-                sf::IntRect rect = sprite.sprite.getTextureRect();
-
-                sprite.time += deltaTime;
-                if (sprite.time > 1) {
-                    rect.left += rect.width;
-                    sprite.time -= 1;
-                }
-                rect.top = 0;
-                sprite.sprite.setTextureRect(rect);
-
-            }
         }
     };
 

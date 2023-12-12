@@ -10,6 +10,7 @@
 #include "rtype/components/ParallaxComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
+#include "rtype/components/AnimComponent.hpp"
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
 
@@ -17,6 +18,7 @@ aecs::Entity &rtype::EntityFactory::createPlayer(bool main)
 {
     auto &player = _world->createEntity();
     player.addComponent<PositionComponent>(0, 0);
+    player.addComponent<AnimComponent>(1);
     player.addComponent<VelocityComponent>(0, 0);
     player.addComponent<SpriteComponent>("assets/sprites/PlayerNew.png", sf::Vector2f{96, 96}, sf::IntRect(0, 0, 32, 32));
     if (main)
@@ -28,6 +30,7 @@ aecs::Entity &rtype::EntityFactory::createPlayer(bool main)
 aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vector2f velocity, bool big)
 {
     auto &bullet = _world->createEntity();
+    bullet.addComponent<AnimComponent>(1);
     bullet.addComponent<PositionComponent>(position.x, position.y);
     if (!big)
         bullet.addComponent<VelocityComponent>(velocity.x * 1.5, velocity.y * 1.5);
@@ -44,9 +47,11 @@ aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vect
 aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vector2f velocity)
 {
     auto &enemy = _world->createEntity();
+    position.x = 1088;
     enemy.addComponent<PositionComponent>(position.x, position.y);
     enemy.addComponent<VelocityComponent>(velocity.x, velocity.y);
-    enemy.addComponent<SpriteComponent>("assets/sprites/Enemy.png", sf::Vector2f(96, 96), sf::IntRect(0, 0, 32, 32));
+    enemy.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102), sf::IntRect(0, 0, 52, 34));
+    enemy.addComponent<AnimComponent>(1);
     return enemy;
 }
 
