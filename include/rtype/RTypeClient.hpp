@@ -8,6 +8,7 @@
 #include "aecs/World.hpp"
 #include "rtype/systems/RenderSystem.hpp"
 #include <functional>
+#include "rtype/EntityFactory.hpp"
 
 namespace rtype
 {

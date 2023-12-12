@@ -16,6 +16,7 @@
 #include "rtype/systems/BulletSystem.hpp"
 #include <chrono>
 #include <thread>
+#include "rtype/EntityFactory.hpp"
 
 rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world(),
@@ -23,33 +24,14 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _logicRefreshRate(logicRefreshRate),
     _renderSystem(_world.registerRenderSystem<RenderSystem>())
 {
-    auto &back1 = _world.createEntity();
-    back1.addComponent<SpriteComponent>("assets/sprites/Back1.png", sf::Vector2f{1088, 640}, sf::IntRect {0, 0, 272 * 2 , 160});
-    back1.addComponent<PositionComponent>(0, 0);
-    back1.addComponent<ParallaxComponent>(sf::Vector2f(8, 0));
-    auto &back2 = _world.createEntity();
-    back2.addComponent<SpriteComponent>("assets/sprites/Back2.png", sf::Vector2f{1088, 640}, sf::IntRect {0, 0,272 * 2 , 160});
-    back2.addComponent<PositionComponent>(0, 0);
-    back2.addComponent<ParallaxComponent>(sf::Vector2f(5, 0));
-    auto &back3 = _world.createEntity();
-    back3.addComponent<SpriteComponent>("assets/sprites/Back3.png", sf::Vector2f{1088, 640}, sf::IntRect {0, 0,272 * 2 , 160});
-    back3.addComponent<PositionComponent>(0, 0);
-    back3.addComponent<ParallaxComponent>(sf::Vector2f(3, 0));
-    auto &back4 = _world.createEntity();
-    back4.addComponent<SpriteComponent>("assets/sprites/Back4.png", sf::Vector2f{1088, 640}, sf::IntRect {0, 0,272 * 2 , 160});
-    back4.addComponent<PositionComponent>(0, 0);
-    back4.addComponent<ParallaxComponent>(sf::Vector2f(12, 0));
-    auto &back5 = _world.createEntity();
-    back5.addComponent<SpriteComponent>("assets/sprites/Back5.png", sf::Vector2f{1088, 640}, sf::IntRect {0, 0,272 * 2 , 160});
-    back5.addComponent<PositionComponent>(0, 0);
-    back5.addComponent<ParallaxComponent>(sf::Vector2f(15, 0));
+    EntityFactory::setWorld(&_world);
+    EntityFactory::createBackground(1, sf::Vector2f(8, 0));
+    EntityFactory::createBackground(2, sf::Vector2f(5, 0));
+    EntityFactory::createBackground(3, sf::Vector2f(3, 0));
+    EntityFactory::createBackground(4, sf::Vector2f(12, 0));
+    EntityFactory::createBackground(5, sf::Vector2f(15, 0));
     auto &player = _world.createEntity();
-    player.addComponent<SpriteComponent>("assets/sprites/PlayerNew.png", sf::Vector2f{96, 96}, sf::IntRect(0, 0, 32, 32));
-    player.addComponent<PositionComponent>(0, 0);
-    player.addComponent<VelocityComponent>(0, 0);
-    player.addComponent<MyPlayerComponent>();
-    player.addComponent<PlayerComponent>();
-
+    EntityFactory::createPlayer(true);
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
     _world.registerSystem<PhysicsSystem>(1);

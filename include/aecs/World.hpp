@@ -5,6 +5,7 @@
 #ifndef EPITECH_R_TYPE_WORLD_HPP
 #define EPITECH_R_TYPE_WORLD_HPP
 
+#include "rtype/EntityFactory.hpp"
 #include "Entity.hpp"
 #include "SystemBase.hpp"
 #include <cstddef>

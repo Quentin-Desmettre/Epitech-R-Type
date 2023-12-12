@@ -13,7 +13,7 @@
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
 #include <iostream>
-
+#include "rtype/EntityFactory.hpp"
 namespace rtype
 {
 
@@ -59,12 +59,8 @@ namespace rtype
                             shift = true;
                         }
                 }
-                if (space && !shift && my.timeSinceLastShoot > 6) {
-                    auto &bullet = _world.createEntity();
-                    bullet.addComponent<PositionComponent>(position.x + 48, position.y + 32);
-                    bullet.addComponent<VelocityComponent>(100, 0);
-                    bullet.addComponent<BulletComponent>();
-                    bullet.addComponent<SpriteComponent>("assets/sprites/Bullet.png", sf::Vector2f(20 * 3, 14 * 3), sf::IntRect(0, 0, 20, 14));
+                if (space && !shift && my.timeSinceLastShoot > 3) {
+                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 32), sf::Vector2f(100, 0));
                     my.timeSinceLastShoot = 0;
                 }
                 if (shift && my.timeSinceLastShoot > 6) {
@@ -76,16 +72,12 @@ namespace rtype
                 int color = 255 - (int)(float(std::min(6, int(my.timeInShift)) / 6.0 * 255));
                 // faire clignotter le sprite
                 if (my.timeInShift < 6 || int(my.timeInShift) % 2 == 0)
-                    sprite.sprite.setColor(sf::Color(255, color / 2 + 127, color / 2 + 127, 255));
+                    sprite.sprite.setColor(sf::Color(255, color / 2 + 127, 255, 255));
                 else
-                    sprite.sprite.setColor(sf::Color(255, color / 4 + 191.25, color / 4 + 191.25, 255));
+                    sprite.sprite.setColor(sf::Color(255, 255, 255, 255));
 
                 if (space && shift && my.timeInShift > 6) {
-                    auto &bullet = _world.createEntity();
-                    bullet.addComponent<PositionComponent>(position.x + 32, position.y + 2);
-                    bullet.addComponent<VelocityComponent>(100, 0);
-                    bullet.addComponent<BulletComponent>();
-                    bullet.addComponent<SpriteComponent>("assets/sprites/BigBullet.png", sf::Vector2f(55 * 3, 29 * 3), sf::IntRect(0, 0, 55 , 29));
+                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 2), sf::Vector2f(100, 0), true);
                     my.timeSinceLastShoot = 0;
                     my.timeInShift = 0;
                 }

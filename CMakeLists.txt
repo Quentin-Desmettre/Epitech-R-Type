@@ -17,7 +17,9 @@ set(SHARED_SRC
 set(SERVER_SRC src/server/main.cpp
         include/rtype/components/MyPlayerComponent.hpp
         include/rtype/systems/ControlPlayerSystem.hpp
-        include/rtype/systems/AnimPlayerSystem.hpp)
+        include/rtype/systems/AnimPlayerSystem.hpp
+        include/rtype/EntityFactory.hpp
+        src/rtype/EntityFactory.cpp)
 set(CLIENT_SRC src/client/main.cpp
         src/rtype/RTypeClient.cpp
         include/rtype/RTypeClient.hpp
@@ -36,6 +38,8 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/systems/ParallaxSystem.hpp
         include/rtype/components/BulletComponent.hpp
         include/rtype/systems/BulletSystem.hpp
+        include/rtype/EntityFactory.hpp
+        src/rtype/EntityFactory.cpp
 )
 
 include(FetchContent)
