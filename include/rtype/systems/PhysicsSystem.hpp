@@ -34,22 +34,6 @@ namespace rtype
 
                 position.x += velocity.x * deltaTime;
                 position.y += velocity.y * deltaTime;
-                if (position.x < 0 && velocity.x < 0) {
-                    position.x = 0;
-                    velocity.x = 0;
-                }
-                if (position.y < 0 && velocity.y < 0) {
-                    position.y = 0;
-                    velocity.y = 0;
-                }
-                if (position.x > 1440 - sprite._size.x && velocity.x > 0) {
-                    position.x = 1440 - sprite._size.x;
-                    velocity.x = 0;
-                }
-                if (position.y > 640 - sprite._size.y && velocity.y > 0) {
-                    position.y = 640 - sprite._size.y;
-                    velocity.y = 0;
-                }
             }
         }
     };

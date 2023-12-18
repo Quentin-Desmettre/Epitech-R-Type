@@ -40,6 +40,10 @@ set(CLIENT_SRC src/client/main.cpp
         src/rtype/EntityFactory.cpp
         include/rtype/components/AnimComponent.hpp
         include/rtype/systems/AnimSystem.hpp
+        include/rtype/components/DamageCollisionComponent.hpp
+        include/rtype/systems/DamageCollisionSystem.hpp
+        include/rtype/components/HPComponent.hpp
+        include/rtype/systems/InvulSystem.hpp
 )
 
 include(FetchContent)

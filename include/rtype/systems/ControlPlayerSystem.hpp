@@ -60,7 +60,7 @@ namespace rtype
                         }
                 }
                 if (space && !shift && my.timeSinceLastShoot > 3) {
-                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 32), sf::Vector2f(100, 0));
+                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 32), sf::Vector2f(100, 0), 0);
                     my.timeSinceLastShoot = 0;
                 }
                 if (shift && my.timeSinceLastShoot > 6) {
@@ -72,12 +72,12 @@ namespace rtype
                 int color = 255 - (int)(float(std::min(6, int(my.timeInShift)) / 6.0 * 255));
                 // faire clignotter le sprite
                 if (my.timeInShift < 6 || int(my.timeInShift) % 2 == 0)
-                    sprite.sprite.setColor(sf::Color(255, color / 2 + 127, 255, 255));
+                    sprite.sprite.setColor(sf::Color(255, color * 2 / 3 + 85, color * 2 / 3 + 85, 255));
                 else
                     sprite.sprite.setColor(sf::Color(255, 255, 255, 255));
 
                 if (space && shift && my.timeInShift > 6) {
-                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 2), sf::Vector2f(100, 0), true);
+                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 2), sf::Vector2f(100, 0), 0, true);
                     my.timeSinceLastShoot = 0;
                     my.timeInShift = 0;
                 }

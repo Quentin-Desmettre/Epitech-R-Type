@@ -18,7 +18,7 @@ namespace rtype
       public:
         ~EntityFactory() = default;
         static aecs::Entity &createPlayer(bool main = false);
-        static aecs::Entity &createBullet(sf::Vector2f position, sf::Vector2f velocity, bool big = false);
+        static aecs::Entity &createBullet(sf::Vector2f position, sf::Vector2f velocity, int team = 0, bool big = false);
         static aecs::Entity &createEnemy(sf::Vector2f position, sf::Vector2f velocity);
         static aecs::Entity &createBackground(int id, sf::Vector2f speed);
         static void setWorld(aecs::World *world);

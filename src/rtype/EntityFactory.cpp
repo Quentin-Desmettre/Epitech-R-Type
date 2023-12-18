@@ -11,6 +11,8 @@
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/AnimComponent.hpp"
+#include "rtype/components/HPComponent.hpp"
+#include "rtype/components/DamageCollisionComponent.hpp"
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
 
@@ -24,13 +26,17 @@ aecs::Entity &rtype::EntityFactory::createPlayer(bool main)
     if (main)
         player.addComponent<MyPlayerComponent>();
     player.addComponent<PlayerComponent>();
+    player.addComponent<DamageCollisionComponent>(0, 0);
+    player.addComponent<HPComponent>(50);
     return player;
 }
 
-aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vector2f velocity, bool big)
+aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vector2f velocity, int team, bool big)
 {
     auto &bullet = _world->createEntity();
-    bullet.addComponent<AnimComponent>(1);
+    bullet.addComponent<AnimComponent>(0.5);
+    bullet.addComponent<DamageCollisionComponent>(team, big ? 50 : 5, big ? DamageCollisionComponent::LG_BULLET : DamageCollisionComponent::SM_BULLET);
+    bullet.addComponent<HPComponent>(big ? 50 : 5);
     bullet.addComponent<PositionComponent>(position.x, position.y);
     if (!big)
         bullet.addComponent<VelocityComponent>(velocity.x * 1.5, velocity.y * 1.5);
@@ -47,11 +53,13 @@ aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vect
 aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vector2f velocity)
 {
     auto &enemy = _world->createEntity();
-    position.x = 1088;
+    position.x = 1088 + rand() % 200;
     enemy.addComponent<PositionComponent>(position.x, position.y);
     enemy.addComponent<VelocityComponent>(velocity.x, velocity.y);
-    enemy.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102), sf::IntRect(0, 0, 52, 34));
+    enemy.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102), sf::IntRect(52 * (rand() % 5), 0, 52, 34));
     enemy.addComponent<AnimComponent>(1);
+    enemy.addComponent<DamageCollisionComponent>(1, 10);
+    enemy.addComponent<HPComponent>(10);
     return enemy;
 }
 
