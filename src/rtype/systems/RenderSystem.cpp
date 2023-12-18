@@ -22,6 +22,8 @@ std::vector<aecs::RenderInput> rtype::RenderSystem::render()
     while (_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed)
             _window.close();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+            _window.close();
     }
     for (int i = 0; i < sf::Keyboard::KeyCount; i++) {
         if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(i)))
