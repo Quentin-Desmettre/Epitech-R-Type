@@ -50,16 +50,24 @@ aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vect
     return bullet;
 }
 
-aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vector2f velocity)
+aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vector2f velocity, bool lil)
 {
     auto &enemy = _world->createEntity();
     position.x = 1088 + rand() % 200;
     enemy.addComponent<PositionComponent>(position.x, position.y);
     enemy.addComponent<VelocityComponent>(velocity.x, velocity.y);
-    enemy.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102), sf::IntRect(52 * (rand() % 5), 0, 52, 34));
+    if (lil)
+        enemy.addComponent<SpriteComponent>("assets/sprites/LilMonster.png", sf::Vector2f(63, 48), sf::IntRect(21 * (rand() % 5), 0, 21, 16));
+    else
+        enemy.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102), sf::IntRect(52 * (rand() % 5), 0, 52, 34));
     enemy.addComponent<AnimComponent>(1);
-    enemy.addComponent<DamageCollisionComponent>(1, 10);
-    enemy.addComponent<HPComponent>(10);
+    if (lil) {
+        enemy.addComponent<DamageCollisionComponent>(1, 5);
+        enemy.addComponent<HPComponent>(1);
+    } else {
+        enemy.addComponent<DamageCollisionComponent>(1, 10);
+        enemy.addComponent<HPComponent>(10);
+    }
     return enemy;
 }
 

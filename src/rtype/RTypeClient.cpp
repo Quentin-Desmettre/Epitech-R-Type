@@ -30,7 +30,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     auto &player = _world.createEntity();
     EntityFactory::createPlayer(true);
     for (int i = 0; i < 10; i++)
-        EntityFactory::createEnemy(sf::Vector2f(100, rand() % (640 - 102)), sf::Vector2f(-8, 0));
+        EntityFactory::createEnemy(sf::Vector2f(100, rand() % (640 - 102)), sf::Vector2f(-8, 0), true);
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
     _world.registerSystem<AnimSystem>(1);
