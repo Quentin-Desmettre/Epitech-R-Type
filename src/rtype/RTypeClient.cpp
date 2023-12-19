@@ -11,6 +11,7 @@
 #include "rtype/systems/AnimSystem.hpp"
 #include "rtype/systems/DamageCollisionSystem.hpp"
 #include "rtype/systems/MonsterGenSystem.hpp"
+#include "rtype/systems/MonsterBullet.hpp"
 #include "rtype/systems/InvulSystem.hpp"
 #include <chrono>
 #include <thread>
@@ -41,6 +42,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world.registerSystem<DamageCollisionSystem>(1);
     _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
+    _world.registerSystem<MonsterBullet>(1);
 }
 
 void rtype::RTypeClient::run()

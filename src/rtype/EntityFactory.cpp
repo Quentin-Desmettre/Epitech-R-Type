@@ -12,6 +12,7 @@
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/AnimComponent.hpp"
 #include "rtype/components/HPComponent.hpp"
+#include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/DamageCollisionComponent.hpp"
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
@@ -64,6 +65,7 @@ aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vecto
     else
         enemy.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102), sf::IntRect(52 * (rand() % 5), 0, 52, 34));
     enemy.addComponent<AnimComponent>(1);
+    enemy.addComponent<MonsterComponent>(lil);
     if (lil) {
         enemy.addComponent<DamageCollisionComponent>(1, 5);
         enemy.addComponent<HPComponent>(1);

@@ -46,6 +46,8 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/systems/InvulSystem.hpp
         include/rtype/systems/MonsterGenSystem.hpp
         src/rtype/systems/MonsterGenSystem.cpp
+        include/rtype/components/MonsterComponent.hpp
+        include/rtype/systems/MonsterBullet.hpp
 )
 
 include(FetchContent)
