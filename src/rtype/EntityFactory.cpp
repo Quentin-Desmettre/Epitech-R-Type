@@ -55,7 +55,10 @@ aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vecto
     auto &enemy = _world->createEntity();
     position.x = 1088 + rand() % 200;
     enemy.addComponent<PositionComponent>(position.x, position.y);
-    enemy.addComponent<VelocityComponent>(velocity.x, velocity.y);
+    if (lil)
+        enemy.addComponent<VelocityComponent>(velocity.x * 1.5, velocity.y * 1.5);
+    else
+        enemy.addComponent<VelocityComponent>(velocity.x, velocity.y);
     if (lil)
         enemy.addComponent<SpriteComponent>("assets/sprites/LilMonster.png", sf::Vector2f(63, 48), sf::IntRect(21 * (rand() % 5), 0, 21, 16));
     else

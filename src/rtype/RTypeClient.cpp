@@ -10,6 +10,7 @@
 #include "rtype/systems/BulletSystem.hpp"
 #include "rtype/systems/AnimSystem.hpp"
 #include "rtype/systems/DamageCollisionSystem.hpp"
+#include "rtype/systems/MonsterGenSystem.hpp"
 #include "rtype/systems/InvulSystem.hpp"
 #include <chrono>
 #include <thread>
@@ -29,8 +30,8 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     EntityFactory::createBackground(5, sf::Vector2f(15, 0));
     auto &player = _world.createEntity();
     EntityFactory::createPlayer(true);
-    for (int i = 0; i < 10; i++)
-        EntityFactory::createEnemy(sf::Vector2f(100, rand() % (640 - 102)), sf::Vector2f(-8, 0), true);
+//    for (int i = 0; i < 10; i++)
+//        EntityFactory::createEnemy(sf::Vector2f(100, rand() % (640 - 102)), sf::Vector2f(-8, 0), true);
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
     _world.registerSystem<AnimSystem>(1);
@@ -38,6 +39,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world.registerSystem<ParallaxSystem>(1);
     _world.registerSystem<BulletSystem>(1);
     _world.registerSystem<DamageCollisionSystem>(1);
+    _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
 }
 
