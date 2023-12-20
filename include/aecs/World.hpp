@@ -45,6 +45,28 @@ namespace aecs
         void update();
         void render();
 
+        // TODO: put these 3 methods in GameState
+        std::vector<std::byte> serialize(); // TODO
+        void load(const std::vector<std::byte> &bytes) {
+            load(bytes.data(), bytes.size());
+        }
+        void load(const void *data, std::size_t size); // TODO
+
+        class GameState {}; // TODO: implement GameState
+        void setTick(unsigned tick); // TODO
+        unsigned getTick() const; // TODO
+
+        // Flush every gamestate before tick (including it)
+        const GameState &getGameState(int tick) const; // TODO
+
+        std::vector<int> getInputs(int tick) const; // TODO
+        void setInputs(const std::vector<int> &inputs); // TODO
+
+        void setGameState(const GameState &gameState); // TODO
+
+        EntityPtr getEntity(std::size_t id) const; // TODO
+
+
         template <typename T, typename... Args>
         T &registerRenderSystem(Args &&...args)
         {

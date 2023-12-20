@@ -16,6 +16,8 @@
 #include <chrono>
 #include <thread>
 #include "rtype/EntityFactory.hpp"
+#include "rtype/systems/ServerConnectionSystem.hpp"
+#include "rtype/systems/ClientInputSenderSystem.hpp"
 
 rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world(),
@@ -33,6 +35,11 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     EntityFactory::createPlayer(true);
 //    for (int i = 0; i < 10; i++)
 //        EntityFactory::createEnemy(sf::Vector2f(100, rand() % (640 - 102)), sf::Vector2f(-8, 0), true);
+
+    // Network systems
+    _world.registerSystem<ServerConnectionSystem>(-2);
+    _world.registerSystem<ClientInputSenderSystem>(-1);
+
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
     _world.registerSystem<AnimSystem>(1);

@@ -48,6 +48,10 @@ set(CLIENT_SRC src/client/main.cpp
         src/rtype/systems/MonsterGenSystem.cpp
         include/rtype/components/MonsterComponent.hpp
         include/rtype/systems/MonsterBullet.hpp
+        include/rtype/systems/ServerConnectionSystem.hpp
+        include/rtype/systems/ClientInputSenderSystem.hpp
+        include/rtype/systems/ClientServerDataHandlerSystem.cpp
+        include/rtype/systems/ClientServerDataHandlerSystem.hpp
 )
 
 include(FetchContent)
