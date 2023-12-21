@@ -2,7 +2,9 @@
 // Created by qdesmettre on 05/12/23.
 //
 
-#include "rtype/RTypeClient.hpp"
+#include "rtype/RTypeServer.hpp"
+#include "rtype/EntityFactory.hpp"
+#include "rtype/systems/NewConnectionSystem.hpp"
 #include "rtype/systems/PhysicsSystem.hpp"
 #include "rtype/systems/ControlPlayerSystem.hpp"
 #include "rtype/systems/AnimPlayerSystem.hpp"
@@ -13,17 +15,13 @@
 #include "rtype/systems/MonsterGenSystem.hpp"
 #include "rtype/systems/MonsterBullet.hpp"
 #include "rtype/systems/InvulSystem.hpp"
+#include "rtype/systems/ServerUdpSystem.hpp"
 #include <chrono>
 #include <thread>
-#include "rtype/EntityFactory.hpp"
-#include "rtype/systems/ClientServerDataHandlerSystem.hpp"
-#include "rtype/systems/ClientInputSenderSystem.hpp"
 
-rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
+rtype::RTypeServer::RTypeServer(int logicRefreshRate) :
     _world(),
-    _renderRefreshRate(renderRefreshRate),
-    _logicRefreshRate(logicRefreshRate),
-    _renderSystem(_world.registerRenderSystem<RenderSystem>())
+    _logicRefreshRate(logicRefreshRate)
 {
     EntityFactory::setWorld(&_world);
     EntityFactory::createBackground(1, sf::Vector2f(8, 0));
@@ -31,11 +29,12 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     EntityFactory::createBackground(3, sf::Vector2f(3, 0));
     EntityFactory::createBackground(4, sf::Vector2f(12, 0));
     EntityFactory::createBackground(5, sf::Vector2f(15, 0));
-    EntityFactory::createPlayer(true);
+    auto &player = EntityFactory::createPlayer(true);
+    player.getComponent<rtype::PositionComponent>().x = 100;
 
     // Network systems
-    _world.registerSystem<ClientServerDataHandlerSystem>(-2);
-    _world.registerSystem<ClientInputSenderSystem>(-1);
+    _world.registerSystem<NewConnectionSystem>(-2);
+    _world.registerSystem<ServerUdpSystem>(-1);
 
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
@@ -49,30 +48,18 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world.registerSystem<MonsterBullet>(1);
 }
 
-void rtype::RTypeClient::run()
+void rtype::RTypeServer::run()
 {
-    // Launch a thread for logic
-    std::thread _logicThread = std::thread{&RTypeClient::infinteLoop, _logicRefreshRate,
+    infinteLoop(_logicRefreshRate,
                 [this]() {
-                    return _renderSystem.isOpen();
+                    return true;
                 },
                 [this]() {
                     _world.update();
-                }};
-
-    // Render in the main thread
-    infinteLoop(
-        _renderRefreshRate,
-        [this]() {
-            return _renderSystem.isOpen();
-        },
-        [this]() {
-            _world.render();
-        });
-    _logicThread.join();
+                });
 }
 
-void rtype::RTypeClient::infinteLoop(int refreshRate, std::function<bool()> &&run, std::function<void()> &&function)
+void rtype::RTypeServer::infinteLoop(int refreshRate, std::function<bool()> &&run, std::function<void()> &&function)
 {
     while (run()) {
         // Make sure that each loop takes 1/refreshRate seconds

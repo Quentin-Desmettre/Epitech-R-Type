@@ -11,6 +11,9 @@
 #include <queue>
 #include <chrono>
 #include <cassert>
+#include "rtype/systems/ServerConnectionSystem.hpp"
+#include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
 
 namespace rtype {
 
@@ -25,13 +28,20 @@ namespace rtype {
     public:
         ClientServerDataHandlerSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
             ALogicSystem(world, entities, {}),
-            _maxReceivedTick(0)
+            _maxReceivedTick(0),
+            _tcpHandshakeSystem(world, entities)
         {
+            _socket.bind(53001);
+            _socket.setBlocking(false);
         }
 
         ~ClientServerDataHandlerSystem() override = default;
 
         void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override {
+            _tcpHandshakeSystem.update(inputs, deltaTime);
+            if (!_tcpHandshakeSystem.isConnected())
+                return;
+
             // Receive a packet
             sf::Packet packet;
             sf::IpAddress sender;
@@ -41,6 +51,14 @@ namespace rtype {
             // If no packet, return
             if (status != sf::Socket::Done)
                 return;
+
+            for (auto &[_, entity] : _entitiesMap) {
+                if (entity->hasComponent<MyPlayerComponent>()) {
+                    auto &posComponent = entity->getComponent<PositionComponent>();
+                    packet >> posComponent.x >> posComponent.y;
+                    std::cout << "x: " << posComponent.x << " y: " << posComponent.y << std::endl;
+                }
+            }
 
             // If packet:
             // - send pong
@@ -78,6 +96,7 @@ namespace rtype {
 
     private:
         sf::UdpSocket _socket;
+        ServerConnectionSystem _tcpHandshakeSystem;
         std::queue<std::pair<sf::Packet, std::chrono::milliseconds>> _packets;
         unsigned _maxReceivedTick;
 
@@ -88,30 +107,30 @@ namespace rtype {
             ~PacketHandler() = default;
 
             static void handle(aecs::World &world, sf::Packet &packet) {
-                // parse the packet, getting the different ticks / entities / components modified
-                // TODO
-                // ...
+                // // parse the packet, getting the different ticks / entities / components modified
+                // // TODO
+                // // ...
 
-                // rollback to the tick before the packet
-                int tick = 0; // TODO: get the tick before the packet
-                const auto &gameState = world.getGameState(tick - 1);
+                // // rollback to the tick before the packet
+                // int tick = 0; // TODO: get the tick before the packet
+                // const auto &gameState = world.getGameState(tick - 1);
 
-                // Apply mofiications to the entities
-                // ...
+                // // Apply mofiications to the entities
+                // // ...
 
-                // update the tick & state
-                unsigned currentTick = world.getTick();
-                world.setTick(tick);
-                world.setGameState(gameState);
+                // // update the tick & state
+                // unsigned currentTick = world.getTick();
+                // world.setTick(tick);
+                // world.setGameState(gameState);
 
-                // re-do every tick after the packet with its inputs
-                for (int i = tick; i < currentTick; i++) {
-                    world.setInputs(world.getInputs(i));
-                    world.update();
-                }
+                // // re-do every tick after the packet with its inputs
+                // for (int i = tick; i < currentTick; i++) {
+                //     world.setInputs(world.getInputs(i));
+                //     world.update();
+                // }
 
-                // normally, here, the game tick is the same as before
-                assert(world.getTick() == currentTick); // TODO: remove in not debug
+                // // normally, here, the game tick is the same as before
+                // assert(world.getTick() == currentTick); // TODO: remove in not debug
             }
 
         private:

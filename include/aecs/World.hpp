@@ -53,8 +53,8 @@ namespace aecs
         void load(const void *data, std::size_t size); // TODO
 
         class GameState {}; // TODO: implement GameState
-        void setTick(unsigned tick); // TODO
-        unsigned getTick() const; // TODO
+        void setTick(unsigned tick) { _tick = tick; }
+        unsigned getTick() const { return _tick; }
 
         // Flush every gamestate before tick (including it)
         const GameState &getGameState(int tick) const; // TODO
@@ -118,6 +118,7 @@ namespace aecs
         void onEntityChanged(const EntityPtr &entity);
         void onEntityChanged(const Entity &entity);
 
+        unsigned _tick = 0;
         std::map<std::size_t, EntityPtr> _entities;
         std::map<std::type_index, std::pair<std::shared_ptr<ISystem>, int>> _systems;
         std::vector<std::pair<ISystem *, int>> _sortedSystems;

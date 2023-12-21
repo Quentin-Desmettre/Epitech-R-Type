@@ -9,6 +9,8 @@
 #include "aecs/World.hpp"
 #include <SFML/Network.hpp>
 #include <iostream>
+#include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
 
 namespace rtype {
     class ServerConnectionSystem: public aecs::ALogicSystem {
@@ -46,9 +48,21 @@ namespace rtype {
                 return;
             }
 
+            // Temporary: testing by recieving player position
+            for (auto &[_, entity] : _entitiesMap) {
+                if (entity->hasComponent<MyPlayerComponent>()) {
+                    auto &posComponent = entity->getComponent<PositionComponent>();
+                    packet >> posComponent.x >> posComponent.y;
+                }
+            }
+
             // Set game state
             _connected = true;
-            _world.load(packet.getData(), packet.getDataSize());
+            // _world.load(packet.getData(), packet.getDataSize());
+        }
+
+        [[nodiscard]] bool isConnected() const {
+            return _connected;
         }
 
     private:

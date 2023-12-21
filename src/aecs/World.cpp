@@ -34,7 +34,8 @@ namespace aecs
         // Notify systems
         for (auto &[_, systemPair] : _systems)
             systemPair.first->onEntityAdded(entity);
-        _renderSystem->onEntityAdded(entity);
+        if (_renderSystem)
+            _renderSystem->onEntityAdded(entity);
     }
 
     void World::onEntityRemoved(const EntityPtr &entity)
@@ -42,7 +43,8 @@ namespace aecs
         // Notify systems
         for (auto &[_, systemPair] : _systems)
             systemPair.first->onEntityRemoved(entity);
-        _renderSystem->onEntityRemoved(entity);
+        if (_renderSystem)
+            _renderSystem->onEntityRemoved(entity);
     }
 
     void World::onEntityChanged(const EntityPtr &entity)
@@ -50,7 +52,8 @@ namespace aecs
         // Notify systems
         for (auto &[_, systemPair] : _systems)
             systemPair.first->onEntityModified(entity);
-        _renderSystem->onEntityModified(entity);
+        if (_renderSystem)
+            _renderSystem->onEntityModified(entity);
     }
 
     void World::onEntityChanged(const aecs::Entity &entity)
