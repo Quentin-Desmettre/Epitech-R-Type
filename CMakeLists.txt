@@ -38,7 +38,8 @@ set(SHARED_SRC
         include/rtype/systems/AnimSystem.hpp
         include/rtype/components/DamageCollisionComponent.hpp
         include/rtype/systems/DamageCollisionSystem.hpp
-        include/rtype/components/HPComponent.hpp)
+        include/rtype/components/HPComponent.hpp
+        include/rtype/NetworkGlobals.hpp)
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
         include/rtype/RTypeServer.hpp

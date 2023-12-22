@@ -14,6 +14,7 @@
 #include "rtype/systems/ServerConnectionSystem.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
+#include "rtype/NetworkGlobals.hpp"
 
 namespace rtype {
 
@@ -31,7 +32,7 @@ namespace rtype {
             _maxReceivedTick(0),
             _tcpHandshakeSystem(world, entities)
         {
-            _socket.bind(53001);
+            _socket.bind(CLIENT_UDP_PORT);
             _socket.setBlocking(false);
         }
 

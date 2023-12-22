@@ -12,6 +12,7 @@
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
 #include "rtype/components/ClientPortComponent.hpp"
+#include "rtype/NetworkGlobals.hpp"
 #include <map>
 #include <iostream>
 
@@ -21,7 +22,7 @@ namespace rtype {
         ServerUdpSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
                 ALogicSystem(world, entities, {typeid(ClientAdressComponent), typeid(ClientPortComponent)})
         {
-            _socket.bind(53000);
+            _socket.bind(SERVER_UDP_PORT);
             _socket.setBlocking(false);
         }
 
@@ -33,7 +34,7 @@ namespace rtype {
                 auto &clientPort = entity->getComponent<ClientPortComponent>();
                 sf::Packet packet;
 
-                packet << 400.0f << 400.0f;
+                packet << (float)(std::rand() % 400) << (float)(std::rand() % 400);
                 sf::Socket::Status status = _socket.send(packet, sf::IpAddress(clientAdress.adress), clientPort.port);
 
                 if (status != sf::Socket::Done)

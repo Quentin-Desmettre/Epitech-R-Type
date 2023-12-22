@@ -32,7 +32,7 @@ namespace rtype {
             for (auto &input : updateParams.inputs) {
                 packet << input;
             }
-            _socket.send(packet, "127.0.0.1", 53000); // TODO: get from ac/av
+            _socket.send(packet, "127.0.0.1", SERVER_UDP_PORT); // TODO: get from ac/av
         }
 
     private:

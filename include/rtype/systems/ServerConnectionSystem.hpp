@@ -11,6 +11,7 @@
 #include <iostream>
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
+#include "rtype/NetworkGlobals.hpp"
 
 namespace rtype {
     class ServerConnectionSystem: public aecs::ALogicSystem {
@@ -33,7 +34,7 @@ namespace rtype {
                 return;
 
             // Connect to server
-            sf::Socket::Status status = _socket.connect("127.0.0.1", 53000); // TODO: get from ac/av
+            sf::Socket::Status status = _socket.connect("127.0.0.1", SERVER_TCP_PORT); // TODO: get from ac/av
             if (status != sf::Socket::Done) {
                 std::cout << "Error connecting to server" << std::endl;
                 return;
