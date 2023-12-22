@@ -23,15 +23,15 @@ namespace rtype
         }
         ~ParallaxSystem() override = default;
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override
+        void update(const aecs::UpdateParams &updateParams) override
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &parallax = entity->getComponent<ParallaxComponent>();
                 auto &sprite = entity->getComponent<SpriteComponent>();
                 auto &position = entity->getComponent<PositionComponent>();
                 sf::IntRect rect = sprite.sprite.getTextureRect();
-                sprite.time += deltaTime;
-                position.x -= parallax._speed.x * deltaTime;
+                sprite.time += updateParams.deltaTime;
+                position.x -= parallax._speed.x * updateParams.deltaTime;
                 if (position.x < -sprite._size.x) {
                     position.x = 0;
                 }

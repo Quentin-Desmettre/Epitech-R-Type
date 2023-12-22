@@ -11,11 +11,11 @@ void rtype::MonsterGenSystem::addRandomEnemy()
     EntityFactory::createEnemy(sf::Vector2f(1080, std::rand() % 540), sf::Vector2f(-15, 0), lil);
 }
 
-void rtype::MonsterGenSystem::update(const std::vector<aecs::RenderInput> &inputs, float deltaTime)
+void rtype::MonsterGenSystem::update(const aecs::UpdateParams &updateParams)
 {
     std::size_t nbPlayer = _entitiesMap.size();
     static float time = 0;
-    time += deltaTime;
+    time += updateParams.deltaTime;
 
     if (nbPlayer == 0) {
         return;

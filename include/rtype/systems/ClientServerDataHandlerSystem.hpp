@@ -37,8 +37,8 @@ namespace rtype {
 
         ~ClientServerDataHandlerSystem() override = default;
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override {
-            _tcpHandshakeSystem.update(inputs, deltaTime);
+        void update(const aecs::UpdateParams &updateParams) override {
+            _tcpHandshakeSystem.update(updateParams);
             if (!_tcpHandshakeSystem.isConnected())
                 return;
 

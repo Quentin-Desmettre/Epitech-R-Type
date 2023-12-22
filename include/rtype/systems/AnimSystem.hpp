@@ -22,14 +22,14 @@ namespace rtype
         }
         ~AnimSystem() override = default;
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override
+        void update(const aecs::UpdateParams &updateParams) override
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &sprite = entity->getComponent<SpriteComponent>();
                 auto &anim = entity->getComponent<AnimComponent>();
                 sf::IntRect rect = sprite.sprite.getTextureRect();
 
-                anim.timeSinceLastFrame += deltaTime;
+                anim.timeSinceLastFrame += updateParams.deltaTime;
                 while (anim.timeSinceLastFrame > anim.timeToWait) {
                     rect.left += rect.width;
                     anim.timeSinceLastFrame -= anim.timeToWait;

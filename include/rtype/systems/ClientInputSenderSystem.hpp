@@ -27,9 +27,9 @@ namespace rtype {
         /*
          * send inputs to server, via UDP
          */
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override {
+        void update(const aecs::UpdateParams &updateParams) override {
             sf::Packet packet;
-            for (auto &input : inputs) {
+            for (auto &input : updateParams.inputs) {
                 packet << input;
             }
             _socket.send(packet, "127.0.0.1", 53000); // TODO: get from ac/av

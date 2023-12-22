@@ -22,13 +22,13 @@ namespace rtype
         }
         ~InvulSystem() override = default;
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override
+        void update(const aecs::UpdateParams &updateParams) override
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &sprite = entity->getComponent<SpriteComponent>();
                 auto &damage = entity->getComponent<DamageCollisionComponent>();
                 if (damage.invulnerability > 0) {
-                    damage.invulnerability -= deltaTime;
+                    damage.invulnerability -= updateParams.deltaTime;
                     if (damage.invulnerability < 0)
                         damage.invulnerability = 0;
                     sf::Color color = sprite.sprite.getColor();

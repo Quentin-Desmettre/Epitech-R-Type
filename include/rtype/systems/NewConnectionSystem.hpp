@@ -27,7 +27,7 @@ namespace rtype {
         ~NewConnectionSystem() override = default;
 
         // listen for new connections and send game state to new clients
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override {
+        void update(const aecs::UpdateParams &updateParams) override {
             sf::TcpSocket socket;
 
             socket.setBlocking(false);

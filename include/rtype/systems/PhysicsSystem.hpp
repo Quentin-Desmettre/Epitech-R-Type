@@ -24,7 +24,7 @@ namespace rtype
         }
         ~PhysicsSystem() override = default;
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override
+        void update(const aecs::UpdateParams &updateParams) override
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &position = entity->getComponent<PositionComponent>();
@@ -32,8 +32,8 @@ namespace rtype
                 auto &sprite = entity->getComponent<SpriteComponent>();
 
 
-                position.x += velocity.x * deltaTime;
-                position.y += velocity.y * deltaTime;
+                position.x += velocity.x * updateParams.deltaTime;
+                position.y += velocity.y * updateParams.deltaTime;
             }
         }
     };

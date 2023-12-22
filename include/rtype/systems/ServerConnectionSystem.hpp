@@ -28,7 +28,7 @@ namespace rtype {
          * 2. Wait for message, containing game state
          * 3. set game state
          */
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override { // TODO: take as parameter a SystemParams object
+        void update(const aecs::UpdateParams &updateParams) override { // TODO: take as parameter a SystemParams object
             if (_connected)
                 return;
 

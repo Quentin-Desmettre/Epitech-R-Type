@@ -82,13 +82,15 @@ namespace aecs
         clock.restart();
         // Lock inputs
         std::lock_guard<std::mutex> lock(_renderInputsMutex);
+        UpdateParams updateParams = {_renderInputs, deltaTime};
 
         // Update systems
         for (auto &[system, _] : _sortedSystems)
-            system->update(_renderInputs, deltaTime);
+            system->update(updateParams);
 
         // Clear
         _renderInputs.clear();
+        _tick++;
     }
 
     void World::render()
