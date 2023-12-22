@@ -39,7 +39,8 @@ namespace rtype
                 velocity.y = 0;
                 bool space = false;
                 bool shift = false;
-                for (auto &input : updateParams.inputs) {
+                aecs::ClientInputs myInputs = MY_INPUTS(updateParams.inputs);
+                for (auto &input : myInputs) {
                         if (input == sf::Keyboard::Key::Z) {
                                 velocity.y += -50;
                         }

@@ -32,7 +32,7 @@ namespace rtype {
             _maxReceivedTick(0),
             _tcpHandshakeSystem(world, entities)
         {
-            _socket.bind(CLIENT_UDP_PORT);
+            _socket.bind(CLIENT_CORRECTIONS_PORT);
             _socket.setBlocking(false);
         }
 

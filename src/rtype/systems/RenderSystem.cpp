@@ -13,9 +13,9 @@ rtype::RenderSystem::RenderSystem(aecs::World &world,
 {
 }
 
-std::vector<aecs::RenderInput> rtype::RenderSystem::render()
+aecs::ClientInputs rtype::RenderSystem::render()
 {
-    std::vector<aecs::RenderInput> inputs;
+    aecs::ClientInputs inputs;
 
     // Poll events
     sf::Event event{};

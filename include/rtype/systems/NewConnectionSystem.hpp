@@ -83,7 +83,7 @@ namespace rtype {
             sf::TcpSocket socket;
 
             socket.setBlocking(false);
-            if (_listener.accept(socket) == sf::Socket::Done) {
+            while (_listener.accept(socket) == sf::Socket::Done) {
                 std::cout << "New connection from " << socket.getRemoteAddress() << std::endl;
                 sf::Packet packet;
                 for (auto &[_, entity] : _entitiesMap) {
@@ -97,7 +97,7 @@ namespace rtype {
                 aecs::Entity &entity = _world.createEntity();
                 entity.addComponent<ClientAdressComponent>(socket.getRemoteAddress().toInteger());
                 // TODO: get client port and add it to entity via a ClientPortComponent instead of hardcoding 53002 (CLIENT_UDP_PORT)
-                entity.addComponent<ClientPortComponent>(CLIENT_UDP_PORT);
+                entity.addComponent<ClientPortComponent>(CLIENT_INPUTS_PORT);
                 socket.disconnect();
             }
         }

@@ -20,7 +20,7 @@
 #include <thread>
 
 rtype::RTypeServer::RTypeServer(int logicRefreshRate) :
-    _world(),
+    _world(true),
     _logicRefreshRate(logicRefreshRate)
 {
     EntityFactory::setWorld(&_world);

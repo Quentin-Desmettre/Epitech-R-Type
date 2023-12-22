@@ -101,7 +101,7 @@ namespace aecs
             auto tmp = _renderSystem->render();
             {
                 std::lock_guard<std::mutex> lock(_renderInputsMutex);
-                setInputs(tmp);
+                setClientInputs(0, tmp);
             }
         }
     }

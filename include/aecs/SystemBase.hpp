@@ -18,9 +18,13 @@ namespace aecs
 
     typedef std::shared_ptr<Entity> EntityPtr;
     typedef int RenderInput;
+    typedef std::vector<RenderInput> ClientInputs;
+    typedef std::map<unsigned, ClientInputs> ServerInputs;
+
+    #define MY_INPUTS(serverInputs) ((serverInputs).find(0) != (serverInputs).end() ? (serverInputs).at(0) : aecs::ClientInputs())
 
     typedef struct UpdateParams {
-        const std::vector<RenderInput> &inputs;
+        const ServerInputs &inputs;
         float deltaTime;
     } UpdateParams;
 
@@ -37,7 +41,7 @@ namespace aecs
         virtual void update(const UpdateParams &updateParams) = 0;
 
         // For render systems
-        virtual std::vector<RenderInput> render() = 0;
+        virtual ClientInputs render() = 0;
         [[nodiscard]] virtual bool isOpen() const = 0;
     };
 
@@ -86,7 +90,7 @@ namespace aecs
         ~ALogicSystem() override = default;
 
         // For render systems ONLY
-        std::vector<RenderInput> render() override
+        ClientInputs render() override
         {
             throw std::runtime_error("ILogicSystem::render() should not be called");
         }

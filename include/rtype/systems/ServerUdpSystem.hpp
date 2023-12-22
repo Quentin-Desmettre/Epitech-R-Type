@@ -29,6 +29,41 @@ namespace rtype {
         ~ServerUdpSystem() override = default;
 
         void update(const aecs::UpdateParams &updateParams) override {
+            recieveInputs();
+            // sendCorrections();
+        }
+
+    private:
+        void recieveInputs() {
+            sf::Packet packet;
+            sf::IpAddress sender;
+            unsigned short port;
+            sf::Socket::Status status = _socket.receive(packet, sender, port);
+            aecs::ClientInputs inputs;
+            std::size_t clientId = -1;
+
+            if (status != sf::Socket::Done)
+                return;
+            for (auto &[id, entity] : _entitiesMap) {
+                auto &clientAdress = entity->getComponent<ClientAdressComponent>();
+                auto &clientPort = entity->getComponent<ClientPortComponent>();
+                if (clientAdress.adress == sender.toInteger() && clientPort.port == port) {
+                    clientId = id;
+                    break;
+                }
+            }
+            if (clientId == -1)
+                return;
+
+            while (!packet.endOfPacket()) {
+                int input;
+                packet >> input;
+                inputs.push_back(input);
+            }
+            _world.setClientInputs(clientId, inputs);
+        }
+
+        void sendCorrections() {
             for (auto &[_, entity] : _entitiesMap) {
                 auto &clientAdress = entity->getComponent<ClientAdressComponent>();
                 auto &clientPort = entity->getComponent<ClientPortComponent>();
@@ -42,7 +77,6 @@ namespace rtype {
             }
         }
 
-    private:
         sf::UdpSocket _socket;
     };
 }
