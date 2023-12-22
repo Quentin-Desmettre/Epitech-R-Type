@@ -5,6 +5,7 @@
 #include "aecs/World.hpp"
 #include "aecs/Entity.hpp"
 #include <algorithm>
+#include <iostream>
 
 namespace aecs
 {
@@ -82,14 +83,14 @@ namespace aecs
         clock.restart();
         // Lock inputs
         std::lock_guard<std::mutex> lock(_renderInputsMutex);
-        UpdateParams updateParams = {_renderInputs, deltaTime};
+        UpdateParams updateParams = {getInputs(), deltaTime};
 
         // Update systems
         for (auto &[system, _] : _sortedSystems)
             system->update(updateParams);
 
         // Clear
-        _renderInputs.clear();
+        // _renderInputs.clear();
         _tick++;
     }
 
@@ -100,7 +101,7 @@ namespace aecs
             auto tmp = _renderSystem->render();
             {
                 std::lock_guard<std::mutex> lock(_renderInputsMutex);
-                _renderInputs = tmp;
+                setInputs(tmp);
             }
         }
     }

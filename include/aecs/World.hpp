@@ -59,8 +59,24 @@ namespace aecs
         // Flush every gamestate before tick (including it)
         const GameState &getGameState(int tick) const; // TODO
 
-        std::vector<int> getInputs(int tick) const; // TODO
-        void setInputs(const std::vector<int> &inputs); // TODO
+        std::vector<int> getInputs(int tick = -1) const {
+            if (tick == -1)
+                tick = _tick;
+            auto it = _renderInputs.find(tick);
+
+            if (it == _renderInputs.end())
+                return {};
+            return it->second;
+        }
+        void setInputs(const std::vector<int> &inputs) {
+            for (auto it = _renderInputs.begin(); it != _renderInputs.end();) {
+                if (it->first < _tick - 600)
+                    it = _renderInputs.erase(it);
+                else
+                    ++it;
+            }
+            _renderInputs[_tick] = inputs;
+        }
 
         void setGameState(const GameState &gameState); // TODO
 
@@ -125,7 +141,7 @@ namespace aecs
 
         std::shared_ptr<ISystem> _renderSystem;
         sf::Clock clock;
-        std::vector<RenderInput> _renderInputs;
+        std::map<unsigned, std::vector<RenderInput>> _renderInputs;
         std::mutex _renderInputsMutex;
     };
 } // namespace aecs
