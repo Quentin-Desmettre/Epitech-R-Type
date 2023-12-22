@@ -21,25 +21,20 @@ namespace rtype {
         ServerUdpSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
                 ALogicSystem(world, entities, {typeid(ClientAdressComponent), typeid(ClientPortComponent)})
         {
+            _socket.bind(53000);
+            _socket.setBlocking(false);
         }
 
         ~ServerUdpSystem() override = default;
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override {
-            for (auto &[id, entity] : _entitiesMap) {
-                if (_sockets.find(id) == _sockets.end()) {
-                    _sockets[id].bind(53000);
-                    _sockets[id].setBlocking(false);
-                }
-            }
-
-            for (auto &[id, socket] : _sockets) {
-                auto &clientAdress = _entitiesMap[id]->getComponent<ClientAdressComponent>();
-                auto &clientPort = _entitiesMap[id]->getComponent<ClientPortComponent>();
+        void update(const aecs::UpdateParams &updateParams) override {
+            for (auto &[_, entity] : _entitiesMap) {
+                auto &clientAdress = entity->getComponent<ClientAdressComponent>();
+                auto &clientPort = entity->getComponent<ClientPortComponent>();
                 sf::Packet packet;
 
                 packet << 400.0f << 400.0f;
-                sf::Socket::Status status = socket.send(packet, sf::IpAddress(clientAdress.adress), clientPort.port);
+                sf::Socket::Status status = _socket.send(packet, sf::IpAddress(clientAdress.adress), clientPort.port);
 
                 if (status != sf::Socket::Done)
                     std::cout << "Error sending packet" << std::endl;
@@ -47,7 +42,7 @@ namespace rtype {
         }
 
     private:
-        std::map<unsigned int, sf::UdpSocket> _sockets;
+        sf::UdpSocket _socket;
     };
 }
 
