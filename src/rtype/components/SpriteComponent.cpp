@@ -4,7 +4,7 @@
 
 #include "rtype/components/SpriteComponent.hpp"
 
-rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size, sf::IntRect rect):
+rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size, sf::IntRect rect) :
     _size(size)
 {
     if (!_texture.loadFromFile(path))
@@ -21,7 +21,7 @@ rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f si
         spSize.x = rect.width;
     }
     if (rect.height < spSize.y) {
-            spSize.y = rect.height;
+        spSize.y = rect.height;
     }
 
     sprite.setTextureRect(rect);

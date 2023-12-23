@@ -4,8 +4,8 @@
 
 #include "rtype/systems/RenderSystem.hpp"
 #include "rtype/components/PositionComponent.hpp"
-#include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/ShaderComponent.hpp"
+#include "rtype/components/SpriteComponent.hpp"
 
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :

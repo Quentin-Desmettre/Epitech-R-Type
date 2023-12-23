@@ -8,8 +8,8 @@
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/components/PositionComponent.hpp"
-#include "rtype/components/VelocityComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/VelocityComponent.hpp"
 #include <iostream>
 
 namespace rtype
@@ -19,7 +19,8 @@ namespace rtype
     {
       public:
         PhysicsSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {typeid(PositionComponent), typeid(VelocityComponent), typeid(SpriteComponent)})
+            ALogicSystem(world, entities,
+                         {typeid(PositionComponent), typeid(VelocityComponent), typeid(SpriteComponent)})
         {
         }
         ~PhysicsSystem() override = default;
@@ -30,7 +31,6 @@ namespace rtype
                 auto &position = entity->getComponent<PositionComponent>();
                 auto &velocity = entity->getComponent<VelocityComponent>();
                 auto &sprite = entity->getComponent<SpriteComponent>();
-
 
                 position.x += velocity.x * deltaTime;
                 position.y += velocity.y * deltaTime;

@@ -7,13 +7,13 @@
 
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include "rtype/components/PositionComponent.hpp"
-#include "rtype/components/VelocityComponent.hpp"
-#include "rtype/components/SpriteComponent.hpp"
-#include "rtype/components/MyPlayerComponent.hpp"
-#include "rtype/components/BulletComponent.hpp"
-#include <iostream>
 #include "rtype/EntityFactory.hpp"
+#include "rtype/components/BulletComponent.hpp"
+#include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/VelocityComponent.hpp"
+#include <iostream>
 namespace rtype
 {
 
@@ -21,7 +21,9 @@ namespace rtype
     {
       public:
         ControlPlayerSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {typeid(VelocityComponent), typeid(MyPlayerComponent), typeid(SpriteComponent), typeid(PositionComponent)})
+            ALogicSystem(world, entities,
+                         {typeid(VelocityComponent), typeid(MyPlayerComponent), typeid(SpriteComponent),
+                          typeid(PositionComponent)})
         {
         }
         ~ControlPlayerSystem() override = default;
@@ -40,27 +42,28 @@ namespace rtype
                 bool space = false;
                 bool shift = false;
                 for (auto &input : inputs) {
-                        if (input == sf::Keyboard::Key::Z) {
-                                velocity.y += -50;
-                        }
-                        if (input == sf::Keyboard::Key::S) {
-                                velocity.y += 50;
-                        }
-                        if (input == sf::Keyboard::Key::Q) {
-                                velocity.x += -50;
-                        }
-                        if (input == sf::Keyboard::Key::D) {
-                                velocity.x += 50;
-                        }
-                        if (input == sf::Keyboard::Key::Space) {
-                            space = true;
-                        }
-                        if (input == sf::Keyboard::Key::LShift) {
-                            shift = true;
-                        }
+                    if (input == sf::Keyboard::Key::Z) {
+                        velocity.y += -50;
+                    }
+                    if (input == sf::Keyboard::Key::S) {
+                        velocity.y += 50;
+                    }
+                    if (input == sf::Keyboard::Key::Q) {
+                        velocity.x += -50;
+                    }
+                    if (input == sf::Keyboard::Key::D) {
+                        velocity.x += 50;
+                    }
+                    if (input == sf::Keyboard::Key::Space) {
+                        space = true;
+                    }
+                    if (input == sf::Keyboard::Key::LShift) {
+                        shift = true;
+                    }
                 }
                 if (space && !shift && my.timeSinceLastShoot > 3) {
-                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 32), sf::Vector2f(100, 0), 0);
+                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 32), sf::Vector2f(100, 0),
+                                                0);
                     my.timeSinceLastShoot = 0;
                 }
                 if (shift && my.timeSinceLastShoot > 6) {
@@ -77,7 +80,8 @@ namespace rtype
                     sprite.sprite.setColor(sf::Color(255, 255, 255, 255));
 
                 if (space && shift && my.timeInShift > 6) {
-                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 2), sf::Vector2f(100, 0), 0, true);
+                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 2), sf::Vector2f(100, 0), 0,
+                                                true);
                     my.timeSinceLastShoot = 0;
                     my.timeInShift = 0;
                 }

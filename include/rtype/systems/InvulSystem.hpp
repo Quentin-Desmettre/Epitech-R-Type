@@ -5,7 +5,6 @@
 #ifndef R_TYPE_INVULSYSTEM_HPP
 #define R_TYPE_INVULSYSTEM_HPP
 
-
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/components/DamageCollisionComponent.hpp"

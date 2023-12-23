@@ -5,15 +5,15 @@
 #ifndef EPITECH_R_TYPE_WORLD_HPP
 #define EPITECH_R_TYPE_WORLD_HPP
 
-#include "rtype/EntityFactory.hpp"
 #include "Entity.hpp"
 #include "SystemBase.hpp"
+#include "rtype/EntityFactory.hpp"
+#include <SFML/Graphics.hpp>
 #include <cstddef>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <typeindex>
-#include <SFML/Graphics.hpp>
 #include <vector>
 
 namespace aecs

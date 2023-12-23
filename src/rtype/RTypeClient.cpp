@@ -3,19 +3,19 @@
 //
 
 #include "rtype/RTypeClient.hpp"
-#include "rtype/systems/PhysicsSystem.hpp"
-#include "rtype/systems/ControlPlayerSystem.hpp"
+#include "rtype/EntityFactory.hpp"
 #include "rtype/systems/AnimPlayerSystem.hpp"
-#include "rtype/systems/ParallaxSystem.hpp"
-#include "rtype/systems/BulletSystem.hpp"
 #include "rtype/systems/AnimSystem.hpp"
+#include "rtype/systems/BulletSystem.hpp"
+#include "rtype/systems/ControlPlayerSystem.hpp"
 #include "rtype/systems/DamageCollisionSystem.hpp"
-#include "rtype/systems/MonsterGenSystem.hpp"
-#include "rtype/systems/MonsterBullet.hpp"
 #include "rtype/systems/InvulSystem.hpp"
+#include "rtype/systems/MonsterBullet.hpp"
+#include "rtype/systems/MonsterGenSystem.hpp"
+#include "rtype/systems/ParallaxSystem.hpp"
+#include "rtype/systems/PhysicsSystem.hpp"
 #include <chrono>
 #include <thread>
-#include "rtype/EntityFactory.hpp"
 
 rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world(),
@@ -31,8 +31,8 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     EntityFactory::createBackground(5, sf::Vector2f(15, 0));
     auto &player = _world.createEntity();
     EntityFactory::createPlayer(true);
-//    for (int i = 0; i < 10; i++)
-//        EntityFactory::createEnemy(sf::Vector2f(100, rand() % (640 - 102)), sf::Vector2f(-8, 0), true);
+    //    for (int i = 0; i < 10; i++)
+    //        EntityFactory::createEnemy(sf::Vector2f(100, rand() % (640 - 102)), sf::Vector2f(-8, 0), true);
 
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
@@ -50,12 +50,12 @@ void rtype::RTypeClient::run()
 {
     // Launch a thread for logic
     std::thread _logicThread = std::thread{&RTypeClient::infinteLoop, _logicRefreshRate,
-                [this]() {
-                    return _renderSystem.isOpen();
-                },
-                [this]() {
-                    _world.update();
-                }};
+                                           [this]() {
+                                               return _renderSystem.isOpen();
+                                           },
+                                           [this]() {
+                                               _world.update();
+                                           }};
 
     // Render in the main thread
     infinteLoop(

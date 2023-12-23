@@ -11,12 +11,12 @@ namespace rtype
     class MonsterComponent : public aecs::AbstractComponent
     {
       public:
-        explicit MonsterComponent(bool lil = false): _lil(lil) {};
+        explicit MonsterComponent(bool lil = false) :
+            _lil(lil){};
         ~MonsterComponent() override = default;
         float timeSinceLastShoot = 0;
         float _lil;
     };
 } // namespace rtype
-
 
 #endif // R_TYPE_MONSTERCOMPONENT_HPP

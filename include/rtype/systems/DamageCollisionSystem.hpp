@@ -5,22 +5,24 @@
 #ifndef R_TYPE_DAMAGECOLLISIONSYSTEM_HPP
 #define R_TYPE_DAMAGECOLLISIONSYSTEM_HPP
 
-
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include <SFML/Graphics.hpp>
-#include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/DamageCollisionComponent.hpp"
-#include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/HPComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/SpriteComponent.hpp"
+#include <SFML/Graphics.hpp>
 #include <iostream>
 namespace rtype
 {
     class DamageCollisionSystem : public aecs::ALogicSystem
     {
       public:
-        DamageCollisionSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {typeid(SpriteComponent), typeid(DamageCollisionComponent), typeid(HPComponent), typeid(PositionComponent)})
+        DamageCollisionSystem(aecs::World &world,
+                              const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+            ALogicSystem(world, entities,
+                         {typeid(SpriteComponent), typeid(DamageCollisionComponent), typeid(HPComponent),
+                          typeid(PositionComponent)})
         {
         }
         ~DamageCollisionSystem() override = default;
@@ -46,7 +48,8 @@ namespace rtype
             auto &damage2 = entity2->getComponent<DamageCollisionComponent>();
             if (damage.team == damage2.team)
                 return false;
-            if (damage.type == DamageCollisionComponent::ObjectType::LG_BULLET && damage2.type == DamageCollisionComponent::ObjectType::LG_BULLET)
+            if (damage.type == DamageCollisionComponent::ObjectType::LG_BULLET &&
+                damage2.type == DamageCollisionComponent::ObjectType::LG_BULLET)
                 return true;
             return false;
         }
@@ -102,6 +105,5 @@ namespace rtype
     };
 
 } // namespace rtype
-
 
 #endif // R_TYPE_DAMAGECOLLISIONSYSTEM_HPP

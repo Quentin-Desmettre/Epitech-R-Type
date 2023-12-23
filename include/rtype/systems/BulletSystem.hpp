@@ -5,13 +5,12 @@
 #ifndef R_TYPE_BULLETSYSTEM_HPP
 #define R_TYPE_BULLETSYSTEM_HPP
 
-
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include "rtype/components/PositionComponent.hpp"
-#include "rtype/components/VelocityComponent.hpp"
-#include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/VelocityComponent.hpp"
 #include <iostream>
 namespace rtype
 {

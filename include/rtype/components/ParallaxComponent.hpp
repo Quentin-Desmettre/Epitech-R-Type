@@ -13,9 +13,8 @@ namespace rtype
     class ParallaxComponent : public aecs::AbstractComponent
     {
       public:
-        explicit ParallaxComponent(sf::Vector2f _speed) : _speed(_speed)
-        {
-        };
+        explicit ParallaxComponent(sf::Vector2f _speed) :
+            _speed(_speed){};
         ~ParallaxComponent() override = default;
 
         sf::Vector2f _speed;

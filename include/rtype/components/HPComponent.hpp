@@ -11,12 +11,11 @@ namespace rtype
     class HPComponent : public aecs::AbstractComponent
     {
       public:
-        explicit HPComponent(float hp): hp(hp) {};
+        explicit HPComponent(float hp) :
+            hp(hp){};
         ~HPComponent() override = default;
         float hp = 0;
     };
 } // namespace rtype
-
-
 
 #endif // R_TYPE_HPCOMPONENT_HPP

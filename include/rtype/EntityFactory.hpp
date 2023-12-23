@@ -14,7 +14,8 @@ namespace aecs
 
 namespace rtype
 {
-    class EntityFactory {
+    class EntityFactory
+    {
       public:
         ~EntityFactory() = default;
         static aecs::Entity &createPlayer(bool main = false);
@@ -23,10 +24,10 @@ namespace rtype
         static aecs::Entity &createBackground(int id, sf::Vector2f speed);
         static void setWorld(aecs::World *world);
 
-        private:
+      private:
         static aecs::World *_world;
     };
-}
+} // namespace rtype
 #include "aecs/World.hpp"
 
 #endif // R_TYPE_ENTITYFACTORY_HPP

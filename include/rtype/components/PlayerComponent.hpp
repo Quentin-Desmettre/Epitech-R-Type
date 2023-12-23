@@ -17,5 +17,4 @@ namespace rtype
     };
 } // namespace rtype
 
-
 #endif // R_TYPE_PLAYERCOMPONENT_HPP
