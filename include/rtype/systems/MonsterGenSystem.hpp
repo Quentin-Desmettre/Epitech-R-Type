@@ -22,7 +22,7 @@ namespace rtype
 
         static void addRandomEnemy();
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override;
+        void update(const aecs::UpdateParams &updateParams) override;
     };
 
 } // namespace rtype

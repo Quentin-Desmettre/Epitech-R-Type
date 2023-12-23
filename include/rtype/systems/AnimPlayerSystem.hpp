@@ -25,7 +25,7 @@ namespace rtype
         }
         ~AnimPlayerSystem() override = default;
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override
+        void update(const aecs::UpdateParams &updateParams) override
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &velocity = entity->getComponent<VelocityComponent>();

@@ -18,6 +18,15 @@ namespace aecs
 
     typedef std::shared_ptr<Entity> EntityPtr;
     typedef int RenderInput;
+    typedef std::vector<RenderInput> ClientInputs;
+    typedef std::map<unsigned, ClientInputs> ServerInputs;
+
+    #define MY_INPUTS(serverInputs) ((serverInputs).find(0) != (serverInputs).end() ? (serverInputs).at(0) : aecs::ClientInputs())
+
+    typedef struct UpdateParams {
+        const ServerInputs &inputs;
+        float deltaTime;
+    } UpdateParams;
 
     class ISystem
     {
@@ -29,10 +38,10 @@ namespace aecs
         virtual void onEntityModified(const aecs::EntityPtr &entity) = 0;
 
         // For logic systems
-        virtual void update(const std::vector<RenderInput> &inputs, float deltaTime) = 0;
+        virtual void update(const UpdateParams &updateParams) = 0;
 
         // For render systems
-        virtual std::vector<RenderInput> render() = 0;
+        virtual ClientInputs render() = 0;
         [[nodiscard]] virtual bool isOpen() const = 0;
     };
 
@@ -64,7 +73,7 @@ namespace aecs
         ~ARenderSystem() override = default;
 
         // For logic systems ONLY
-        void update(const std::vector<RenderInput> &inputs, float deltaTime) override
+        void update(const UpdateParams &updateParams) override
         {
             throw std::runtime_error("IRenderSystem::update() should not be called");
         }
@@ -81,7 +90,7 @@ namespace aecs
         ~ALogicSystem() override = default;
 
         // For render systems ONLY
-        std::vector<RenderInput> render() override
+        ClientInputs render() override
         {
             throw std::runtime_error("ILogicSystem::render() should not be called");
         }

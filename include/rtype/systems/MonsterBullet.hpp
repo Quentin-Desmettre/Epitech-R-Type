@@ -21,14 +21,14 @@ namespace rtype
         }
         ~MonsterBullet() override = default;
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override
+        void update(const aecs::UpdateParams &updateParams) override
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &monster = entity->getComponent<MonsterComponent>();
                 auto &position = entity->getComponent<PositionComponent>();
                 if (monster._lil)
                     continue;
-                monster.timeSinceLastShoot += deltaTime;
+                monster.timeSinceLastShoot += updateParams.deltaTime;
 
                 if (monster.timeSinceLastShoot > 15) {
                     monster.timeSinceLastShoot = 0;

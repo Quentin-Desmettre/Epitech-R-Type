@@ -54,7 +54,7 @@ namespace rtype
             return false;
         }
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override
+        void update(const aecs::UpdateParams &updateParams) override
         {
             std::vector<std::shared_ptr<aecs::Entity>> entities;
 

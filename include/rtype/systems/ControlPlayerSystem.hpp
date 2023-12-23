@@ -28,12 +28,12 @@ namespace rtype
         }
         ~ControlPlayerSystem() override = default;
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override
+        void update(const aecs::UpdateParams &updateParams) override
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &velocity = entity->getComponent<VelocityComponent>();
                 auto &my = entity->getComponent<MyPlayerComponent>();
-                my.timeSinceLastShoot += deltaTime;
+                my.timeSinceLastShoot += updateParams.deltaTime;
                 auto &position = entity->getComponent<PositionComponent>();
                 auto &sprite = entity->getComponent<SpriteComponent>();
 
@@ -41,25 +41,26 @@ namespace rtype
                 velocity.y = 0;
                 bool space = false;
                 bool shift = false;
-                for (auto &input : inputs) {
-                    if (input == sf::Keyboard::Key::Z) {
-                        velocity.y += -50;
-                    }
-                    if (input == sf::Keyboard::Key::S) {
-                        velocity.y += 50;
-                    }
-                    if (input == sf::Keyboard::Key::Q) {
-                        velocity.x += -50;
-                    }
-                    if (input == sf::Keyboard::Key::D) {
-                        velocity.x += 50;
-                    }
-                    if (input == sf::Keyboard::Key::Space) {
-                        space = true;
-                    }
-                    if (input == sf::Keyboard::Key::LShift) {
-                        shift = true;
-                    }
+                aecs::ClientInputs myInputs = MY_INPUTS(updateParams.inputs);
+                for (auto &input : myInputs) {
+                        if (input == sf::Keyboard::Key::Z) {
+                                velocity.y += -50;
+                        }
+                        if (input == sf::Keyboard::Key::S) {
+                                velocity.y += 50;
+                        }
+                        if (input == sf::Keyboard::Key::Q) {
+                                velocity.x += -50;
+                        }
+                        if (input == sf::Keyboard::Key::D) {
+                                velocity.x += 50;
+                        }
+                        if (input == sf::Keyboard::Key::Space) {
+                            space = true;
+                        }
+                        if (input == sf::Keyboard::Key::LShift) {
+                            shift = true;
+                        }
                 }
                 if (space && !shift && my.timeSinceLastShoot > 3) {
                     EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 32), sf::Vector2f(100, 0),
@@ -67,7 +68,7 @@ namespace rtype
                     my.timeSinceLastShoot = 0;
                 }
                 if (shift && my.timeSinceLastShoot > 6) {
-                    my.timeInShift += deltaTime;
+                    my.timeInShift += updateParams.deltaTime;
                 }
                 if (shift == false) {
                     my.timeInShift = 0;

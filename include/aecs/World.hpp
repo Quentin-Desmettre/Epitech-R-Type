@@ -18,12 +18,11 @@
 
 namespace aecs
 {
-
     class World
     {
       public:
         friend class Entity;
-        World() = default;
+        World(bool isServer = false): _isServer(isServer) {}
         ~World() = default;
 
         Entity &createEntity();
@@ -44,6 +43,80 @@ namespace aecs
 
         void update();
         void render();
+
+        // TODO: put these 3 methods in GameState
+        std::vector<std::byte> serialize(); // TODO
+        void load(const std::vector<std::byte> &bytes) {
+            load(bytes.data(), bytes.size());
+        }
+        void load(const void *data, std::size_t size); // TODO
+
+        class GameState {}; // TODO: implement GameState
+        void setTick(unsigned tick) { _tick = tick; }
+        unsigned getTick() const { return _tick; }
+
+        // Flush every gamestate before tick (including it)
+        const GameState &getGameState(int tick) const; // TODO
+
+        const ServerInputs getInputs(int tick = -1) const {
+            if (tick == -1)
+                tick = _tick;
+            auto it = _renderInputs.find(tick);
+
+            if (it == _renderInputs.end())
+                return {};
+            return it->second;
+        }
+
+        const ClientInputs getClientInputs(unsigned clientId, int tick = -1) const {
+            if (tick == -1)
+                tick = _tick;
+            auto it = _renderInputs.find(tick);
+
+            if (it == _renderInputs.end())
+                return {};
+            auto it2 = it->second.find(clientId);
+            if (it2 == it->second.end())
+                return {};
+            return it2->second;
+        }
+
+        void setInputs(const ServerInputs &inputs) {
+            for (auto it = _renderInputs.begin(); it != _renderInputs.end();) {
+                if (it->first < _tick - 600)
+                    it = _renderInputs.erase(it);
+                else
+                    ++it;
+            }
+            if (_renderInputs.find(_tick) == _renderInputs.end())
+                _renderInputs[_tick] = inputs;
+            else
+                _renderInputs[_tick].insert(inputs.begin(), inputs.end());
+        }
+
+        void setClientInputs(unsigned clientId, const ClientInputs &inputs) {
+            for (auto it = _renderInputs.begin(); it != _renderInputs.end();) {
+                if (it->first < _tick - 600)
+                    it = _renderInputs.erase(it);
+                else
+                    ++it;
+            }
+            if (_renderInputs.find(_tick) == _renderInputs.end())
+                _renderInputs[_tick] = {{clientId, inputs}};
+            else
+                _renderInputs[_tick].insert({clientId, inputs});
+        }
+
+        void setGameState(const GameState &gameState); // TODO
+
+        EntityPtr getEntity(std::size_t id) const {
+            auto it = _entities.find(id);
+
+            if (it == _entities.end())
+                return nullptr;
+            return it->second;
+        }
+
 
         template <typename T, typename... Args>
         T &registerRenderSystem(Args &&...args)
@@ -96,13 +169,15 @@ namespace aecs
         void onEntityChanged(const EntityPtr &entity);
         void onEntityChanged(const Entity &entity);
 
+        unsigned _tick = 0;
         std::map<std::size_t, EntityPtr> _entities;
         std::map<std::type_index, std::pair<std::shared_ptr<ISystem>, int>> _systems;
         std::vector<std::pair<ISystem *, int>> _sortedSystems;
 
+        bool _isServer;
         std::shared_ptr<ISystem> _renderSystem;
         sf::Clock clock;
-        std::vector<RenderInput> _renderInputs;
+        std::map<unsigned, ServerInputs> _renderInputs;
         std::mutex _renderInputsMutex;
     };
 } // namespace aecs
