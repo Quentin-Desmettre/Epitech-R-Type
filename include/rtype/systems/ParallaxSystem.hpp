@@ -7,10 +7,9 @@
 
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include "rtype/components/VelocityComponent.hpp"
 #include "rtype/components/ParallaxComponent.hpp"
-#include "rtype/components/VelocityComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/VelocityComponent.hpp"
 namespace rtype
 {
 
@@ -18,7 +17,8 @@ namespace rtype
     {
       public:
         ParallaxSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {typeid(ParallaxComponent), typeid(SpriteComponent), typeid(PositionComponent)})
+            ALogicSystem(world, entities,
+                         {typeid(ParallaxComponent), typeid(SpriteComponent), typeid(PositionComponent)})
         {
         }
         ~ParallaxSystem() override = default;

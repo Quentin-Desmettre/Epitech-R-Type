@@ -6,9 +6,9 @@
 #define R_TYPE_RTYPECLIENT_HPP
 
 #include "aecs/World.hpp"
+#include "rtype/EntityFactory.hpp"
 #include "rtype/systems/RenderSystem.hpp"
 #include <functional>
-#include "rtype/EntityFactory.hpp"
 
 namespace rtype
 {

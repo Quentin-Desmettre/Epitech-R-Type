@@ -4,17 +4,17 @@
 
 #include "rtype/RTypeServer.hpp"
 #include "rtype/EntityFactory.hpp"
-#include "rtype/systems/NewConnectionSystem.hpp"
-#include "rtype/systems/PhysicsSystem.hpp"
-#include "rtype/systems/ControlPlayerSystem.hpp"
 #include "rtype/systems/AnimPlayerSystem.hpp"
-#include "rtype/systems/ParallaxSystem.hpp"
-#include "rtype/systems/BulletSystem.hpp"
 #include "rtype/systems/AnimSystem.hpp"
+#include "rtype/systems/BulletSystem.hpp"
+#include "rtype/systems/ControlPlayerSystem.hpp"
 #include "rtype/systems/DamageCollisionSystem.hpp"
-#include "rtype/systems/MonsterGenSystem.hpp"
-#include "rtype/systems/MonsterBullet.hpp"
 #include "rtype/systems/InvulSystem.hpp"
+#include "rtype/systems/MonsterBullet.hpp"
+#include "rtype/systems/MonsterGenSystem.hpp"
+#include "rtype/systems/NewConnectionSystem.hpp"
+#include "rtype/systems/ParallaxSystem.hpp"
+#include "rtype/systems/PhysicsSystem.hpp"
 #include "rtype/systems/ServerUdpSystem.hpp"
 #include <chrono>
 #include <thread>
@@ -50,13 +50,14 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate) :
 
 void rtype::RTypeServer::run()
 {
-    infinteLoop(_logicRefreshRate,
-                [this]() {
-                    return true;
-                },
-                [this]() {
-                    _world.update();
-                });
+    infinteLoop(
+        _logicRefreshRate,
+        [this]() {
+            return true;
+        },
+        [this]() {
+            _world.update();
+        });
 }
 
 void rtype::RTypeServer::infinteLoop(int refreshRate, std::function<bool()> &&run, std::function<void()> &&function)

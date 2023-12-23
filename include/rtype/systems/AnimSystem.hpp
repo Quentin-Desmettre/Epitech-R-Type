@@ -7,8 +7,8 @@
 
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/AnimComponent.hpp"
+#include "rtype/components/SpriteComponent.hpp"
 #include <iostream>
 namespace rtype
 {

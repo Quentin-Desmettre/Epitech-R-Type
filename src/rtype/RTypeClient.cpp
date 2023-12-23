@@ -3,21 +3,21 @@
 //
 
 #include "rtype/RTypeClient.hpp"
-#include "rtype/systems/PhysicsSystem.hpp"
-#include "rtype/systems/ControlPlayerSystem.hpp"
+#include "rtype/EntityFactory.hpp"
 #include "rtype/systems/AnimPlayerSystem.hpp"
-#include "rtype/systems/ParallaxSystem.hpp"
-#include "rtype/systems/BulletSystem.hpp"
 #include "rtype/systems/AnimSystem.hpp"
+#include "rtype/systems/BulletSystem.hpp"
+#include "rtype/systems/ClientInputSenderSystem.hpp"
+#include "rtype/systems/ClientServerDataHandlerSystem.hpp"
+#include "rtype/systems/ControlPlayerSystem.hpp"
 #include "rtype/systems/DamageCollisionSystem.hpp"
-#include "rtype/systems/MonsterGenSystem.hpp"
-#include "rtype/systems/MonsterBullet.hpp"
 #include "rtype/systems/InvulSystem.hpp"
+#include "rtype/systems/MonsterBullet.hpp"
+#include "rtype/systems/MonsterGenSystem.hpp"
+#include "rtype/systems/ParallaxSystem.hpp"
+#include "rtype/systems/PhysicsSystem.hpp"
 #include <chrono>
 #include <thread>
-#include "rtype/EntityFactory.hpp"
-#include "rtype/systems/ClientServerDataHandlerSystem.hpp"
-#include "rtype/systems/ClientInputSenderSystem.hpp"
 
 rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world(),
@@ -53,12 +53,12 @@ void rtype::RTypeClient::run()
 {
     // Launch a thread for logic
     std::thread _logicThread = std::thread{&RTypeClient::infinteLoop, _logicRefreshRate,
-                [this]() {
-                    return _renderSystem.isOpen();
-                },
-                [this]() {
-                    _world.update();
-                }};
+                                           [this]() {
+                                               return _renderSystem.isOpen();
+                                           },
+                                           [this]() {
+                                               _world.update();
+                                           }};
 
     // Render in the main thread
     infinteLoop(

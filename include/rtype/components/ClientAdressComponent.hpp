@@ -11,12 +11,11 @@ namespace rtype
     class ClientAdressComponent : public aecs::AbstractComponent
     {
       public:
-        explicit ClientAdressComponent(unsigned int adress): adress(adress) {};
+        explicit ClientAdressComponent(unsigned int adress) :
+            adress(adress){};
         ~ClientAdressComponent() override = default;
         unsigned int adress = 0;
     };
 } // namespace rtype
-
-
 
 #endif // R_TYPE_CLIENTADRESSCOMPONENT_HPP

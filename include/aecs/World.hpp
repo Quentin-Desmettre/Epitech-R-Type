@@ -5,15 +5,15 @@
 #ifndef EPITECH_R_TYPE_WORLD_HPP
 #define EPITECH_R_TYPE_WORLD_HPP
 
-#include "rtype/EntityFactory.hpp"
 #include "Entity.hpp"
 #include "SystemBase.hpp"
+#include "rtype/EntityFactory.hpp"
+#include <SFML/Graphics.hpp>
 #include <cstddef>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <typeindex>
-#include <SFML/Graphics.hpp>
 #include <vector>
 
 namespace aecs
@@ -22,7 +22,10 @@ namespace aecs
     {
       public:
         friend class Entity;
-        World(bool isServer = false): _isServer(isServer) {}
+        World(bool isServer = false) :
+            _isServer(isServer)
+        {
+        }
         ~World() = default;
 
         Entity &createEntity();
@@ -46,19 +49,29 @@ namespace aecs
 
         // TODO: put these 3 methods in GameState
         std::vector<std::byte> serialize(); // TODO
-        void load(const std::vector<std::byte> &bytes) {
+        void load(const std::vector<std::byte> &bytes)
+        {
             load(bytes.data(), bytes.size());
         }
         void load(const void *data, std::size_t size); // TODO
 
-        class GameState {}; // TODO: implement GameState
-        void setTick(unsigned tick) { _tick = tick; }
-        unsigned getTick() const { return _tick; }
+        class GameState
+        {
+        }; // TODO: implement GameState
+        void setTick(unsigned tick)
+        {
+            _tick = tick;
+        }
+        unsigned getTick() const
+        {
+            return _tick;
+        }
 
         // Flush every gamestate before tick (including it)
         const GameState &getGameState(int tick) const; // TODO
 
-        const ServerInputs getInputs(int tick = -1) const {
+        const ServerInputs getInputs(int tick = -1) const
+        {
             if (tick == -1)
                 tick = _tick;
             auto it = _renderInputs.find(tick);
@@ -68,7 +81,8 @@ namespace aecs
             return it->second;
         }
 
-        const ClientInputs getClientInputs(unsigned clientId, int tick = -1) const {
+        const ClientInputs getClientInputs(unsigned clientId, int tick = -1) const
+        {
             if (tick == -1)
                 tick = _tick;
             auto it = _renderInputs.find(tick);
@@ -81,7 +95,8 @@ namespace aecs
             return it2->second;
         }
 
-        void setInputs(const ServerInputs &inputs) {
+        void setInputs(const ServerInputs &inputs)
+        {
             for (auto it = _renderInputs.begin(); it != _renderInputs.end();) {
                 if (it->first < _tick - 600)
                     it = _renderInputs.erase(it);
@@ -94,7 +109,8 @@ namespace aecs
                 _renderInputs[_tick].insert(inputs.begin(), inputs.end());
         }
 
-        void setClientInputs(unsigned clientId, const ClientInputs &inputs) {
+        void setClientInputs(unsigned clientId, const ClientInputs &inputs)
+        {
             for (auto it = _renderInputs.begin(); it != _renderInputs.end();) {
                 if (it->first < _tick - 600)
                     it = _renderInputs.erase(it);
@@ -109,14 +125,14 @@ namespace aecs
 
         void setGameState(const GameState &gameState); // TODO
 
-        EntityPtr getEntity(std::size_t id) const {
+        EntityPtr getEntity(std::size_t id) const
+        {
             auto it = _entities.find(id);
 
             if (it == _entities.end())
                 return nullptr;
             return it->second;
         }
-
 
         template <typename T, typename... Args>
         T &registerRenderSystem(Args &&...args)

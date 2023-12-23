@@ -32,7 +32,8 @@ namespace rtype
 
                 if (monster.timeSinceLastShoot > 15) {
                     monster.timeSinceLastShoot = 0;
-                    EntityFactory::createBullet(sf::Vector2f(position.x - 10, position.y + 10), sf::Vector2f(-50, 0), 1, false);
+                    EntityFactory::createBullet(sf::Vector2f(position.x - 10, position.y + 10), sf::Vector2f(-50, 0), 1,
+                                                false);
                 }
             }
         }

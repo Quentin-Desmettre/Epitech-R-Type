@@ -7,10 +7,10 @@
 
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
-#include "rtype/components/VelocityComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/VelocityComponent.hpp"
 #include <iostream>
 
 namespace rtype

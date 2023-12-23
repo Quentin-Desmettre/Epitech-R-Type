@@ -21,7 +21,10 @@ namespace rtype
             LG_BULLET,
             OTHER,
         };
-        explicit DamageCollisionComponent(int team, float damage, ObjectType type = OTHER): team(team), damage(damage), type(type) {};
+        explicit DamageCollisionComponent(int team, float damage, ObjectType type = OTHER) :
+            team(team),
+            damage(damage),
+            type(type){};
         ~DamageCollisionComponent() override = default;
         int team = 0;
         float damage = 0;
@@ -29,7 +32,5 @@ namespace rtype
         float invulnerability = 0;
     };
 } // namespace rtype
-
-
 
 #endif // R_TYPE_DAMAGECOLLISIONCOMPONENT_HPP

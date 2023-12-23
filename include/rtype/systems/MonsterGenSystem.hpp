@@ -5,7 +5,6 @@
 #ifndef R_TYPE_MONSTERGENSYSTEM_HPP
 #define R_TYPE_MONSTERGENSYSTEM_HPP
 
-
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/components/PlayerComponent.hpp"

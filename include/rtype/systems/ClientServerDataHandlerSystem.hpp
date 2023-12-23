@@ -5,18 +5,19 @@
 #ifndef R_TYPE_CLIENTSERVERDATAHANDLERSYSTEM_HPP
 #define R_TYPE_CLIENTSERVERDATAHANDLERSYSTEM_HPP
 
-#include "aecs/World.hpp"
 #include "aecs/SystemBase.hpp"
-#include <SFML/Network.hpp>
-#include <queue>
-#include <chrono>
-#include <cassert>
-#include "rtype/systems/ServerConnectionSystem.hpp"
+#include "aecs/World.hpp"
+#include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
-#include "rtype/NetworkGlobals.hpp"
+#include "rtype/systems/ServerConnectionSystem.hpp"
+#include <SFML/Network.hpp>
+#include <cassert>
+#include <chrono>
+#include <queue>
 
-namespace rtype {
+namespace rtype
+{
 
     // TODO: put it in constructor
     // Delay before doing a packet, in ms
@@ -25,9 +26,11 @@ namespace rtype {
     /**
      * @brief System that handle the data received from the server
      */
-    class ClientServerDataHandlerSystem: public aecs::ALogicSystem {
-    public:
-        ClientServerDataHandlerSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+    class ClientServerDataHandlerSystem : public aecs::ALogicSystem
+    {
+      public:
+        ClientServerDataHandlerSystem(aecs::World &world,
+                                      const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
             ALogicSystem(world, entities, {}),
             _maxReceivedTick(0),
             _tcpHandshakeSystem(world, entities)
@@ -38,7 +41,8 @@ namespace rtype {
 
         ~ClientServerDataHandlerSystem() override = default;
 
-        void update(const aecs::UpdateParams &updateParams) override {
+        void update(const aecs::UpdateParams &updateParams) override
+        {
             _tcpHandshakeSystem.update(updateParams);
             if (!_tcpHandshakeSystem.isConnected())
                 return;
@@ -78,12 +82,10 @@ namespace rtype {
                 return;
 
             // Push to queue
-            auto now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+            auto now = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch());
             _maxReceivedTick = tick;
-            _packets.emplace(
-                packet,
-                now
-            );
+            _packets.emplace(packet, now);
 
             // Do packet received X ms in the past
             if (_packets.empty())
@@ -95,19 +97,21 @@ namespace rtype {
             PacketHandler::handle(_world, firstPacket);
         }
 
-    private:
+      private:
         sf::UdpSocket _socket;
         ServerConnectionSystem _tcpHandshakeSystem;
         std::queue<std::pair<sf::Packet, std::chrono::milliseconds>> _packets;
         unsigned _maxReceivedTick;
 
-        class PacketHandler {
-        public:
+        class PacketHandler
+        {
+          public:
             PacketHandler() = delete;
 
             ~PacketHandler() = default;
 
-            static void handle(aecs::World &world, sf::Packet &packet) {
+            static void handle(aecs::World &world, sf::Packet &packet)
+            {
                 // // parse the packet, getting the different ticks / entities / components modified
                 // // TODO
                 // // ...
@@ -134,10 +138,10 @@ namespace rtype {
                 // assert(world.getTick() == currentTick); // TODO: remove in not debug
             }
 
-        private:
+          private:
         };
     };
 
-}
+} // namespace rtype
 
-#endif //R_TYPE_CLIENTSERVERDATAHANDLERSYSTEM_HPP
+#endif // R_TYPE_CLIENTSERVERDATAHANDLERSYSTEM_HPP
