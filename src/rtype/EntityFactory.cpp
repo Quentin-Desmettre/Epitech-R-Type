@@ -14,6 +14,8 @@
 #include "rtype/components/HPComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/DamageCollisionComponent.hpp"
+#include "rtype/components/ShaderComponent.hpp"
+#include <memory>
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
 
@@ -29,6 +31,12 @@ aecs::Entity &rtype::EntityFactory::createPlayer(bool main)
     player.addComponent<PlayerComponent>();
     player.addComponent<DamageCollisionComponent>(0, 0);
     player.addComponent<HPComponent>(50);
+    std::shared_ptr<sf::Shader> shader = std::make_shared<sf::Shader>();
+    shader->loadFromFile("src/client/Shaders/PlayerColor.frag", sf::Shader::Fragment);
+    shader->setUniform("hue", 0.f);
+    shader->setUniform("saturation", 1.0f);
+    player.addComponent<ShaderComponent>(shader);
+
     return player;
 }
 
