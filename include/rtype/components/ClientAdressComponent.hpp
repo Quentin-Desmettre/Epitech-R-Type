@@ -12,7 +12,7 @@ namespace rtype
     {
       public:
         explicit ClientAdressComponent(unsigned int adress) :
-            adress(adress){};
+            adress(adress){id = 3;};
         ~ClientAdressComponent() override = default;
         unsigned int adress = 0;
     };

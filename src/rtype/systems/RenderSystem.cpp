@@ -4,6 +4,7 @@
 
 #include "rtype/systems/RenderSystem.hpp"
 #include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 
 rtype::RenderSystem::RenderSystem(aecs::World &world,
@@ -36,7 +37,11 @@ aecs::ClientInputs rtype::RenderSystem::render()
         auto &sprite = entity->getComponent<rtype::SpriteComponent>();
         auto &pos = entity->getComponent<PositionComponent>();
         sprite.sprite.setPosition(pos.x, pos.y);
-        _window.draw(sprite.sprite);
+        if (entity->hasComponent<ShaderComponent>()) {
+            auto &shader = entity->getComponent<ShaderComponent>();
+            _window.draw(sprite.sprite, &(*shader.shader));
+        } else
+            _window.draw(sprite.sprite);
     }
     _window.display();
     return inputs;

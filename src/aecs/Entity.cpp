@@ -4,14 +4,18 @@
 
 #include "aecs/Entity.hpp"
 #include "aecs/World.hpp"
+#include "shared/PacketBuilder.hpp"
 
 namespace aecs
 {
     std::size_t Entity::_idCounter = 0;
-    Entity::Entity(World &world) :
-        _id(_idCounter++),
+    Entity::Entity(World &world, std::size_t id) :
         _world(world)
     {
+        if (id == -1)
+            _id = _idCounter++;
+        else
+            _id = id;
     }
 
     std::size_t Entity::getId() const
@@ -29,5 +33,48 @@ namespace aecs
         return std::ranges::all_of(components, [this](const auto &component) {
             return _components.find(component) != _components.end();
         });
+    }
+    std::vector<std::byte> Entity::encode() const
+    {
+        PacketBuilder pb;
+
+        for (auto &component : _components)
+        {
+            pb << component.second->id;
+            std::cout << component.second->id << std::endl;
+            pb += component.second->encode();
+        }
+        std::vector<std::byte> data = pb.getData();
+        pb.clear();
+        pb << static_cast<int>(getId());
+        pb += data;
+        return pb.getData();
+    }
+
+    void Entity::decode(const std::vector<std::byte> &encoded)
+    {
+        PacketBuilder pb;
+        pb << encoded;
+
+        while (pb)
+        {
+            int id;
+            pb >> id;
+            try {
+                getComponentByComponentId(id).decode(pb.getSub());
+            } catch (std::exception &e) {
+                std::cerr << e.what() << std::endl;
+            }
+        }
+    }
+
+    AbstractComponent &Entity::getComponentByComponentId(int id)
+    {
+        for (auto &component : _components)
+        {
+            if (component.second->id == id)
+                return *component.second;
+        }
+        throw std::runtime_error("Invalid component id");
     }
 } // namespace aecs

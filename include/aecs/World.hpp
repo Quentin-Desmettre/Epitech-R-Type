@@ -28,7 +28,7 @@ namespace aecs
         }
         ~World() = default;
 
-        Entity &createEntity();
+        Entity &createEntity(size_t id = -1);
 
         template <typename T, typename... Args>
         T &addComponent(Entity &entity, Args &&...args)

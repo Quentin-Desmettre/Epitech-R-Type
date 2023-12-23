@@ -14,7 +14,7 @@ namespace rtype
     {
       public:
         explicit ParallaxComponent(sf::Vector2f _speed) :
-            _speed(_speed){};
+            _speed(_speed){id = 9;};
         ~ParallaxComponent() override = default;
 
         sf::Vector2f _speed;

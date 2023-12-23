@@ -24,7 +24,10 @@ namespace rtype
         explicit DamageCollisionComponent(int team, float damage, ObjectType type = OTHER) :
             team(team),
             damage(damage),
-            type(type){};
+            type(type){id = 5;};
+        DamageCollisionComponent() {id = 5;};
+        [[nodiscard]] std::vector<std::byte> encode() const override;
+        void decode(const std::vector<std::byte> &encoded) override;
         ~DamageCollisionComponent() override = default;
         int team = 0;
         float damage = 0;

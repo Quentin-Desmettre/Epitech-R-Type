@@ -7,6 +7,7 @@
 rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size, sf::IntRect rect) :
     _size(size)
 {
+    id = 13;
     if (!_texture.loadFromFile(path))
         throw std::runtime_error("Cannot load texture: " + path);
     _texture.setRepeated(true);

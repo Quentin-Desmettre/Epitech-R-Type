@@ -12,7 +12,7 @@ namespace rtype
     {
       public:
         explicit ClientPortComponent(unsigned short port) :
-            port(port){};
+            port(port){id = 4;};
         ~ClientPortComponent() override = default;
         unsigned short port = 0;
     };

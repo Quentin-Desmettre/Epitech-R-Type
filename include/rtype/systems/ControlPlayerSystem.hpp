@@ -10,6 +10,7 @@
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
@@ -23,7 +24,7 @@ namespace rtype
         ControlPlayerSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
             ALogicSystem(world, entities,
                          {typeid(VelocityComponent), typeid(MyPlayerComponent), typeid(SpriteComponent),
-                          typeid(PositionComponent)})
+                          typeid(PlayerComponent), typeid(PositionComponent)})
         {
         }
         ~ControlPlayerSystem() override = default;
@@ -32,7 +33,7 @@ namespace rtype
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &velocity = entity->getComponent<VelocityComponent>();
-                auto &my = entity->getComponent<MyPlayerComponent>();
+                auto &my = entity->getComponent<PlayerComponent>();
                 my.timeSinceLastShoot += updateParams.deltaTime;
                 auto &position = entity->getComponent<PositionComponent>();
                 auto &sprite = entity->getComponent<SpriteComponent>();

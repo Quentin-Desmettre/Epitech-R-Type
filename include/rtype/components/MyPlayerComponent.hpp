@@ -12,10 +12,8 @@ namespace rtype
     class MyPlayerComponent : public aecs::AbstractComponent
     {
       public:
-        MyPlayerComponent() = default;
+        MyPlayerComponent() {id = 8;};
         ~MyPlayerComponent() override = default;
-        float timeSinceLastShoot = 0;
-        float timeInShift = 0;
     };
 } // namespace rtype
 

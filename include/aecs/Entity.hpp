@@ -22,7 +22,7 @@ namespace aecs
     {
 
       public:
-        explicit Entity(World &world);
+        explicit Entity(World &world, std::size_t defaultId = -1);
         Entity() = delete;
         Entity(const Entity &) = delete;
         Entity(Entity &&) = delete;
@@ -81,10 +81,14 @@ namespace aecs
             return *component;
         }
 
+        [[nodiscard]] std::vector<std::byte> encode() const;
+        void decode(const std::vector<std::byte> &encoded);
+        AbstractComponent &getComponentByComponentId(int id);
+
       private:
         void notifyWorldEntityChanged();
 
-        std::size_t _id;
+        std::size_t _id{};
         static std::size_t _idCounter;
         World &_world;
         std::map<std::type_index, std::shared_ptr<AbstractComponent>> _components;
