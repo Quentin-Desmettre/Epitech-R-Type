@@ -10,10 +10,10 @@
 namespace aecs
 {
 
-    Entity &World::createEntity()
+    Entity &World::createEntity(size_t id)
     {
         // Create entity
-        auto entity = std::make_shared<Entity>(*this);
+        auto entity = std::make_shared<Entity>(*this, id);
         _entities[entity->getId()] = entity;
 
         // Notify systems

@@ -9,10 +9,13 @@
 namespace aecs
 {
     std::size_t Entity::_idCounter = 0;
-    Entity::Entity(World &world) :
-        _id(_idCounter++),
+    Entity::Entity(World &world, std::size_t id) :
         _world(world)
     {
+        if (id == -1)
+            _id = _idCounter++;
+        else
+            _id = id;
     }
 
     std::size_t Entity::getId() const

@@ -19,9 +19,9 @@
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
 
-aecs::Entity &rtype::EntityFactory::createPlayer(bool main)
+aecs::Entity &rtype::EntityFactory::createPlayer(bool main, int nb, size_t id)
 {
-    auto &player = _world->createEntity();
+    auto &player = _world->createEntity(id);
     player.addComponent<PositionComponent>(0, 0);
     player.addComponent<AnimComponent>(1);
     player.addComponent<VelocityComponent>(0, 0);
@@ -34,16 +34,16 @@ aecs::Entity &rtype::EntityFactory::createPlayer(bool main)
     player.addComponent<HPComponent>(50);
     std::shared_ptr<sf::Shader> shader = std::make_shared<sf::Shader>();
     shader->loadFromFile("src/client/Shaders/PlayerColor.frag", sf::Shader::Fragment);
-    shader->setUniform("hue", 0.f);
-    shader->setUniform("saturation", 1.0f);
+    shader->setUniform("hue", 50 * nb - 50);
+    shader->setUniform("saturation", float(!main));
     player.addComponent<ShaderComponent>(shader);
 
     return player;
 }
 
-aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vector2f velocity, int team, bool big)
+aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vector2f velocity, int team, bool big, size_t id)
 {
-    auto &bullet = _world->createEntity();
+    auto &bullet = _world->createEntity(id);
     bullet.addComponent<AnimComponent>(0.5);
     bullet.addComponent<DamageCollisionComponent>(
         team, big ? 50 : 5, big ? DamageCollisionComponent::LG_BULLET : DamageCollisionComponent::SM_BULLET);
@@ -63,9 +63,9 @@ aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vect
     return bullet;
 }
 
-aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vector2f velocity, bool lil)
+aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vector2f velocity, bool lil, size_t id)
 {
-    auto &enemy = _world->createEntity();
+    auto &enemy = _world->createEntity(id);
     position.x = 1088 + rand() % 200;
     enemy.addComponent<PositionComponent>(position.x, position.y);
     if (lil)
@@ -89,7 +89,7 @@ aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vecto
     }
     return enemy;
 }
-#include <iostream>
+
 aecs::Entity &rtype::EntityFactory::createBackground(int id, sf::Vector2f speed)
 {
     auto &back = _world->createEntity();
