@@ -1,74 +1,44 @@
 
+# EPITECH Project - R-Type
 
-## How to use the ECS
+It's an advanced C++ project. The goal is to develop every aspect of a multiplayer video game based on the well-known game called R-Type.
 
-### 1. Create a new ECS instance
+- A graphical client using an ECS (Entity Component System).
+- A server being able to handle network latency and cheating.
 
-```c++
-aecs::World world;
+## Installation / Launching
+
+All you will need is `cmake` to install and run the project and its dependencies.
+
+```bash
+  ./run.sh
 ```
 
-### 2. Create an entity
+#### Dependencies
 
-```c++
-aecs::Entity &entity = world.createEntity();
-```
+- SFML Graphics
+- SFML Network
+- SFML Audio
 
-### 3. Attach a component to an entity
+#### Supported platforms
 
-```c++
-entity.addComponent<Position>(10, 20);
-// or
-world.addComponent<Position>(entity, 10, 20);
-```
+- Windows
+- macOS
+- Linux
+## Developer Documentation
 
-### 4. Add some systems
+Developer documentation is located in `docs/` folder at the root of the project
 
-Each system constructor **_MUST_** take as their 2 first parameters a `aecs::World&` and a `std::vector<std::shared_ptr<Entity>>`.
-This vector contains all the entities; It is then the system's job to filter the entities it needs.
 
-Also, when you create/destroy/modify an entity, the `onEntityAdded`/`onEntityRemoved`/`onEntityModified` methods of
-every system are called respectively, with the entity as parameter. It is then the system's job to filter the entities.
+## Authors
 
-An entity is considered modified when a component is added/removed to it.
+- [@Quentin-Desmettre](https://github.com/Quentin-Desmettre)
+- [@ClementVand](https://github.com/ClementVand)
+- [@EdgarLec](https://github.com/EdgarLec)
+- [@Noa-Trachez](https://github.com/Noa-Trachez)
+- [@PaulinLec](https://github.com/PaulinLec)
 
-```c++
-world.registerSystem<MoveSystem>(priority, /* Additional params to pass to ctor */);
-world.setSystemPriority<MoveSystem>(priority); // If necessary
-```
+## License
 
-### 5. Set a render system
+No license
 
-```c++
-world.registerRenderSystem<RenderSystem>(/* Additional params to pass to ctor */);
-```
-
-### 6. Update & render
-
-```c++
-world.update();
-world.render();
-```
-
-## Utility functions
-
-```c++
-// Destroy an entity
-world.destroyEntity(entity);
-
-// Check if an entity has a component
-entity.hasComponent<Position>();
-
-// Get a component from an entity
-entity.getComponent<Position>();
-
-// Remove components from an entity
-entity.removeComponent<Position>();
-world.removeComponent<Position>(entity);
-
-// Change system priority
-world.setSystemPriority<MoveSystem>(priority);
-
-// Remove a system
-world.removeSystem<MoveSystem>();
-```
