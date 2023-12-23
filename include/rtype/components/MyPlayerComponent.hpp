@@ -12,7 +12,7 @@ namespace rtype
     class MyPlayerComponent : public aecs::AbstractComponent
     {
       public:
-        MyPlayerComponent() = default;
+        MyPlayerComponent() {id = 8;};
         ~MyPlayerComponent() override = default;
     };
 } // namespace rtype

@@ -24,6 +24,9 @@ class PacketBuilder {
         PacketBuilder &operator<<(bool b);
         PacketBuilder &operator<<(char c);
 
+        PacketBuilder &operator+=(const std::vector<std::byte> &newData);
+
+        std::vector<std::byte> getSub();
         PacketBuilder &operator>>(std::string &str);
         PacketBuilder &operator>>(int &i);
         PacketBuilder &operator>>(float &f);
@@ -31,6 +34,8 @@ class PacketBuilder {
         PacketBuilder &operator>>(bool &b);
         PacketBuilder &operator>>(char &c);
 
+        explicit operator std::vector<std::byte>() const;
+        explicit operator bool() const;
 
         [[nodiscard]] std::vector<std::byte> getData() const;
         void clear();

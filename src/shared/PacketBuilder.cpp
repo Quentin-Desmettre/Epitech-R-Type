@@ -13,8 +13,8 @@ PacketBuilder &PacketBuilder::add(std::byte *rawPtr, size_t size)
 
 PacketBuilder &PacketBuilder::operator<<(const std::vector<std::byte> &newData)
 {
-    data.erase(data.begin(), data.end());
-    data.insert(data.end(), newData.begin(), newData.end());
+    data.clear();
+    data = newData;
     return *this;
 }
 
@@ -36,7 +36,7 @@ PacketBuilder &PacketBuilder::operator<<(int i)
 PacketBuilder &PacketBuilder::operator<<(float f)
 {
     auto *rawPtr = reinterpret_cast<std::byte *>(&f);
-    add(rawPtr, sizeof(f));
+    add(rawPtr, sizeof(float));
     return *this;
 }
 
@@ -83,8 +83,8 @@ PacketBuilder &PacketBuilder::operator>>(int &i)
 PacketBuilder &PacketBuilder::operator>>(float &f)
 {
     std::byte *dt = data.data();
-    std::memcpy(&f, dt, sizeof(f));
-    data.erase(data.begin(), data.begin() + sizeof(f));
+    std::memcpy(&f, dt, sizeof(float));
+    data.erase(data.begin(), data.begin() + sizeof(float));
     return *this;
 }
 
@@ -120,4 +120,30 @@ std::vector<std::byte> PacketBuilder::getData() const
 void PacketBuilder::clear()
 {
     data.clear();
+}
+
+PacketBuilder &PacketBuilder::operator+=(const std::vector<std::byte> &newData)
+{
+    *this << static_cast<int>(newData.size());
+    data.insert(data.end(), newData.begin(), newData.end());
+    return *this;
+}
+
+PacketBuilder::operator std::vector<std::byte>() const
+{
+    return data;
+}
+
+PacketBuilder::operator bool() const
+{
+    return !data.empty();
+}
+std::vector<std::byte> PacketBuilder::getSub()
+{
+    std::vector<std::byte> sub;
+    int size;
+    *this >> size;
+    sub.insert(sub.end(), data.begin(), data.begin() + size);
+    data.erase(data.begin(), data.begin() + size);
+    return sub;
 }

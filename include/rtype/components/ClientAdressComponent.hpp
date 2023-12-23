@@ -11,7 +11,7 @@ namespace rtype
     class ClientAdressComponent : public aecs::AbstractComponent
     {
       public:
-        explicit ClientAdressComponent(unsigned int adress): adress(adress) {};
+        explicit ClientAdressComponent(unsigned int adress): adress(adress) {id = 3;};
         ~ClientAdressComponent() override = default;
         unsigned int adress = 0;
     };

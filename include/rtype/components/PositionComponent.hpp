@@ -16,6 +16,7 @@ namespace rtype
             x(x),
             y(y)
         {
+            id = 11;
         }
         ~PositionComponent() override = default;
         [[nodiscard]] std::vector<std::byte> encode() const override;

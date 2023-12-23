@@ -81,6 +81,10 @@ namespace aecs
             return *component;
         }
 
+        [[nodiscard]] std::vector<std::byte> encode() const;
+        void decode(const std::vector<std::byte> &encoded);
+        AbstractComponent &getComponentByComponentId(int id);
+
       private:
         void notifyWorldEntityChanged();
 

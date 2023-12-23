@@ -11,7 +11,7 @@ namespace rtype
     class ClientPortComponent : public aecs::AbstractComponent
     {
       public:
-        explicit ClientPortComponent(unsigned short port): port(port) {};
+        explicit ClientPortComponent(unsigned short port): port(port) {id = 4;};
         ~ClientPortComponent() override = default;
         unsigned short port = 0;
     };

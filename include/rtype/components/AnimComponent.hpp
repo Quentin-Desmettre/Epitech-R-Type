@@ -13,7 +13,9 @@ namespace rtype
     {
       public:
         AnimComponent(float time = 1) :
-            timeToWait(time){};
+            timeToWait(time){
+                id = 1;
+            };
         ~AnimComponent() override = default;
         float timeSinceLastFrame = 0;
         float timeToWait = 1;

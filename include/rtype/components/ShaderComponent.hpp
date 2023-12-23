@@ -17,6 +17,7 @@ namespace rtype
         explicit ShaderComponent(std::shared_ptr<sf::Shader> shader) :
             shader(shader)
         {
+            id = 12;
         }
         ~ShaderComponent() override = default;
 

@@ -31,8 +31,6 @@ namespace rtype
                 auto &position = entity->getComponent<PositionComponent>();
                 auto &velocity = entity->getComponent<VelocityComponent>();
                 auto &sprite = entity->getComponent<SpriteComponent>();
-                std::vector<std::byte> encoded = position.encode();
-                position.decode(encoded);
 
                 position.x += velocity.x * updateParams.deltaTime;
                 position.y += velocity.y * updateParams.deltaTime;
