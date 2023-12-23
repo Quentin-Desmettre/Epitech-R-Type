@@ -25,25 +25,18 @@ namespace rtype
         }
         ~AnimPlayerSystem() override = default;
 
-        void update(const std::vector<aecs::RenderInput> &inputs, float deltaTime) override
+        void update(const aecs::UpdateParams &updateParams) override
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &velocity = entity->getComponent<VelocityComponent>();
                 auto &sprite = entity->getComponent<SpriteComponent>();
                 sf::IntRect rect = sprite.sprite.getTextureRect();
-                sprite.time += deltaTime;
-                if (sprite.time > 1) {
-                    rect.left += 96;
-                    if (rect.left >= 96 * 7)
-                        rect.left = 0;
-                    sprite.time -= 1;
-                }
                 rect.top = 0;
 
                 if (velocity.y < 0)
-                    rect.top = 96;
+                    rect.top = 32;
                 if (velocity.y > 0)
-                    rect.top = 192;
+                    rect.top = 64;
                 sprite.sprite.setTextureRect(rect);
             }
         }

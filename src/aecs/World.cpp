@@ -5,6 +5,7 @@
 #include "aecs/World.hpp"
 #include "aecs/Entity.hpp"
 #include <algorithm>
+#include <iostream>
 
 namespace aecs
 {
@@ -34,7 +35,8 @@ namespace aecs
         // Notify systems
         for (auto &[_, systemPair] : _systems)
             systemPair.first->onEntityAdded(entity);
-        _renderSystem->onEntityAdded(entity);
+        if (_renderSystem)
+            _renderSystem->onEntityAdded(entity);
     }
 
     void World::onEntityRemoved(const EntityPtr &entity)
@@ -42,7 +44,8 @@ namespace aecs
         // Notify systems
         for (auto &[_, systemPair] : _systems)
             systemPair.first->onEntityRemoved(entity);
-        _renderSystem->onEntityRemoved(entity);
+        if (_renderSystem)
+            _renderSystem->onEntityRemoved(entity);
     }
 
     void World::onEntityChanged(const EntityPtr &entity)
@@ -50,7 +53,8 @@ namespace aecs
         // Notify systems
         for (auto &[_, systemPair] : _systems)
             systemPair.first->onEntityModified(entity);
-        _renderSystem->onEntityModified(entity);
+        if (_renderSystem)
+            _renderSystem->onEntityModified(entity);
     }
 
     void World::onEntityChanged(const aecs::Entity &entity)
@@ -79,13 +83,15 @@ namespace aecs
         clock.restart();
         // Lock inputs
         std::lock_guard<std::mutex> lock(_renderInputsMutex);
+        UpdateParams updateParams = {getInputs(), deltaTime};
 
         // Update systems
         for (auto &[system, _] : _sortedSystems)
-            system->update(_renderInputs, deltaTime);
+            system->update(updateParams);
 
         // Clear
-        _renderInputs.clear();
+        // _renderInputs.clear();
+        _tick++;
     }
 
     void World::render()
@@ -95,7 +101,7 @@ namespace aecs
             auto tmp = _renderSystem->render();
             {
                 std::lock_guard<std::mutex> lock(_renderInputsMutex);
-                _renderInputs = tmp;
+                setClientInputs(0, tmp);
             }
         }
     }

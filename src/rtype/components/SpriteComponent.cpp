@@ -9,15 +9,22 @@ rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f si
 {
     if (!_texture.loadFromFile(path))
         throw std::runtime_error("Cannot load texture: " + path);
-    _texture.setSmooth(true);
+    _texture.setRepeated(true);
     sprite.setTexture(_texture);
+    if (rect.width == 0 && rect.height == 0) {
+        rect.width = _texture.getSize().x;
+        rect.height = _texture.getSize().y;
+    }
     // scale sprite
     sf::Vector2<unsigned int> spSize = _texture.getSize();
-    if (rect.width != 0 && rect.height != 0) {
-        spSize = sf::Vector2<unsigned int>(rect.width, rect.height);
-        sprite.setTextureRect(rect);
+    if (rect.width < spSize.x) {
+        spSize.x = rect.width;
+    }
+    if (rect.height < spSize.y) {
+            spSize.y = rect.height;
     }
 
+    sprite.setTextureRect(rect);
     if (size.x != 0 && size.y != 0) {
         sprite.setScale(size.x / spSize.x, size.y / spSize.y);
     }

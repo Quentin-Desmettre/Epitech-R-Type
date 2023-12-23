@@ -9,18 +9,20 @@
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
     ARenderSystem(world, entities, {typeid(rtype::SpriteComponent), typeid(rtype::PositionComponent)}),
-    _window(sf::VideoMode(1440, 810), "R-Type")
+    _window(sf::VideoMode(1088, 640), "R-Type")
 {
 }
 
-std::vector<aecs::RenderInput> rtype::RenderSystem::render()
+aecs::ClientInputs rtype::RenderSystem::render()
 {
-    std::vector<aecs::RenderInput> inputs;
+    aecs::ClientInputs inputs;
 
     // Poll events
     sf::Event event{};
     while (_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed)
+            _window.close();
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             _window.close();
     }
     for (int i = 0; i < sf::Keyboard::KeyCount; i++) {

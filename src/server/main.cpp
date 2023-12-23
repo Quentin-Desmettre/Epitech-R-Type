@@ -1,7 +1,10 @@
-#include <iostream>
+#include "rtype/RTypeServer.hpp"
+#include <SFML/Graphics.hpp>
 
 int main()
 {
-    std::cout << "Hi i'm the server" << std::endl;
+    rtype::RTypeServer server(60);
+
+    server.run();
     return 0;
 }
