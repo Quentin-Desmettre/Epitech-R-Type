@@ -25,7 +25,7 @@ namespace rtype
             team(team),
             damage(damage),
             type(type){id = 5;};
-        DamageCollisionComponent() = default;
+        DamageCollisionComponent() {id = 5;};
         [[nodiscard]] std::vector<std::byte> encode() const override;
         void decode(const std::vector<std::byte> &encoded) override;
         ~DamageCollisionComponent() override = default;

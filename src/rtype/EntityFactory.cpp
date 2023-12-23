@@ -16,6 +16,8 @@
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include <memory>
+#include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/VelocityComponent.hpp"
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
 

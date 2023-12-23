@@ -7,6 +7,8 @@
 #include "rtype/systems/AnimPlayerSystem.hpp"
 #include "rtype/systems/AnimSystem.hpp"
 #include "rtype/systems/BulletSystem.hpp"
+#include "rtype/systems/ClientInputSenderSystem.hpp"
+#include "rtype/systems/ClientServerDataHandlerSystem.hpp"
 #include "rtype/systems/ControlPlayerSystem.hpp"
 #include "rtype/systems/DamageCollisionSystem.hpp"
 #include "rtype/systems/InvulSystem.hpp"
@@ -16,9 +18,6 @@
 #include "rtype/systems/PhysicsSystem.hpp"
 #include <chrono>
 #include <thread>
-#include "rtype/EntityFactory.hpp"
-#include "rtype/systems/ClientServerDataHandlerSystem.hpp"
-#include "rtype/systems/ClientInputSenderSystem.hpp"
 
 rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world(),

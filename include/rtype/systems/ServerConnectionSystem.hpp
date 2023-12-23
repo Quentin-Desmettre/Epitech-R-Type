@@ -7,18 +7,21 @@
 
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include <SFML/Network.hpp>
-#include <iostream>
+#include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
-#include "rtype/NetworkGlobals.hpp"
+#include <SFML/Network.hpp>
+#include <iostream>
 
-namespace rtype {
-    class ServerConnectionSystem: public aecs::ALogicSystem {
-    public:
-        ServerConnectionSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-                ALogicSystem(world, entities, {}),
-                _connected(false)
+namespace rtype
+{
+    class ServerConnectionSystem : public aecs::ALogicSystem
+    {
+      public:
+        ServerConnectionSystem(aecs::World &world,
+                               const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+            ALogicSystem(world, entities, {}),
+            _connected(false)
         {
         }
 
@@ -29,7 +32,8 @@ namespace rtype {
          * 2. Wait for message, containing game state
          * 3. set game state
          */
-        void update(const aecs::UpdateParams &updateParams) override { // TODO: take as parameter a SystemParams object
+        void update(const aecs::UpdateParams &updateParams) override
+        { // TODO: take as parameter a SystemParams object
             if (_connected)
                 return;
 
@@ -62,15 +66,15 @@ namespace rtype {
             // _world.load(packet.getData(), packet.getDataSize());
         }
 
-        [[nodiscard]] bool isConnected() const {
+        [[nodiscard]] bool isConnected() const
+        {
             return _connected;
         }
 
-    private:
+      private:
         bool _connected;
         sf::TcpSocket _socket;
     };
-}
+} // namespace rtype
 
-
-#endif //R_TYPE_SERVERCONNECTIONSYSTEM_HPP
+#endif // R_TYPE_SERVERCONNECTIONSYSTEM_HPP

@@ -7,27 +7,30 @@
 
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include <SFML/Network.hpp>
-#include <iostream>
-#include "rtype/components/MyPlayerComponent.hpp"
-#include "rtype/components/PositionComponent.hpp"
+#include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
 #include "rtype/components/ClientPortComponent.hpp"
-#include "rtype/NetworkGlobals.hpp"
+#include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
+#include <SFML/Network.hpp>
 #include <SFML/System/Err.hpp>
+#include <iostream>
 #ifdef SFML_SYSTEM_WINDOWS
-        #include <winsock2.h>
+#include <winsock2.h>
 #else
-        #include <sys/socket.h>
+#include <sys/socket.h>
 #endif
 #include <cstring>
 #include <netinet/in.h>
 
-namespace rtype {
+namespace rtype
+{
 
-    class RTypeListener: public sf::TcpListener {
-    public:
-        Socket::Status listen(unsigned short port, const sf::IpAddress &address = sf::IpAddress::Any) {
+    class RTypeListener : public sf::TcpListener
+    {
+      public:
+        Socket::Status listen(unsigned short port, const sf::IpAddress &address = sf::IpAddress::Any)
+        {
             close();
             create();
 
@@ -36,7 +39,7 @@ namespace rtype {
 
             sockaddr_in addr = createAddress(address.toInteger(), port);
             setsockopt(getHandle(), SOL_SOCKET, SO_REUSEADDR, &addr, sizeof(addr));
-            if (bind(getHandle(), reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) == -1) {
+            if (bind(getHandle(), reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == -1) {
                 sf::err() << "Failed to bind listener socket to port " << port << std::endl;
                 return sf::Socket::Error;
             }
@@ -49,28 +52,30 @@ namespace rtype {
             return sf::Socket::Done;
         }
 
-    protected:
-    private:
-        sockaddr_in createAddress(unsigned int address, unsigned short port)  {
+      protected:
+      private:
+        sockaddr_in createAddress(unsigned int address, unsigned short port)
+        {
             sockaddr_in addr;
             std::memset(&addr, 0, sizeof(addr));
             addr.sin_addr.s_addr = htonl(address);
-            addr.sin_family      = AF_INET;
-            addr.sin_port        = htons(port);
+            addr.sin_family = AF_INET;
+            addr.sin_port = htons(port);
 
-        #if defined(SFML_SYSTEM_MACOS)
+#if defined(SFML_SYSTEM_MACOS)
             addr.sin_len = sizeof(addr);
-        #endif
+#endif
 
             return addr;
         }
     };
 
-    class NewConnectionSystem: public aecs::ALogicSystem {
-    public:
+    class NewConnectionSystem : public aecs::ALogicSystem
+    {
+      public:
         NewConnectionSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-                ALogicSystem(world, entities, {}),
-                _listener()
+            ALogicSystem(world, entities, {}),
+            _listener()
         {
             _listener.listen(SERVER_TCP_PORT);
             _listener.setBlocking(false);
@@ -79,7 +84,8 @@ namespace rtype {
         ~NewConnectionSystem() override = default;
 
         // listen for new connections and send game state to new clients
-        void update(const aecs::UpdateParams &updateParams) override {
+        void update(const aecs::UpdateParams &updateParams) override
+        {
             sf::TcpSocket socket;
 
             socket.setBlocking(false);
@@ -96,16 +102,16 @@ namespace rtype {
                 socket.send(packet);
                 aecs::Entity &entity = _world.createEntity();
                 entity.addComponent<ClientAdressComponent>(socket.getRemoteAddress().toInteger());
-                // TODO: get client port and add it to entity via a ClientPortComponent instead of hardcoding 53002 (CLIENT_UDP_PORT)
+                // TODO: get client port and add it to entity via a ClientPortComponent instead of hardcoding 53002
+                // (CLIENT_UDP_PORT)
                 entity.addComponent<ClientPortComponent>(CLIENT_INPUTS_PORT);
                 socket.disconnect();
             }
         }
 
-    private:
+      private:
         RTypeListener _listener;
     };
-}
+} // namespace rtype
 
-
-#endif //R_TYPE_NEWCONNECTIONSYSTEM_HPP
+#endif // R_TYPE_NEWCONNECTIONSYSTEM_HPP

@@ -21,7 +21,8 @@ namespace aecs
     typedef std::vector<RenderInput> ClientInputs;
     typedef std::map<unsigned, ClientInputs> ServerInputs;
 
-    #define MY_INPUTS(serverInputs) ((serverInputs).find(0) != (serverInputs).end() ? (serverInputs).at(0) : aecs::ClientInputs())
+#define MY_INPUTS(serverInputs)                                                                                        \
+    ((serverInputs).find(0) != (serverInputs).end() ? (serverInputs).at(0) : aecs::ClientInputs())
 
     typedef struct UpdateParams {
         const ServerInputs &inputs;

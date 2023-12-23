@@ -6,8 +6,8 @@
 #define R_TYPE_RTYPESERVER_HPP
 
 #include "aecs/World.hpp"
-#include <functional>
 #include "rtype/EntityFactory.hpp"
+#include <functional>
 
 namespace rtype
 {

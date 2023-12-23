@@ -13,7 +13,7 @@ namespace rtype
       public:
         explicit HPComponent(float hp) :
             hp(hp){id = 6;};
-        HPComponent() = default;
+        HPComponent() {id = 6;};
         [[nodiscard]] std::vector<std::byte> encode() const override;
         void decode(const std::vector<std::byte> &encoded) override;
         ~HPComponent() override = default;

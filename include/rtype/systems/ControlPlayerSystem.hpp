@@ -23,8 +23,8 @@ namespace rtype
       public:
         ControlPlayerSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
             ALogicSystem(world, entities,
-                         {typeid(VelocityComponent), typeid(MyPlayerComponent), typeid(SpriteComponent), typeid(PlayerComponent),
-                          typeid(PositionComponent)})
+                         {typeid(VelocityComponent), typeid(MyPlayerComponent), typeid(SpriteComponent),
+                          typeid(PlayerComponent), typeid(PositionComponent)})
         {
         }
         ~ControlPlayerSystem() override = default;
@@ -44,24 +44,24 @@ namespace rtype
                 bool shift = false;
                 aecs::ClientInputs myInputs = MY_INPUTS(updateParams.inputs);
                 for (auto &input : myInputs) {
-                        if (input == sf::Keyboard::Key::Z) {
-                                velocity.y += -50;
-                        }
-                        if (input == sf::Keyboard::Key::S) {
-                                velocity.y += 50;
-                        }
-                        if (input == sf::Keyboard::Key::Q) {
-                                velocity.x += -50;
-                        }
-                        if (input == sf::Keyboard::Key::D) {
-                                velocity.x += 50;
-                        }
-                        if (input == sf::Keyboard::Key::Space) {
-                            space = true;
-                        }
-                        if (input == sf::Keyboard::Key::LShift) {
-                            shift = true;
-                        }
+                    if (input == sf::Keyboard::Key::Z) {
+                        velocity.y += -50;
+                    }
+                    if (input == sf::Keyboard::Key::S) {
+                        velocity.y += 50;
+                    }
+                    if (input == sf::Keyboard::Key::Q) {
+                        velocity.x += -50;
+                    }
+                    if (input == sf::Keyboard::Key::D) {
+                        velocity.x += 50;
+                    }
+                    if (input == sf::Keyboard::Key::Space) {
+                        space = true;
+                    }
+                    if (input == sf::Keyboard::Key::LShift) {
+                        shift = true;
+                    }
                 }
                 if (space && !shift && my.timeSinceLastShoot > 3) {
                     EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 32), sf::Vector2f(100, 0),

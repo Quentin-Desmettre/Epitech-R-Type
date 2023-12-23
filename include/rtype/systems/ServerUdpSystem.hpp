@@ -7,20 +7,22 @@
 
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include <SFML/Network.hpp>
-#include "rtype/components/MyPlayerComponent.hpp"
-#include "rtype/components/PositionComponent.hpp"
+#include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
 #include "rtype/components/ClientPortComponent.hpp"
-#include "rtype/NetworkGlobals.hpp"
-#include <map>
+#include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
+#include <SFML/Network.hpp>
 #include <iostream>
+#include <map>
 
-namespace rtype {
-    class ServerUdpSystem: public aecs::ALogicSystem {
-    public:
+namespace rtype
+{
+    class ServerUdpSystem : public aecs::ALogicSystem
+    {
+      public:
         ServerUdpSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-                ALogicSystem(world, entities, {typeid(ClientAdressComponent), typeid(ClientPortComponent)})
+            ALogicSystem(world, entities, {typeid(ClientAdressComponent), typeid(ClientPortComponent)})
         {
             _socket.bind(SERVER_UDP_PORT);
             _socket.setBlocking(false);
@@ -28,13 +30,15 @@ namespace rtype {
 
         ~ServerUdpSystem() override = default;
 
-        void update(const aecs::UpdateParams &updateParams) override {
+        void update(const aecs::UpdateParams &updateParams) override
+        {
             recieveInputs();
             // sendCorrections();
         }
 
-    private:
-        void recieveInputs() {
+      private:
+        void recieveInputs()
+        {
             sf::Packet packet;
             sf::IpAddress sender;
             unsigned short port;
@@ -63,7 +67,8 @@ namespace rtype {
             _world.setClientInputs(clientId, inputs);
         }
 
-        void sendCorrections() {
+        void sendCorrections()
+        {
             for (auto &[_, entity] : _entitiesMap) {
                 auto &clientAdress = entity->getComponent<ClientAdressComponent>();
                 auto &clientPort = entity->getComponent<ClientPortComponent>();
@@ -79,7 +84,6 @@ namespace rtype {
 
         sf::UdpSocket _socket;
     };
-}
+} // namespace rtype
 
-
-#endif //R_TYPE_SERVERUDPSYSTEM_HPP
+#endif // R_TYPE_SERVERUDPSYSTEM_HPP
