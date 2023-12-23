@@ -41,6 +41,10 @@ namespace aecs
             std::cout << component.second->id << std::endl;
             pb += component.second->encode();
         }
+        std::vector<std::byte> data = pb.getData();
+        pb.clear();
+        pb << static_cast<int>(getId());
+        pb += data;
         return pb.getData();
     }
 
