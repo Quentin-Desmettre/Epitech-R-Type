@@ -5,14 +5,14 @@
 #include "rtype/components/PlayerComponent.hpp"
 #include "shared/PacketBuilder.hpp"
 
-std::string rtype::PlayerComponent::encode() const
+std::vector<std::byte> rtype::PlayerComponent::encode() const
 {
     PacketBuilder pb;
     pb << timeInShift << timeSinceLastShoot;
     return pb.getData();
 }
 
-void rtype::PlayerComponent::decode(const std::string &encoded)
+void rtype::PlayerComponent::decode(const std::vector<std::byte> &encoded)
 {
     PacketBuilder pb;
     pb << encoded;

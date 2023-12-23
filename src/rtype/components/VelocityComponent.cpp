@@ -5,14 +5,14 @@
 #include "rtype/components/VelocityComponent.hpp"
 #include "shared/PacketBuilder.hpp"
 
-std::string rtype::VelocityComponent::encode() const
+std::vector<std::byte> rtype::VelocityComponent::encode() const
 {
     PacketBuilder pb;
     pb << x << y;
     return pb.getData();
 }
 
-void rtype::VelocityComponent::decode(const std::string &encoded)
+void rtype::VelocityComponent::decode(const std::vector<std::byte> &encoded)
 {
     PacketBuilder pb;
     pb << encoded;

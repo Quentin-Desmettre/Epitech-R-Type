@@ -5,117 +5,116 @@
 #include "shared/PacketBuilder.hpp"
 #include <cstring>
 
+PacketBuilder &PacketBuilder::add(std::byte *rawPtr, size_t size)
+{
+    data.insert(data.end(), rawPtr, rawPtr + size);
+    return *this;
+}
+
+PacketBuilder &PacketBuilder::operator<<(const std::vector<std::byte> &newData)
+{
+    data.erase(data.begin(), data.end());
+    data.insert(data.end(), newData.begin(), newData.end());
+    return *this;
+}
+
 PacketBuilder &PacketBuilder::operator<<(const std::string &str)
 {
-    data += reinterpret_cast<const char *>(str.size(), sizeof(int));
-    data += str;
+    *this << static_cast<int>(str.size());
+    auto *rawPtr = reinterpret_cast<std::byte *>(const_cast<char *>(str.c_str()));
+    add(rawPtr, str.size());
     return *this;
 }
 
-PacketBuilder &PacketBuilder::operator<<(const char *str)
+PacketBuilder &PacketBuilder::operator<<(int i)
 {
-    data += reinterpret_cast<const char *>(strlen(str), sizeof(int));
-    data += str;
+    auto *rawPtr = reinterpret_cast<std::byte *>(&i);
+    add(rawPtr, sizeof(i));
     return *this;
 }
 
-PacketBuilder &PacketBuilder::operator<<(const int &i)
+PacketBuilder &PacketBuilder::operator<<(float f)
 {
-    data += reinterpret_cast<const char *>(i, sizeof(int));
+    auto *rawPtr = reinterpret_cast<std::byte *>(&f);
+    add(rawPtr, sizeof(f));
     return *this;
 }
 
-PacketBuilder &PacketBuilder::operator<<(const float &f)
+PacketBuilder &PacketBuilder::operator<<(double d)
 {
-    data += reinterpret_cast<const char *>(f, sizeof(float));
+    auto *rawPtr = reinterpret_cast<std::byte *>(&d);
+    add(rawPtr, sizeof(d));
     return *this;
 }
 
-PacketBuilder &PacketBuilder::operator<<(const double &d)
+PacketBuilder &PacketBuilder::operator<<(bool b)
 {
-    data += reinterpret_cast<const char *>(d, sizeof(double));
+    auto *rawPtr = reinterpret_cast<std::byte *>(&b);
+    add(rawPtr, sizeof(b));
     return *this;
 }
 
-PacketBuilder &PacketBuilder::operator<<(const bool &b)
+PacketBuilder &PacketBuilder::operator<<(char c)
 {
-    data += reinterpret_cast<const char *>(b, sizeof(bool));
+    auto *rawPtr = reinterpret_cast<std::byte *>(&c);
+    add(rawPtr, sizeof(c));
     return *this;
-}
-
-PacketBuilder &PacketBuilder::operator<<(const char &c)
-{
-    data += c;
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator<<(const sf::Vector2f &v)
-{
-    return *this << v.x << v.y;
 }
 
 PacketBuilder &PacketBuilder::operator>>(std::string &str)
 {
-    int size = 0;
-    std::memcpy(&size, data.c_str(), sizeof(int));
-    str = data.substr(sizeof(int), size);
-    data = data.substr(sizeof(int) + size);
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator>>(char *str)
-{
-    int size = 0;
-    std::memcpy(&size, data.c_str(), sizeof(int));
-    std::memcpy(str, data.c_str() + sizeof(int), size);
-    str[size] = '\0';
-    data = data.substr(sizeof(int) + size);
+    int size;
+    *this >> size;
+    str.resize(size);
+    std::byte *dt = data.data();
+    std::memcpy(&str[0], dt, size);
+    data.erase(data.begin(), data.begin() + size);
     return *this;
 }
 
 PacketBuilder &PacketBuilder::operator>>(int &i)
 {
-    std::memcpy(&i, data.c_str(), sizeof(int));
-    data = data.substr(sizeof(int));
+    std::byte *dt = data.data();
+    std::memcpy(&i, dt, sizeof(i));
+    data.erase(data.begin(), data.begin() + sizeof(i));
     return *this;
 }
 
 PacketBuilder &PacketBuilder::operator>>(float &f)
 {
-    std::memcpy(&f, data.c_str(), sizeof(float));
-    data = data.substr(sizeof(float));
+    std::byte *dt = data.data();
+    std::memcpy(&f, dt, sizeof(f));
+    data.erase(data.begin(), data.begin() + sizeof(f));
     return *this;
 }
 
 PacketBuilder &PacketBuilder::operator>>(double &d)
 {
-    std::memcpy(&d, data.c_str(), sizeof(double));
-    data = data.substr(sizeof(double));
+    std::byte *dt = data.data();
+    std::memcpy(&d, dt, sizeof(d));
+    data.erase(data.begin(), data.begin() + sizeof(d));
     return *this;
 }
 
 PacketBuilder &PacketBuilder::operator>>(bool &b)
 {
-    std::memcpy(&b, data.c_str(), sizeof(bool));
-    data = data.substr(sizeof(bool));
+    std::byte *dt = data.data();
+    std::memcpy(&b, dt, sizeof(b));
+    data.erase(data.begin(), data.begin() + sizeof(b));
     return *this;
 }
 
 PacketBuilder &PacketBuilder::operator>>(char &c)
 {
-    c = data[0];
-    data = data.substr(1);
+    std::byte *dt = data.data();
+    std::memcpy(&c, dt, sizeof(c));
+    data.erase(data.begin(), data.begin() + sizeof(c));
     return *this;
 }
 
-PacketBuilder &PacketBuilder::operator>>(sf::Vector2f &v)
+std::vector<std::byte> PacketBuilder::getData() const
 {
-    return *this >> v.x >> v.y;
-}
-
-std::string PacketBuilder::getData() const
-{
-    return std::to_string(data.size()) + data;
+    return data;
 }
 
 void PacketBuilder::clear()

@@ -5,14 +5,14 @@
 #include "rtype/components/MonsterComponent.hpp"
 #include "shared/PacketBuilder.hpp"
 
-std::string rtype::MonsterComponent::encode() const
+std::vector<std::byte> rtype::MonsterComponent::encode() const
 {
     PacketBuilder pb;
     pb << _lil << timeSinceLastShoot;
     return pb.getData();
 }
 
-void rtype::MonsterComponent::decode(const std::string &encoded)
+void rtype::MonsterComponent::decode(const std::vector<std::byte> &encoded)
 {
     PacketBuilder pb;
     pb << encoded;

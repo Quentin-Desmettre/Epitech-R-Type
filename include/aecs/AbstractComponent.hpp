@@ -7,16 +7,16 @@
 
 #include <cstddef>
 #include <string>
+#include <vector>
 namespace aecs
 {
     class AbstractComponent
     {
       public:
         virtual ~AbstractComponent() = 0;
-        int id;
 
-        virtual std::string encode() const { return ""; };
-        virtual void decode(const std::string &str) {};
+        [[nodiscard]] virtual std::vector<std::byte> encode() const { return {}; };
+        virtual void decode(const std::vector<std::byte> &data) {};
 
     };
 } // namespace aecs

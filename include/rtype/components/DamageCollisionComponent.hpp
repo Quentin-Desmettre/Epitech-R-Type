@@ -26,8 +26,8 @@ namespace rtype
             damage(damage),
             type(type){};
         DamageCollisionComponent() = default;
-        [[nodiscard]] std::string encode() const override;
-        void decode(const std::string &encoded) override;
+        [[nodiscard]] std::vector<std::byte> encode() const override;
+        void decode(const std::vector<std::byte> &encoded) override;
         ~DamageCollisionComponent() override = default;
         int team = 0;
         float damage = 0;

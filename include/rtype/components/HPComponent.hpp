@@ -14,8 +14,8 @@ namespace rtype
         explicit HPComponent(float hp) :
             hp(hp){};
         HPComponent() = default;
-        [[nodiscard]] std::string encode() const override;
-        void decode(const std::string &encoded) override;
+        [[nodiscard]] std::vector<std::byte> encode() const override;
+        void decode(const std::vector<std::byte> &encoded) override;
         ~HPComponent() override = default;
         float hp = 0;
     };
