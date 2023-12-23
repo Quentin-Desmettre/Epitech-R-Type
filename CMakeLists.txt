@@ -48,7 +48,16 @@ set(SERVER_SRC src/server/main.cpp
         include/rtype/systems/AnimPlayerSystem.hpp
         include/rtype/systems/NewConnectionSystem.hpp
         include/rtype/components/ClientAdressComponent.hpp
-        include/rtype/systems/ServerUdpSystem.hpp)
+        include/rtype/systems/ServerUdpSystem.hpp
+        include/shared/PacketBuilder.hpp
+        src/shared/PacketBuilder.cpp
+        include/rtype/ComponentList.hpp
+        src/rtype/components/DamageCollisionComponent.cpp
+        src/rtype/components/HPComponent.cpp
+        src/rtype/components/MonsterComponent.cpp
+        src/rtype/components/PlayerComponent.cpp
+        src/rtype/components/PositionComponent.cpp
+        src/rtype/components/VelocityComponent.cpp)
 set(CLIENT_SRC src/client/main.cpp
         src/rtype/RTypeClient.cpp
         include/rtype/RTypeClient.hpp
@@ -58,6 +67,15 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/systems/ClientInputSenderSystem.hpp
         include/rtype/systems/ClientServerDataHandlerSystem.cpp
         include/rtype/systems/ClientServerDataHandlerSystem.hpp
+        include/shared/PacketBuilder.hpp
+        src/shared/PacketBuilder.cpp
+        include/rtype/ComponentList.hpp
+        src/rtype/components/DamageCollisionComponent.cpp
+        src/rtype/components/HPComponent.cpp
+        src/rtype/components/MonsterComponent.cpp
+        src/rtype/components/PlayerComponent.cpp
+        src/rtype/components/PositionComponent.cpp
+        src/rtype/components/VelocityComponent.cpp
 )
 
 include(FetchContent)

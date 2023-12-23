@@ -14,6 +14,10 @@ namespace rtype
       public:
         PlayerComponent() = default;
         ~PlayerComponent() override = default;
+        [[nodiscard]] std::string encode() const override;
+        void decode(const std::string &encoded) override;
+        float timeSinceLastShoot = 0;
+        float timeInShift = 0;
     };
 } // namespace rtype
 

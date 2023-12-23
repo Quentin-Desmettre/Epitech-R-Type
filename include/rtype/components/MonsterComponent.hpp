@@ -15,7 +15,9 @@ namespace rtype
             _lil(lil){};
         ~MonsterComponent() override = default;
         float timeSinceLastShoot = 0;
-        float _lil;
+        bool _lil = false;
+        [[nodiscard]] std::string encode() const override;
+        void decode(const std::string &encoded) override;
     };
 } // namespace rtype
 

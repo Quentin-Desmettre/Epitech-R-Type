@@ -89,7 +89,7 @@ aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vecto
     }
     return enemy;
 }
-
+#include <iostream>
 aecs::Entity &rtype::EntityFactory::createBackground(int id, sf::Vector2f speed)
 {
     auto &back = _world->createEntity();

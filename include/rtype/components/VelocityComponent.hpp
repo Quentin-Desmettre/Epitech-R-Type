@@ -18,6 +18,8 @@ namespace rtype
         {
         }
         ~VelocityComponent() override = default;
+        [[nodiscard]] std::string encode() const override;
+        void decode(const std::string &encoded) override;
 
         float x;
         float y;
