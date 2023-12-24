@@ -76,6 +76,7 @@ namespace rtype
             sf::Packet pongPacket;
             pongPacket << "pong" << tick;
             _socket.send(pongPacket, sender, port);
+            _world.resetTimeSinceLastCommunication();
 
             // Check if tick has already been checked
             if (tick <= _maxReceivedTick)

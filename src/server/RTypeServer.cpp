@@ -16,6 +16,7 @@
 #include "rtype/systems/ParallaxSystem.hpp"
 #include "rtype/systems/PhysicsSystem.hpp"
 #include "rtype/systems/ServerUdpSystem.hpp"
+#include "rtype/systems/DeleteClientSystem.hpp"
 #include <chrono>
 #include <thread>
 
@@ -35,6 +36,7 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate) :
     // Network systems
     _world.registerSystem<NewConnectionSystem>(-2);
     _world.registerSystem<ServerUdpSystem>(-1);
+    _world.registerSystem<DeleteClientSystem>(0);
 
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);

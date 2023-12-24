@@ -40,7 +40,8 @@ set(SHARED_SRC
         include/rtype/systems/DamageCollisionSystem.hpp
         include/rtype/components/HPComponent.hpp
         include/rtype/NetworkGlobals.hpp
-        include/rtype/StaticPacketParser.hpp)
+        include/rtype/StaticPacketParser.hpp
+        include/rtype/components/ClientPingComponent.hpp)
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
         include/rtype/RTypeServer.hpp
@@ -50,6 +51,7 @@ set(SERVER_SRC src/server/main.cpp
         include/rtype/systems/NewConnectionSystem.hpp
         include/rtype/components/ClientAdressComponent.hpp
         include/rtype/systems/ServerUdpSystem.hpp
+        include/rtype/systems/DeleteClientSystem.hpp
         include/shared/PacketBuilder.hpp
         src/shared/PacketBuilder.cpp
         include/rtype/ComponentList.hpp
@@ -67,7 +69,7 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/systems/ServerConnectionSystem.hpp
         include/rtype/systems/ClientInputSenderSystem.hpp
         include/rtype/systems/ClientServerDataHandlerSystem.cpp
-        include/rtype/systems/ClientServerDataHandlerSystem.hpp
+        include/rtype/systems/ClientPingSystem.hpp
         include/shared/PacketBuilder.hpp
         src/shared/PacketBuilder.cpp
         include/rtype/ComponentList.hpp

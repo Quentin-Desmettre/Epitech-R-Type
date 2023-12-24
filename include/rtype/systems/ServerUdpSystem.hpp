@@ -10,10 +10,7 @@
 #include "rtype/NetworkGlobals.hpp"
 #include "rtype/StaticPacketParser.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
-#include "rtype/components/ClientPortComponent.hpp"
-#include "rtype/components/MyPlayerComponent.hpp"
-#include "rtype/components/PositionComponent.hpp"
-#include <SFML/Network.hpp>
+#include "rtype/components/ClientPingComponent.hpp"
 #include <iostream>
 #include <map>
 
@@ -23,7 +20,7 @@ namespace rtype
     {
       public:
         ServerUdpSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {typeid(ClientAdressComponent), typeid(ClientPortComponent)})
+            ALogicSystem(world, entities, {typeid(ClientAdressComponent)})
         {
             _socket.bind(SERVER_UDP_PORT);
             _socket.setBlocking(false);
@@ -51,10 +48,7 @@ namespace rtype
                 return;
             for (auto &[id, entity] : _entitiesMap) {
                 auto &clientAdress = entity->getComponent<ClientAdressComponent>();
-                auto &clientPort = entity->getComponent<ClientPortComponent>();
-                if (clientAdress.adress == sender.toInteger() &&
-                    (clientPort.port == port || clientPort.port == CLIENT_INPUTS_PORT ||
-                     clientPort.port == CLIENT_CORRECTIONS_PORT)) {
+                if (clientAdress.adress == sender.toInteger()) {
                     clientId = id;
                     break;
                 }
@@ -64,7 +58,17 @@ namespace rtype
                 return;
             }
 
-            if (!StaticPacketParser::parsePacket(packet, _world, clientId))
+            StaticPacketParser::SystemData systemData = {
+                .world = _world, .clientId = clientId, ._entitiesMap = _entitiesMap};
+            if (StaticPacketParser::parsePacket(packet, systemData)) {
+                auto client = _entitiesMap.find(clientId);
+                if (client == _entitiesMap.end())
+                    return;
+                std::cout << "client " << clientId << " ping: "
+                          << client->second->getComponent<ClientPingComponent>().clock.getElapsedTime().asSeconds()
+                          << std::endl;
+                client->second->getComponent<ClientPingComponent>().clock.restart();
+            } else
                 std::cout << "Error parsing packet" << std::endl;
         }
 
@@ -72,11 +76,11 @@ namespace rtype
         {
             for (auto &[_, entity] : _entitiesMap) {
                 auto &clientAdress = entity->getComponent<ClientAdressComponent>();
-                auto &clientPort = entity->getComponent<ClientPortComponent>();
                 sf::Packet packet;
 
                 packet << (float)(std::rand() % 400) << (float)(std::rand() % 400);
-                sf::Socket::Status status = _socket.send(packet, sf::IpAddress(clientAdress.adress), clientPort.port);
+                sf::Socket::Status status =
+                    _socket.send(packet, sf::IpAddress(clientAdress.adress), CLIENT_CORRECTIONS_PORT);
 
                 if (status != sf::Socket::Done)
                     std::cout << "Error sending packet" << std::endl;
