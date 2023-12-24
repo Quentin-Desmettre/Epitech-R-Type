@@ -67,16 +67,6 @@ namespace aecs
             return _tick;
         }
 
-        int getTimeSinceLastCommunication() const
-        {
-            return _lastCommunication.getElapsedTime().asMilliseconds();
-        }
-
-        void resetTimeSinceLastCommunication()
-        {
-            _lastCommunication.restart();
-        }
-
         // Flush every gamestate before tick (including it)
         const GameState &getGameState(int tick) const; // TODO
 
@@ -203,7 +193,6 @@ namespace aecs
         bool _isServer;
         std::shared_ptr<ISystem> _renderSystem;
         sf::Clock clock;
-        sf::Clock _lastCommunication;
         std::map<unsigned, ServerInputs> _renderInputs;
         std::mutex _renderInputsMutex;
     };

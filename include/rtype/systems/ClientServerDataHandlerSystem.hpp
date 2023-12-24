@@ -10,6 +10,7 @@
 #include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/ClientPingComponent.hpp"
 #include "rtype/systems/ServerConnectionSystem.hpp"
 #include <SFML/Network.hpp>
 #include <cassert>
@@ -62,6 +63,7 @@ namespace rtype
                     auto &posComponent = entity->getComponent<PositionComponent>();
                     packet >> posComponent.x >> posComponent.y;
                     std::cout << "x: " << posComponent.x << " y: " << posComponent.y << std::endl;
+                    break;
                 }
             }
 
@@ -76,7 +78,15 @@ namespace rtype
             sf::Packet pongPacket;
             pongPacket << "pong" << tick;
             _socket.send(pongPacket, sender, port);
-            _world.resetTimeSinceLastCommunication();
+
+            // Reset ping clock
+            for (auto &[_, entity] : _entitiesMap) {
+                if (entity->hasComponent<ClientPingComponent>()) {
+                    auto &component = entity->getComponent<ClientPingComponent>();
+                    component.clock.restart();
+                    break;
+                }
+            }
 
             // Check if tick has already been checked
             if (tick <= _maxReceivedTick)

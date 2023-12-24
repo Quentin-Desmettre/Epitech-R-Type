@@ -58,8 +58,13 @@ namespace rtype
                 if (entity->hasComponent<MyPlayerComponent>()) {
                     auto &posComponent = entity->getComponent<PositionComponent>();
                     packet >> posComponent.x >> posComponent.y;
+                    break;
                 }
             }
+
+            // Create myself (to activate udp systems)
+            auto &myself = _world.createEntity();
+            myself.addComponent<ClientPingComponent>();
 
             // Set game state
             _connected = true;
