@@ -8,9 +8,10 @@
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
+#include "rtype/StaticPacketParser.hpp"
+#include "rtype/components/ClientPingComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
-#include "rtype/components/ClientPingComponent.hpp"
 #include "rtype/systems/ServerConnectionSystem.hpp"
 #include <SFML/Network.hpp>
 #include <cassert>
@@ -58,15 +59,6 @@ namespace rtype
             if (status != sf::Socket::Done)
                 return;
 
-            for (auto &[_, entity] : _entitiesMap) {
-                if (entity->hasComponent<MyPlayerComponent>()) {
-                    auto &posComponent = entity->getComponent<PositionComponent>();
-                    packet >> posComponent.x >> posComponent.y;
-                    std::cout << "x: " << posComponent.x << " y: " << posComponent.y << std::endl;
-                    break;
-                }
-            }
-
             // If packet:
             // - send pong
             // - check if tick has already been checked
@@ -76,7 +68,7 @@ namespace rtype
             // Send pong with tick
             unsigned tick = *(unsigned *)packet.getData(); // TODO: change how tick is get
             sf::Packet pongPacket;
-            pongPacket << "pong" << tick;
+            pongPacket << static_cast<sf::Uint16>(5) << CLIENT_PONG << std::max(tick, _maxReceivedTick);
             _socket.send(pongPacket, sender, port);
 
             // Reset ping clock

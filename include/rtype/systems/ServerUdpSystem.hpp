@@ -41,35 +41,32 @@ namespace rtype
             sf::IpAddress sender;
             unsigned short port;
             sf::Socket::Status status = _socket.receive(packet, sender, port);
-            aecs::ClientInputs inputs;
-            std::size_t clientId = -1;
 
             if (status != sf::Socket::Done)
                 return;
-            for (auto &[id, entity] : _entitiesMap) {
-                auto &clientAdress = entity->getComponent<ClientAdressComponent>();
-                if (clientAdress.adress == sender.toInteger()) {
-                    clientId = id;
-                    break;
-                }
-            }
+
+            std::size_t clientId = getClientId(sender);
             if (clientId == -1) {
-                std::cout << "Unknown client" << std::endl;
+                std::cerr << "Unknown client" << std::endl;
                 return;
             }
 
             StaticPacketParser::SystemData systemData = {
                 .world = _world, .clientId = clientId, ._entitiesMap = _entitiesMap};
-            if (StaticPacketParser::parsePacket(packet, systemData)) {
-                auto client = _entitiesMap.find(clientId);
-                if (client == _entitiesMap.end())
-                    return;
-                std::cout << "client " << clientId << " ping: "
-                          << client->second->getComponent<ClientPingComponent>().clock.getElapsedTime().asSeconds()
-                          << std::endl;
-                client->second->getComponent<ClientPingComponent>().clock.restart();
-            } else
-                std::cout << "Error parsing packet" << std::endl;
+            PacketTypes type = StaticPacketParser::parsePacket(packet, systemData);
+
+            if (type == NONE) {
+                std::cerr << "Error parsing packet" << std::endl;
+                return;
+            }
+
+            auto client = _entitiesMap.find(clientId);
+            if (client == _entitiesMap.end())
+                return;
+
+            if (type == PING)
+                sendPong(sender);
+            client->second->getComponent<ClientPingComponent>().clock.restart();
         }
 
         void sendCorrections()
@@ -83,8 +80,28 @@ namespace rtype
                     _socket.send(packet, sf::IpAddress(clientAdress.adress), CLIENT_CORRECTIONS_PORT);
 
                 if (status != sf::Socket::Done)
-                    std::cout << "Error sending packet" << std::endl;
+                    std::cerr << "Error sending packet" << std::endl;
             }
+        }
+
+        void sendPong(sf::IpAddress &sender)
+        {
+            sf::Packet packet;
+            packet << static_cast<sf::Uint16>(1) << SERVER_PONG;
+            sf::Socket::Status status = _socket.send(packet, sender, CLIENT_CORRECTIONS_PORT);
+
+            if (status != sf::Socket::Done)
+                std::cerr << "Error sending packet" << std::endl;
+        }
+
+        std::size_t getClientId(const sf::IpAddress &sender)
+        {
+            for (auto &[id, entity] : _entitiesMap) {
+                auto &clientAdress = entity->getComponent<ClientAdressComponent>();
+                if (clientAdress.adress == sender.toInteger())
+                    return id;
+            }
+            return -1;
         }
 
         sf::UdpSocket _socket;

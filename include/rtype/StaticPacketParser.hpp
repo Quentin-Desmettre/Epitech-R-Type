@@ -10,6 +10,7 @@
 #include "aecs/World.hpp"
 #include <SFML/Network.hpp>
 #include <arpa/inet.h>
+#include <iostream>
 
 enum PacketTypes : sf::Uint8 {
     NONE = 0x2A,
@@ -43,17 +44,17 @@ class StaticPacketParser
         return ntohs(cast_data[0]) == packet.getDataSize() - 2;
     }
 
-    static bool parsePacket(sf::Packet &packet, SystemData &data)
+    static PacketTypes parsePacket(sf::Packet &packet, SystemData &data)
     {
         if (!isPacketValid(packet))
-            return false;
+            return NONE;
 
         PacketHeader header = {.size = 0, .type = NONE};
         packet >> header.size;
         packet >> header.type;
 
         if (header.type == NONE)
-            return false;
+            return NONE;
 
         switch (header.type) {
         case CONNECTED:
@@ -69,28 +70,29 @@ class StaticPacketParser
         case CLIENT_PONG:
             return parseClientPong(packet, data, header);
         default:
-            return false;
+            return NONE;
         }
     }
 
   protected:
   private:
-    static bool parseConnected(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static PacketTypes parseConnected(sf::Packet &packet, SystemData &data, PacketHeader &header)
     {
-        return true;
+        return CONNECTED;
     }
 
-    static bool parseGameChanges(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static PacketTypes parseGameChanges(sf::Packet &packet, SystemData &data, PacketHeader &header)
     {
-        return true;
+        return GAME_CHANGES;
     }
 
-    static bool parseServerPong(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static PacketTypes parseServerPong(sf::Packet &packet, SystemData &data, PacketHeader &header)
     {
-        return true;
+        std::cout << "Pong" << std::endl;
+        return SERVER_PONG;
     }
 
-    static bool parseGameInput(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static PacketTypes parseGameInput(sf::Packet &packet, SystemData &data, PacketHeader &header)
     {
         sf::Uint8 nbInputs;
         aecs::ClientInputs inputs;
@@ -104,17 +106,18 @@ class StaticPacketParser
             inputs.emplace_back(input);
         }
         data.world.setClientInputs(data.clientId, inputs);
-        return true;
+        return GAME_INPUT;
     }
 
-    static bool parsePing(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static PacketTypes parsePing(sf::Packet &packet, SystemData &data, PacketHeader &header)
     {
         std::cout << "Ping" << std::endl;
-        return true;
+        return PING;
     }
 
-    static bool parseClientPong(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static PacketTypes parseClientPong(sf::Packet &packet, SystemData &data, PacketHeader &header)
     {
-        return true;
+        std::cout << "Pong" << std::endl;
+        return CLIENT_PONG;
     }
 };

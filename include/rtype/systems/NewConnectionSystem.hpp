@@ -95,21 +95,9 @@ namespace rtype
                     socket.disconnect();
                     continue;
                 }
+
                 std::cout << "New connection from " << socket.getRemoteAddress() << std::endl;
-                sf::Packet packet;
-                for (auto &[_, entity] : _entitiesMap) {
-                    if (entity->hasComponent<MyPlayerComponent>()) {
-                        auto &posComponent = entity->getComponent<PositionComponent>();
-                        packet << posComponent.x << posComponent.y;
-                        break;
-                    }
-                }
-                if (socket.send(packet) != sf::Socket::Done) {
-                    std::cerr << "Failed to send game state to new client" << std::endl;
-                    socket.disconnect();
-                    continue;
-                }
-                addClient(socket.getRemoteAddress());
+                handleClient(socket);
                 socket.disconnect();
             }
         }
@@ -125,6 +113,29 @@ namespace rtype
                     return true;
             }
             return false;
+        }
+
+        void handleClient(sf::TcpSocket &socket)
+        {
+            sf::Packet packet;
+
+            // Send game state
+            // auto &bytes = _world.serialize();
+            // packet.append(bytes.data(), bytes.size());
+
+            // for testing purpose, send player position
+            for (auto &[_, entity] : _entitiesMap) {
+                if (entity->hasComponent<MyPlayerComponent>()) {
+                    auto &posComponent = entity->getComponent<PositionComponent>();
+                    packet << posComponent.x << posComponent.y;
+                    break;
+                }
+            }
+
+            if (socket.send(packet) != sf::Socket::Done)
+                std::cerr << "Failed to send game state to new client" << std::endl;
+            else
+                addClient(socket.getRemoteAddress());
         }
 
         void addClient(const sf::IpAddress &address)
