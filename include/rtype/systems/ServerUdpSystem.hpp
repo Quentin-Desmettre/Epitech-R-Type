@@ -8,6 +8,7 @@
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
+#include "rtype/StaticPacketParser.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
 #include "rtype/components/ClientPortComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
@@ -51,20 +52,20 @@ namespace rtype
             for (auto &[id, entity] : _entitiesMap) {
                 auto &clientAdress = entity->getComponent<ClientAdressComponent>();
                 auto &clientPort = entity->getComponent<ClientPortComponent>();
-                if (clientAdress.adress == sender.toInteger() && clientPort.port == port) {
+                if (clientAdress.adress == sender.toInteger() &&
+                    (clientPort.port == port || clientPort.port == CLIENT_INPUTS_PORT ||
+                     clientPort.port == CLIENT_CORRECTIONS_PORT)) {
                     clientId = id;
                     break;
                 }
             }
-            if (clientId == -1)
+            if (clientId == -1) {
+                std::cout << "Unknown client" << std::endl;
                 return;
-
-            while (!packet.endOfPacket()) {
-                int input;
-                packet >> input;
-                inputs.push_back(input);
             }
-            _world.setClientInputs(clientId, inputs);
+
+            if (!StaticPacketParser::parsePacket(packet, _world, clientId))
+                std::cout << "Error parsing packet" << std::endl;
         }
 
         void sendCorrections()

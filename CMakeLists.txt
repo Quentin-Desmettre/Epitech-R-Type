@@ -39,7 +39,8 @@ set(SHARED_SRC
         include/rtype/components/DamageCollisionComponent.hpp
         include/rtype/systems/DamageCollisionSystem.hpp
         include/rtype/components/HPComponent.hpp
-        include/rtype/NetworkGlobals.hpp)
+        include/rtype/NetworkGlobals.hpp
+        include/rtype/StaticPacketParser.hpp)
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
         include/rtype/RTypeServer.hpp

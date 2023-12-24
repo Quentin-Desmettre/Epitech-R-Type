@@ -102,9 +102,9 @@ namespace rtype
                 socket.send(packet);
                 aecs::Entity &entity = _world.createEntity();
                 entity.addComponent<ClientAdressComponent>(socket.getRemoteAddress().toInteger());
-                // TODO: get client port and add it to entity via a ClientPortComponent instead of hardcoding 53002
-                // (CLIENT_UDP_PORT)
-                entity.addComponent<ClientPortComponent>(CLIENT_INPUTS_PORT);
+                // TODO: get client port and add it to entity via a ClientPortComponent instead of hardcoding 53003
+                // (CLIENT_CORRECTIONS_PORT)
+                entity.addComponent<ClientPortComponent>(CLIENT_CORRECTIONS_PORT);
                 socket.disconnect();
             }
         }

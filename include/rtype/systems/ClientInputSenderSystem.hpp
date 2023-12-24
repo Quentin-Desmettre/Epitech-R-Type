@@ -8,6 +8,7 @@
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
+#include "rtype/StaticPacketParser.hpp"
 #include <SFML/Network.hpp>
 
 namespace rtype
@@ -23,7 +24,6 @@ namespace rtype
                                 const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
             ALogicSystem(world, entities, {})
         {
-            _socket.bind(CLIENT_INPUTS_PORT);
             _socket.setBlocking(false);
         }
 
@@ -36,10 +36,16 @@ namespace rtype
         {
             sf::Packet packet;
             aecs::ClientInputs myInputs = MY_INPUTS(updateParams.inputs);
+            sf::Uint16 size = myInputs.size() + 2;
 
-            for (auto &input : myInputs) {
-                packet << input;
-            }
+            if (size == 2)
+                return;
+
+            packet << size << PacketTypes::GAME_INPUT << static_cast<sf::Uint8>(size - 2);
+            for (auto &input : myInputs)
+                packet << static_cast<sf::Uint8>(input);
+
+            _socket.bind(CLIENT_INPUTS_PORT);
             _socket.send(packet, "127.0.0.1", SERVER_UDP_PORT); // TODO: get from ac/av
         }
 
