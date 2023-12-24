@@ -2,8 +2,8 @@
 // Created by qdesmettre on 20/12/23.
 //
 
-#ifndef R_TYPE_SERVERUDPSYSTEM_HPP
-#define R_TYPE_SERVERUDPSYSTEM_HPP
+#ifndef R_TYPE_SERVERINPUTSSYSTEM_HPP
+#define R_TYPE_SERVERINPUTSSYSTEM_HPP
 
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
@@ -16,26 +16,19 @@
 
 namespace rtype
 {
-    class ServerUdpSystem : public aecs::ALogicSystem
+    class ServerInputsSystem : public aecs::ALogicSystem
     {
       public:
-        ServerUdpSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+        ServerInputsSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
             ALogicSystem(world, entities, {typeid(ClientAdressComponent)})
         {
-            _socket.bind(SERVER_UDP_PORT);
+            _socket.bind(SERVER_INPUTS_PORT);
             _socket.setBlocking(false);
         }
 
-        ~ServerUdpSystem() override = default;
+        ~ServerInputsSystem() override = default;
 
         void update(const aecs::UpdateParams &updateParams) override
-        {
-            recieveInputs();
-            // sendCorrections();
-        }
-
-      private:
-        void recieveInputs()
         {
             sf::Packet packet;
             sf::IpAddress sender;
@@ -69,21 +62,7 @@ namespace rtype
             client->second->getComponent<ClientPingComponent>().clock.restart();
         }
 
-        void sendCorrections()
-        {
-            for (auto &[_, entity] : _entitiesMap) {
-                auto &clientAdress = entity->getComponent<ClientAdressComponent>();
-                sf::Packet packet;
-
-                packet << (float)(std::rand() % 400) << (float)(std::rand() % 400);
-                sf::Socket::Status status =
-                    _socket.send(packet, sf::IpAddress(clientAdress.adress), CLIENT_CORRECTIONS_PORT);
-
-                if (status != sf::Socket::Done)
-                    std::cerr << "Error sending packet" << std::endl;
-            }
-        }
-
+      private:
         void sendPong(sf::IpAddress &sender)
         {
             sf::Packet packet;
@@ -108,4 +87,4 @@ namespace rtype
     };
 } // namespace rtype
 
-#endif // R_TYPE_SERVERUDPSYSTEM_HPP
+#endif // R_TYPE_SERVERINPUTSSYSTEM_HPP

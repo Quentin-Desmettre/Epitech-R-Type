@@ -18,6 +18,7 @@
 #include <memory>
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
+#include "rtype/components/NetworkTagComponent.hpp"
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
 
@@ -39,6 +40,7 @@ aecs::Entity &rtype::EntityFactory::createPlayer(bool main, int nb, size_t id)
     shader->setUniform("hue", 50 * nb - 50);
     shader->setUniform("saturation", float(!main));
     player.addComponent<ShaderComponent>(shader);
+    player.addComponent<NetworkTagComponent>();
 
     return player;
 }

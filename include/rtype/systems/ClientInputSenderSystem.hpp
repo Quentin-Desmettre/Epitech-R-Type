@@ -47,7 +47,7 @@ namespace rtype
                 packet << static_cast<sf::Uint8>(input);
 
             _socket.bind(CLIENT_INPUTS_PORT);
-            _socket.send(packet, "127.0.0.1", SERVER_UDP_PORT); // TODO: get from ac/av
+            _socket.send(packet, "127.0.0.1", SERVER_INPUTS_PORT); // TODO: get from ac/av
             for (auto &[_, entity] : _entitiesMap) {
                 auto &component = entity->getComponent<ClientPingComponent>();
                 component.clock.restart();

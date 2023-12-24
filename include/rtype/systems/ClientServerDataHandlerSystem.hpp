@@ -65,6 +65,9 @@ namespace rtype
             // - push to queue
             // - do packet received X ms in the past
 
+            StaticPacketParser::SystemData systemData = {.world = _world, ._entitiesMap = _entitiesMap};
+            StaticPacketParser::parsePacket(packet, systemData);
+
             // Send pong with tick
             unsigned tick = *(unsigned *)packet.getData(); // TODO: change how tick is get
             sf::Packet pongPacket;

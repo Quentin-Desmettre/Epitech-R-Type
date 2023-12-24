@@ -11,6 +11,8 @@
 #include <SFML/Network.hpp>
 #include <arpa/inet.h>
 #include <iostream>
+#include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/MyPlayerComponent.hpp"
 
 enum PacketTypes : sf::Uint8 {
     NONE = 0x2A,
@@ -83,6 +85,14 @@ class StaticPacketParser
 
     static PacketTypes parseGameChanges(sf::Packet &packet, SystemData &data, PacketHeader &header)
     {
+        for (auto &[_, entity] : data._entitiesMap) {
+            if (entity->hasComponent<rtype::MyPlayerComponent>()) {
+                auto &position = entity->getComponent<rtype::PositionComponent>();
+                packet >> position.x >> position.y;
+                std::cout << "x: " << position.x << " y: " << position.y << std::endl;
+                break;
+            }
+        }
         return GAME_CHANGES;
     }
 
@@ -102,7 +112,6 @@ class StaticPacketParser
         for (sf::Uint8 i = 0; i < nbInputs; i++) {
             sf::Uint8 input;
             packet >> input;
-            std::cout << "input: " << (int)input << std::endl;
             inputs.emplace_back(input);
         }
         data.world.setClientInputs(data.clientId, inputs);

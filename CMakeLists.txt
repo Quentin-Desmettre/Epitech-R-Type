@@ -41,6 +41,7 @@ set(SHARED_SRC
         include/rtype/components/HPComponent.hpp
         include/rtype/NetworkGlobals.hpp
         include/rtype/StaticPacketParser.hpp
+        include/rtype/components/ClientAdressComponent.hpp
         include/rtype/components/ClientPingComponent.hpp)
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
@@ -49,8 +50,9 @@ set(SERVER_SRC src/server/main.cpp
         include/rtype/systems/ControlPlayerSystem.hpp
         include/rtype/systems/AnimPlayerSystem.hpp
         include/rtype/systems/NewConnectionSystem.hpp
-        include/rtype/components/ClientAdressComponent.hpp
-        include/rtype/systems/ServerUdpSystem.hpp
+        include/rtype/components/NetworkTagComponent.hpp
+        include/rtype/systems/ServerInputsSystem.hpp
+        include/rtype/systems/ServerCorrectionsSystem.hpp
         include/rtype/systems/DeleteClientSystem.hpp
         include/shared/PacketBuilder.hpp
         src/shared/PacketBuilder.cpp

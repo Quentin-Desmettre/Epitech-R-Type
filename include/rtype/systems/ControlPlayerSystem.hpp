@@ -10,6 +10,7 @@
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/NetworkTagComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
@@ -17,6 +18,8 @@
 #include <iostream>
 namespace rtype
 {
+#define ENABLE_NETWORK(entity)                                                                                         \
+    (((entity)->hasComponent<NetworkTagComponent>()) ? (entity)->getComponent<NetworkTagComponent>().active = true : 0)
 
     class ControlPlayerSystem : public aecs::ALogicSystem
     {
@@ -42,25 +45,32 @@ namespace rtype
                 velocity.y = 0;
                 bool space = false;
                 bool shift = false;
-                aecs::ClientInputs myInputs = MY_INPUTS(updateParams.inputs);
-                for (auto &input : myInputs) {
-                    if (input == sf::Keyboard::Key::Z) {
-                        velocity.y += -50;
-                    }
-                    if (input == sf::Keyboard::Key::S) {
-                        velocity.y += 50;
-                    }
-                    if (input == sf::Keyboard::Key::Q) {
-                        velocity.x += -50;
-                    }
-                    if (input == sf::Keyboard::Key::D) {
-                        velocity.x += 50;
-                    }
-                    if (input == sf::Keyboard::Key::Space) {
-                        space = true;
-                    }
-                    if (input == sf::Keyboard::Key::LShift) {
-                        shift = true;
+
+                auto &inputs = _world.getInputs();
+                for (auto &[_, clientInputs] : inputs) {
+                    for (auto &input : clientInputs) {
+                        if (input == sf::Keyboard::Key::Z) {
+                            ENABLE_NETWORK(entity);
+                            velocity.y += -50;
+                        }
+                        if (input == sf::Keyboard::Key::S) {
+                            ENABLE_NETWORK(entity);
+                            velocity.y += 50;
+                        }
+                        if (input == sf::Keyboard::Key::Q) {
+                            ENABLE_NETWORK(entity);
+                            velocity.x += -50;
+                        }
+                        if (input == sf::Keyboard::Key::D) {
+                            ENABLE_NETWORK(entity);
+                            velocity.x += 50;
+                        }
+                        if (input == sf::Keyboard::Key::Space) {
+                            space = true;
+                        }
+                        if (input == sf::Keyboard::Key::LShift) {
+                            shift = true;
+                        }
                     }
                 }
                 if (space && !shift && my.timeSinceLastShoot > 3) {

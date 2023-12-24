@@ -35,7 +35,7 @@ namespace rtype
 
                 sf::Packet packet;
                 packet << static_cast<sf::Uint16>(1) << PacketTypes::PING;
-                _socket.send(packet, "127.0.0.1", SERVER_UDP_PORT); // TODO: get from ac/av
+                _socket.send(packet, "127.0.0.1", SERVER_INPUTS_PORT); // TODO: get from ac/av
 
                 component.clock.restart();
             }

@@ -39,7 +39,8 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world.registerSystem<ClientInputSenderSystem>(-1);
     _world.registerSystem<ClientPingSystem>(0);
 
-    _world.registerSystem<ControlPlayerSystem>(0);
+    // commented to show that movement comes from server
+    // _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
     _world.registerSystem<AnimSystem>(1);
     _world.registerSystem<PhysicsSystem>(1);
