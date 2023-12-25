@@ -25,7 +25,7 @@ namespace rtype
         }
         ~AnimPlayerSystem() override = default;
 
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &velocity = entity->getComponent<VelocityComponent>();
@@ -39,6 +39,7 @@ namespace rtype
                     rect.top = 64;
                 sprite.sprite.setTextureRect(rect);
             }
+            return {};
         }
     };
 

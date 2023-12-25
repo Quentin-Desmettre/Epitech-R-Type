@@ -29,6 +29,13 @@ namespace aecs
         float deltaTime;
     } UpdateParams;
 
+
+    typedef struct EntityChanges {
+        EntityChanges() = default;
+        std::vector<unsigned int> deletedEntities;
+        std::vector<unsigned int> editedEntities;
+    } EntityChanges;
+
     class ISystem
     {
       public:
@@ -39,7 +46,7 @@ namespace aecs
         virtual void onEntityModified(const aecs::EntityPtr &entity) = 0;
 
         // For logic systems
-        virtual void update(const UpdateParams &updateParams) = 0;
+        virtual EntityChanges update(const UpdateParams &updateParams) = 0;
 
         // For render systems
         virtual ClientInputs render() = 0;
@@ -74,7 +81,7 @@ namespace aecs
         ~ARenderSystem() override = default;
 
         // For logic systems ONLY
-        void update(const UpdateParams &updateParams) override
+        EntityChanges update(const UpdateParams &updateParams) override
         {
             throw std::runtime_error("IRenderSystem::update() should not be called");
         }

@@ -32,16 +32,16 @@ namespace rtype
          * 2. Wait for message, containing game state
          * 3. set game state
          */
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         { // TODO: take as parameter a SystemParams object
             if (_connected)
-                return;
+                return {};
 
             // Connect to server
             sf::Socket::Status status = _socket.connect("127.0.0.1", SERVER_TCP_PORT); // TODO: get from ac/av
             if (status != sf::Socket::Done) {
                 std::cout << "Error connecting to server" << std::endl;
-                return;
+                return {};
             }
 
             // Wait for message
@@ -50,7 +50,7 @@ namespace rtype
             _socket.disconnect(); // disconnect anyway
             if (status != sf::Socket::Done) {
                 std::cout << "Error receiving packet" << std::endl;
-                return;
+                return {};
             }
 
             // Temporary: testing by recieving player position
@@ -64,6 +64,7 @@ namespace rtype
             // Set game state
             _connected = true;
             // _world.load(packet.getData(), packet.getDataSize());
+            return {};
         }
 
         [[nodiscard]] bool isConnected() const

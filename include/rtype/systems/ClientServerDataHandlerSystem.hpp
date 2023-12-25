@@ -41,11 +41,11 @@ namespace rtype
 
         ~ClientServerDataHandlerSystem() override = default;
 
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         {
             _tcpHandshakeSystem.update(updateParams);
             if (!_tcpHandshakeSystem.isConnected())
-                return;
+                return {};
 
             // Receive a packet
             sf::Packet packet;
@@ -55,7 +55,7 @@ namespace rtype
 
             // If no packet, return
             if (status != sf::Socket::Done)
-                return;
+                return {};
 
             for (auto &[_, entity] : _entitiesMap) {
                 if (entity->hasComponent<MyPlayerComponent>()) {
@@ -79,7 +79,7 @@ namespace rtype
 
             // Check if tick has already been checked
             if (tick <= _maxReceivedTick)
-                return;
+                return {};
 
             // Push to queue
             auto now = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -89,12 +89,13 @@ namespace rtype
 
             // Do packet received X ms in the past
             if (_packets.empty())
-                return;
+                return {};
             auto &[firstPacket, timeReceived] = _packets.front();
             if (now - timeReceived < std::chrono::milliseconds(BUFFER_DELAY))
-                return;
+                return {};
             _packets.pop();
             PacketHandler::handle(_world, firstPacket);
+            return {};
         }
 
       private:

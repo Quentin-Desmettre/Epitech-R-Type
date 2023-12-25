@@ -84,7 +84,7 @@ namespace rtype
         ~NewConnectionSystem() override = default;
 
         // listen for new connections and send game state to new clients
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         {
             sf::TcpSocket socket;
 
@@ -107,6 +107,7 @@ namespace rtype
                 entity.addComponent<ClientPortComponent>(CLIENT_INPUTS_PORT);
                 socket.disconnect();
             }
+            return {};
         }
 
       private:

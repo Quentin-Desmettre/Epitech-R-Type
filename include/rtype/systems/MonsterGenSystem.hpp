@@ -20,9 +20,9 @@ namespace rtype
         }
         ~MonsterGenSystem() override = default;
 
-        static void addRandomEnemy();
+        static aecs::Entity &addRandomEnemy();
 
-        void update(const aecs::UpdateParams &updateParams) override;
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override;
     };
 
 } // namespace rtype

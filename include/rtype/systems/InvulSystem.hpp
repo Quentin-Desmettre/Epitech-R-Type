@@ -21,12 +21,14 @@ namespace rtype
         }
         ~InvulSystem() override = default;
 
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         {
+            aecs::EntityChanges changes;
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &sprite = entity->getComponent<SpriteComponent>();
                 auto &damage = entity->getComponent<DamageCollisionComponent>();
                 if (damage.invulnerability > 0) {
+                    changes.editedEntities.push_back(entity->getId());
                     damage.invulnerability -= updateParams.deltaTime;
                     if (damage.invulnerability < 0)
                         damage.invulnerability = 0;
@@ -43,6 +45,7 @@ namespace rtype
                     sprite.sprite.setColor(color);
                 }
             }
+            return changes;
         }
     };
 

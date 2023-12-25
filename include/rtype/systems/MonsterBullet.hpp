@@ -21,14 +21,16 @@ namespace rtype
         }
         ~MonsterBullet() override = default;
 
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         {
+            aecs::EntityChanges changes;
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &monster = entity->getComponent<MonsterComponent>();
                 auto &position = entity->getComponent<PositionComponent>();
                 if (monster._lil)
                     continue;
                 monster.timeSinceLastShoot += updateParams.deltaTime;
+                changes.editedEntities.push_back(entity->getId());
 
                 if (monster.timeSinceLastShoot > 15) {
                     monster.timeSinceLastShoot = 0;
@@ -36,6 +38,7 @@ namespace rtype
                                                 false);
                 }
             }
+            return changes;
         }
     };
 

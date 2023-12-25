@@ -30,10 +30,11 @@ namespace rtype
 
         ~ServerUdpSystem() override = default;
 
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         {
             recieveInputs();
             // sendCorrections();
+            return {};
         }
 
       private:

@@ -32,7 +32,7 @@ namespace rtype
         /*
          * send inputs to server, via UDP
          */
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         {
             sf::Packet packet;
             aecs::ClientInputs myInputs = MY_INPUTS(updateParams.inputs);
@@ -41,6 +41,7 @@ namespace rtype
                 packet << input;
             }
             _socket.send(packet, "127.0.0.1", SERVER_UDP_PORT); // TODO: get from ac/av
+            return {};
         }
 
       private:

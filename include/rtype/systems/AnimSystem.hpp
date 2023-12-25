@@ -22,7 +22,7 @@ namespace rtype
         }
         ~AnimSystem() override = default;
 
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         {
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &sprite = entity->getComponent<SpriteComponent>();
@@ -36,6 +36,7 @@ namespace rtype
                 }
                 sprite.sprite.setTextureRect(rect);
             }
+            return {};
         }
     };
 

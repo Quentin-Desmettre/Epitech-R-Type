@@ -25,8 +25,9 @@ namespace rtype
         }
         ~PhysicsSystem() override = default;
 
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         {
+            aecs::EntityChanges changes;
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &position = entity->getComponent<PositionComponent>();
                 auto &velocity = entity->getComponent<VelocityComponent>();
@@ -34,7 +35,10 @@ namespace rtype
 
                 position.x += velocity.x * updateParams.deltaTime;
                 position.y += velocity.y * updateParams.deltaTime;
+                if (velocity.x != 0 || velocity.y != 0)
+                    changes.editedEntities.push_back(entity->getId());
             }
+            return changes;
         }
     };
 

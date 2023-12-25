@@ -23,8 +23,9 @@ namespace rtype
         }
         ~ParallaxSystem() override = default;
 
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         {
+            aecs::EntityChanges changes;
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &parallax = entity->getComponent<ParallaxComponent>();
                 auto &sprite = entity->getComponent<SpriteComponent>();
@@ -36,7 +37,9 @@ namespace rtype
                     position.x = 0;
                 }
                 sprite.sprite.setTextureRect(rect);
+                changes.editedEntities.push_back(entity->getId());
             }
+            return changes;
         }
     };
 

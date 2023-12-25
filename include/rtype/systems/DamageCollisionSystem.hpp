@@ -54,9 +54,10 @@ namespace rtype
             return false;
         }
 
-        void update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
         {
             std::vector<std::shared_ptr<aecs::Entity>> entities;
+            aecs::EntityChanges changes;
 
             entities.reserve(_entitiesMap.size());
             for (auto &[_id, entity] : _entitiesMap) {
@@ -65,6 +66,7 @@ namespace rtype
 
             for (size_t i = 0; i < entities.size(); i++) {
                 auto &entity = entities[i];
+                changes.editedEntities.push_back(entity->getId());
                 auto &damage = entity->getComponent<DamageCollisionComponent>();
                 auto &hp = entity->getComponent<HPComponent>();
                 sf::Rect rect = getRect(entity);
@@ -86,6 +88,7 @@ namespace rtype
                             kll = true;
                         if (hp2.hp <= 0 || kill) {
                             _world.destroyEntity(*entity2);
+                            changes.deletedEntities.push_back(entity->getId());
                             entities.erase(entities.begin() + j);
                             j--;
                         }
@@ -97,10 +100,12 @@ namespace rtype
                 }
                 if (hp.hp <= 0 || kll) {
                     _world.destroyEntity(*entity);
+                    changes.deletedEntities.push_back(entity->getId());
                     entities.erase(entities.begin() + i);
                     i--;
                 }
             }
+            return changes;
         }
     };
 
