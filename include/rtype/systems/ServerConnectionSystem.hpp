@@ -40,7 +40,7 @@ namespace rtype
             // Connect to server
             sf::Socket::Status status = _socket.connect("127.0.0.1", SERVER_TCP_PORT); // TODO: get from ac/av
             if (status != sf::Socket::Done) {
-                std::cout << "Error connecting to server" << std::endl;
+                std::cerr << "Error connecting to server" << std::endl;
                 return {};
             }
 
@@ -49,21 +49,18 @@ namespace rtype
             status = _socket.receive(packet);
             _socket.disconnect(); // disconnect anyway
             if (status != sf::Socket::Done) {
-                std::cout << "Error receiving packet" << std::endl;
+                std::cerr << "Error receiving packet" << std::endl;
                 return {};
             }
 
-            // Temporary: testing by recieving player position
-            for (auto &[_, entity] : _entitiesMap) {
-                if (entity->hasComponent<MyPlayerComponent>()) {
-                    auto &posComponent = entity->getComponent<PositionComponent>();
-                    packet >> posComponent.x >> posComponent.y;
-                }
-            }
-
             // Set game state
-            _connected = true;
             // _world.load(packet.getData(), packet.getDataSize());
+
+            // Create myself (to activate udp systems)
+            auto &myself = _world.createEntity();
+            myself.addComponent<ClientPingComponent>();
+
+            _connected = true;
             return {};
         }
 

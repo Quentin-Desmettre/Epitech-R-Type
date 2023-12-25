@@ -9,13 +9,15 @@
 #include "rtype/systems/BulletSystem.hpp"
 #include "rtype/systems/ControlPlayerSystem.hpp"
 #include "rtype/systems/DamageCollisionSystem.hpp"
+#include "rtype/systems/DeleteClientSystem.hpp"
 #include "rtype/systems/InvulSystem.hpp"
 #include "rtype/systems/MonsterBullet.hpp"
 #include "rtype/systems/MonsterGenSystem.hpp"
 #include "rtype/systems/NewConnectionSystem.hpp"
 #include "rtype/systems/ParallaxSystem.hpp"
 #include "rtype/systems/PhysicsSystem.hpp"
-#include "rtype/systems/ServerUdpSystem.hpp"
+#include "rtype/systems/ServerCorrectionsSystem.hpp"
+#include "rtype/systems/ServerInputsSystem.hpp"
 #include <chrono>
 #include <thread>
 
@@ -30,11 +32,11 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate) :
     EntityFactory::createBackground(4, sf::Vector2f(12, 0));
     EntityFactory::createBackground(5, sf::Vector2f(15, 0));
     auto &player = EntityFactory::createPlayer(true);
-    player.getComponent<rtype::PositionComponent>().x = 100;
 
     // Network systems
-    _world.registerSystem<NewConnectionSystem>(-2);
-    _world.registerSystem<ServerUdpSystem>(-1);
+    _world.registerSystem<NewConnectionSystem>(-3);
+    _world.registerSystem<ServerInputsSystem>(-2);
+    _world.registerSystem<DeleteClientSystem>(-1);
 
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
@@ -46,6 +48,9 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate) :
     _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
     _world.registerSystem<MonsterBullet>(1);
+
+    // Network systems
+    _world.registerSystem<ServerCorrectionsSystem>(2);
 }
 
 void rtype::RTypeServer::run()

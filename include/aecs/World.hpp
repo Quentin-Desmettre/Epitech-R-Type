@@ -8,6 +8,7 @@
 #include "Entity.hpp"
 #include "SystemBase.hpp"
 #include "rtype/EntityFactory.hpp"
+#include "rtype/components/ClientAdressComponent.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
 #include <map>
@@ -132,6 +133,17 @@ namespace aecs
             if (it == _entities.end())
                 return nullptr;
             return it->second;
+        }
+
+        std::vector<EntityPtr> getClients() const
+        {
+            std::vector<EntityPtr> clients;
+
+            for (auto &[_, entity] : _entities) {
+                if (entity->hasComponent<rtype::ClientAdressComponent>())
+                    clients.push_back(entity);
+            }
+            return clients;
         }
 
         template <typename T, typename... Args>

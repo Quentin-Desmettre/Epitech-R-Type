@@ -8,6 +8,8 @@
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
+#include "rtype/StaticPacketParser.hpp"
+#include "rtype/components/ClientPingComponent.hpp"
 #include <SFML/Network.hpp>
 
 namespace rtype
@@ -21,9 +23,8 @@ namespace rtype
       public:
         ClientInputSenderSystem(aecs::World &world,
                                 const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {})
+            ALogicSystem(world, entities, {typeid(ClientPingComponent)})
         {
-            _socket.bind(CLIENT_INPUTS_PORT);
             _socket.setBlocking(false);
         }
 
@@ -36,11 +37,21 @@ namespace rtype
         {
             sf::Packet packet;
             aecs::ClientInputs myInputs = MY_INPUTS(updateParams.inputs);
+            sf::Uint16 size = myInputs.size() + 2;
 
-            for (auto &input : myInputs) {
-                packet << input;
+            if (size == 2 || _entitiesMap.empty())
+                return {};
+
+            packet << size << PacketTypes::GAME_INPUT << static_cast<sf::Uint8>(size - 2);
+            for (auto &input : myInputs)
+                packet << static_cast<sf::Uint8>(input);
+
+            _socket.bind(CLIENT_INPUTS_PORT);
+            _socket.send(packet, "127.0.0.1", SERVER_INPUTS_PORT); // TODO: get from ac/av
+            for (auto &[_, entity] : _entitiesMap) {
+                auto &component = entity->getComponent<ClientPingComponent>();
+                component.clock.restart();
             }
-            _socket.send(packet, "127.0.0.1", SERVER_UDP_PORT); // TODO: get from ac/av
             return {};
         }
 

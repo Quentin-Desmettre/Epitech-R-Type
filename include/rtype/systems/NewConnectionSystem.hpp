@@ -9,7 +9,7 @@
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
-#include "rtype/components/ClientPortComponent.hpp"
+#include "rtype/components/ClientPingComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include <SFML/Network.hpp>
@@ -90,27 +90,62 @@ namespace rtype
 
             socket.setBlocking(false);
             while (_listener.accept(socket) == sf::Socket::Done) {
-                std::cout << "New connection from " << socket.getRemoteAddress() << std::endl;
-                sf::Packet packet;
-                for (auto &[_, entity] : _entitiesMap) {
-                    if (entity->hasComponent<MyPlayerComponent>()) {
-                        auto &posComponent = entity->getComponent<PositionComponent>();
-                        packet << posComponent.x << posComponent.y;
-                        break;
-                    }
+                if (isClientAlreadyConnected(socket.getRemoteAddress())) {
+                    std::cout << "Client already connected" << std::endl;
+                    socket.disconnect();
+                    continue;
                 }
-                socket.send(packet);
-                aecs::Entity &entity = _world.createEntity();
-                entity.addComponent<ClientAdressComponent>(socket.getRemoteAddress().toInteger());
-                // TODO: get client port and add it to entity via a ClientPortComponent instead of hardcoding 53002
-                // (CLIENT_UDP_PORT)
-                entity.addComponent<ClientPortComponent>(CLIENT_INPUTS_PORT);
+
+                std::cout << "New connection from " << socket.getRemoteAddress() << std::endl;
+                handleClient(socket);
                 socket.disconnect();
             }
             return {};
         }
 
       private:
+        bool isClientAlreadyConnected(const sf::IpAddress &address)
+        {
+            for (auto &[_, entity] : _entitiesMap) {
+                if (!entity->hasComponent<ClientAdressComponent>())
+                    continue;
+                auto &clientAdress = entity->getComponent<ClientAdressComponent>();
+                if (clientAdress.adress == address.toInteger())
+                    return true;
+            }
+            return false;
+        }
+
+        void handleClient(sf::TcpSocket &socket)
+        {
+            sf::Packet packet;
+
+            // Send game state
+            // auto &bytes = _world.serialize();
+            // packet.append(bytes.data(), bytes.size());
+
+            // for testing purpose, send player position
+            for (auto &[_, entity] : _entitiesMap) {
+                if (entity->hasComponent<MyPlayerComponent>()) {
+                    auto &posComponent = entity->getComponent<PositionComponent>();
+                    packet << posComponent.x << posComponent.y;
+                    break;
+                }
+            }
+
+            if (socket.send(packet) != sf::Socket::Done)
+                std::cerr << "Failed to send game state to new client" << std::endl;
+            else
+                addClient(socket.getRemoteAddress());
+        }
+
+        void addClient(const sf::IpAddress &address)
+        {
+            aecs::Entity &entity = _world.createEntity();
+            entity.addComponent<ClientAdressComponent>(address.toInteger());
+            entity.addComponent<ClientPingComponent>();
+        }
+
         RTypeListener _listener;
     };
 } // namespace rtype
