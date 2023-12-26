@@ -18,29 +18,26 @@
 #include <iostream>
 namespace rtype
 {
-#define ENABLE_NETWORK(entity)                                                                                         \
-    (((entity)->hasComponent<NetworkTagComponent>()) ? (entity)->getComponent<NetworkTagComponent>().active = true : 0)
-
     class ControlPlayerSystem : public aecs::ALogicSystem
     {
       public:
         ControlPlayerSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
             ALogicSystem(world, entities,
-                         {typeid(VelocityComponent), typeid(MyPlayerComponent), typeid(SpriteComponent),
-                          typeid(PlayerComponent), typeid(PositionComponent)})
+                         {typeid(VelocityComponent), typeid(SpriteComponent), typeid(PlayerComponent),
+                          typeid(PositionComponent)})
         {
         }
         ~ControlPlayerSystem() override = default;
 
-        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
         {
             aecs::EntityChanges changes;
             for (auto &[_id, entity] : _entitiesMap) {
+                const auto &position = entity->getComponent<PositionComponent>();
                 auto &velocity = entity->getComponent<VelocityComponent>();
+                auto &sprite = entity->getComponent<SpriteComponent>();
                 auto &my = entity->getComponent<PlayerComponent>();
                 my.timeSinceLastShoot += updateParams.deltaTime;
-                auto &position = entity->getComponent<PositionComponent>();
-                auto &sprite = entity->getComponent<SpriteComponent>();
                 changes.editedEntities.push_back(entity->getId());
 
                 velocity.x = 0;
@@ -49,22 +46,21 @@ namespace rtype
                 bool shift = false;
 
                 auto &inputs = _world.getInputs();
-                for (auto &[_, clientInputs] : inputs) {
+                for (auto &[playerId, clientInputs] : inputs) {
+                    if (playerId != my.playerId) { // Apply inputs only for the player we're controlling
+                        continue;
+                    }
                     for (auto &input : clientInputs) {
                         if (input == sf::Keyboard::Key::Z) {
-                            ENABLE_NETWORK(entity);
                             velocity.y += -50;
                         }
                         if (input == sf::Keyboard::Key::S) {
-                            ENABLE_NETWORK(entity);
                             velocity.y += 50;
                         }
                         if (input == sf::Keyboard::Key::Q) {
-                            ENABLE_NETWORK(entity);
                             velocity.x += -50;
                         }
                         if (input == sf::Keyboard::Key::D) {
-                            ENABLE_NETWORK(entity);
                             velocity.x += 50;
                         }
                         if (input == sf::Keyboard::Key::Space) {
@@ -95,8 +91,9 @@ namespace rtype
 
                 if (space && shift && my.timeInShift > 6) {
                     changes.editedEntities.push_back(
-                        EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 2), sf::Vector2f(100, 0), 0,
-                                                    true).getId());
+                        EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 2), sf::Vector2f(100, 0),
+                                                    0, true)
+                            .getId());
                     my.timeSinceLastShoot = 0;
                     my.timeInShift = 0;
                 }

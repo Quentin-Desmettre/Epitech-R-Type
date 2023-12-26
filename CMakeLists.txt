@@ -40,7 +40,7 @@ set(SHARED_SRC
         include/rtype/systems/DamageCollisionSystem.hpp
         include/rtype/components/HPComponent.hpp
         include/rtype/NetworkGlobals.hpp
-        include/rtype/StaticPacketParser.hpp
+        include/aecs/StaticPacketParser.hpp
         include/rtype/components/ClientAdressComponent.hpp
         include/rtype/components/ClientPingComponent.hpp)
 set(SERVER_SRC src/server/main.cpp
@@ -81,6 +81,7 @@ set(CLIENT_SRC src/client/main.cpp
         src/rtype/components/PlayerComponent.cpp
         src/rtype/components/PositionComponent.cpp
         src/rtype/components/VelocityComponent.cpp
+        include/aecs/StaticPacketBuilder.hpp
 )
 
 include(FetchContent)
