@@ -56,13 +56,13 @@ set(SERVER_SRC src/server/main.cpp
         include/rtype/systems/DeleteClientSystem.hpp
         include/shared/PacketBuilder.hpp
         src/shared/PacketBuilder.cpp
-        include/rtype/ComponentList.hpp
         src/rtype/components/DamageCollisionComponent.cpp
         src/rtype/components/HPComponent.cpp
         src/rtype/components/MonsterComponent.cpp
         src/rtype/components/PlayerComponent.cpp
         src/rtype/components/PositionComponent.cpp
-        src/rtype/components/VelocityComponent.cpp)
+        src/rtype/components/VelocityComponent.cpp
+        include/rtype/systems/PlayerOnConnectionSystem.hpp)
 set(CLIENT_SRC src/client/main.cpp
         src/rtype/RTypeClient.cpp
         include/rtype/RTypeClient.hpp
@@ -74,7 +74,6 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/systems/ClientPingSystem.hpp
         include/shared/PacketBuilder.hpp
         src/shared/PacketBuilder.cpp
-        include/rtype/ComponentList.hpp
         src/rtype/components/DamageCollisionComponent.cpp
         src/rtype/components/HPComponent.cpp
         src/rtype/components/MonsterComponent.cpp

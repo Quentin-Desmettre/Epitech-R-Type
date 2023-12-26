@@ -8,6 +8,7 @@
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/components/ParallaxComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 namespace rtype

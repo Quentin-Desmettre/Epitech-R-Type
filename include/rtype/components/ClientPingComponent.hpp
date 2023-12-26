@@ -12,10 +12,7 @@ namespace rtype
     class ClientPingComponent : public aecs::AbstractComponent
     {
       public:
-        explicit ClientPingComponent()
-        {
-            id = 15;
-        };
+        explicit ClientPingComponent() = default;
         ~ClientPingComponent() override = default;
         sf::Clock clock;
     };

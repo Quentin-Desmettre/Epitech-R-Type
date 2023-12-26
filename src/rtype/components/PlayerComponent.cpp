@@ -12,19 +12,21 @@ rtype::PlayerComponent::PlayerComponent() :
     timeSinceLastShoot(0),
     playerId(_maxPlayerId++)
 {
-    id = 10;
 }
 
 std::vector<std::byte> rtype::PlayerComponent::encode() const
 {
     PacketBuilder pb;
-    pb << timeInShift << timeSinceLastShoot;
+    pb << timeInShift << timeSinceLastShoot << playerId;
     return pb.getData();
 }
 
 void rtype::PlayerComponent::decode(const std::vector<std::byte> &encoded)
 {
     PacketBuilder pb;
+    int tmp;
+
     pb << encoded;
-    pb >> timeInShift >> timeSinceLastShoot;
+    pb >> timeInShift >> timeSinceLastShoot >> tmp;
+    playerId = tmp;
 }

@@ -16,10 +16,14 @@ class PacketBuilder
     PacketBuilder() = default;
     ~PacketBuilder() = default;
 
+    void pass(int i);
+
     PacketBuilder &add(std::byte *rawPtr, size_t size);
     PacketBuilder &operator<<(const std::vector<std::byte> &newData);
     PacketBuilder &operator<<(const std::string &str);
     PacketBuilder &operator<<(int i);
+    PacketBuilder &operator<<(uint i);
+    PacketBuilder &operator<<(unsigned short i);
     PacketBuilder &operator<<(float f);
     PacketBuilder &operator<<(double d);
     PacketBuilder &operator<<(bool b);
@@ -30,6 +34,8 @@ class PacketBuilder
     std::vector<std::byte> getSub();
     PacketBuilder &operator>>(std::string &str);
     PacketBuilder &operator>>(int &i);
+    PacketBuilder &operator>>(uint &i);
+    PacketBuilder &operator>>(unsigned short &i);
     PacketBuilder &operator>>(float &f);
     PacketBuilder &operator>>(double &d);
     PacketBuilder &operator>>(bool &b);

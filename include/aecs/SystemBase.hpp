@@ -59,9 +59,9 @@ namespace aecs
                 const std::vector<std::type_index> &componentsNeeded);
         ~ASystem() override = default;
 
-        void onEntityAdded(const aecs::EntityPtr &entity) final;
+        void onEntityAdded(const aecs::EntityPtr &entity) override;
         void onEntityRemoved(const aecs::EntityPtr &entity) final;
-        void onEntityModified(const aecs::EntityPtr &entity) final;
+        void onEntityModified(const aecs::EntityPtr &entity) override;
 
       protected:
         aecs::World &_world;

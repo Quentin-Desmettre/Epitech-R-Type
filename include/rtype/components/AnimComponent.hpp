@@ -12,11 +12,8 @@ namespace rtype
     class AnimComponent : public aecs::AbstractComponent
     {
       public:
-        AnimComponent(float time = 1) :
-            timeToWait(time)
-        {
-            id = 1;
-        };
+        explicit AnimComponent(float time = 1) :
+            timeToWait(time){};
         ~AnimComponent() override = default;
         float timeSinceLastFrame = 0;
         float timeToWait = 1;

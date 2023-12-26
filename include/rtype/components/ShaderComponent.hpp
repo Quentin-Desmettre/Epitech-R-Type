@@ -15,10 +15,7 @@ namespace rtype
     {
       public:
         explicit ShaderComponent(std::shared_ptr<sf::Shader> shader) :
-            shader(shader)
-        {
-            id = 12;
-        }
+            shader(shader){};
         ~ShaderComponent() override = default;
 
         std::shared_ptr<sf::Shader> shader;

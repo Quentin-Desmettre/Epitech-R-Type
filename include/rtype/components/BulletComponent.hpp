@@ -12,11 +12,10 @@ namespace rtype
     class BulletComponent : public aecs::AbstractComponent
     {
       public:
-        BulletComponent()
-        {
-            id = 2;
-        };
+        explicit BulletComponent(bool big = false) :
+            big(big){};
         ~BulletComponent() override = default;
+        bool big = false;
     };
 } // namespace rtype
 

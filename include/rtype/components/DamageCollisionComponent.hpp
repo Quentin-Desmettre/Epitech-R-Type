@@ -21,17 +21,10 @@ namespace rtype
             LG_BULLET,
             OTHER,
         };
-        explicit DamageCollisionComponent(int team, float damage, ObjectType type = OTHER) :
+        explicit DamageCollisionComponent(int team = 0, float damage = 0.f, ObjectType type = OTHER) :
             team(team),
             damage(damage),
-            type(type)
-        {
-            id = 5;
-        };
-        DamageCollisionComponent()
-        {
-            id = 5;
-        };
+            type(type){};
         [[nodiscard]] std::vector<std::byte> encode() const override;
         void decode(const std::vector<std::byte> &encoded) override;
         ~DamageCollisionComponent() override = default;

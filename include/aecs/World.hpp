@@ -33,6 +33,12 @@ namespace aecs
 
         Entity &createEntity(size_t id = -1);
 
+        void addDecodeMap(const std::type_info &type,
+                          const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map);
+
+        Entity &decodeNewEntity(std::vector<std::byte> &data);
+        void decodeComponent(Entity &entity, int id, std::vector<std::byte> &data);
+
         template <typename T, typename... Args>
         T &addComponent(Entity &entity, Args &&...args)
         {
@@ -225,6 +231,8 @@ namespace aecs
             sortSystems();
         }
 
+        [[nodiscard]] bool getIsServer() const;
+
       private:
         void sortSystems();
 
@@ -238,6 +246,7 @@ namespace aecs
         unsigned _clientId = 0;
         std::map<std::type_index, std::pair<std::shared_ptr<ISystem>, int>> _systems;
         std::vector<std::pair<ISystem *, int>> _sortedSystems;
+        std::map<uint, std::function<void(aecs::Entity &, std::vector<std::byte>)>> decodeMap;
 
         bool _isServer;
         std::shared_ptr<ISystem> _renderSystem;

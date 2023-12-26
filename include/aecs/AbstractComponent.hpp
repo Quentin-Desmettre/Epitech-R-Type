@@ -14,13 +14,12 @@ namespace aecs
     {
       public:
         virtual ~AbstractComponent() = 0;
-        int id;
 
         [[nodiscard]] virtual std::vector<std::byte> encode() const
         {
             return {};
         };
-        virtual void decode(const std::vector<std::byte> &data) {};
+        virtual void decode(const std::vector<std::byte> &data){};
     };
 } // namespace aecs
 

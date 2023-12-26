@@ -11,15 +11,8 @@ namespace rtype
     class HPComponent : public aecs::AbstractComponent
     {
       public:
-        explicit HPComponent(float hp) :
-            hp(hp)
-        {
-            id = 6;
-        };
-        HPComponent()
-        {
-            id = 6;
-        };
+        explicit HPComponent(float hp = 10) :
+            hp(hp){};
         [[nodiscard]] std::vector<std::byte> encode() const override;
         void decode(const std::vector<std::byte> &encoded) override;
         ~HPComponent() override = default;

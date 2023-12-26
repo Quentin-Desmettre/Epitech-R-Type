@@ -5,6 +5,7 @@
 #include "aecs/Entity.hpp"
 #include "aecs/World.hpp"
 #include "shared/PacketBuilder.hpp"
+#include <ranges>
 
 namespace aecs
 {
@@ -12,7 +13,7 @@ namespace aecs
     Entity::Entity(World &world, std::size_t id) :
         _world(world)
     {
-        if (id == -1)
+        if (id == (std::size_t)(-1))
             _id = _idCounter++;
         else
             _id = id;
@@ -39,8 +40,7 @@ namespace aecs
         PacketBuilder pb;
 
         for (auto &component : _components) {
-            pb << component.second->id;
-            std::cout << component.second->id << std::endl;
+            pb << hashString(typeid(*component.second).name());
             pb += component.second->encode();
         }
         std::vector<std::byte> data = pb.getData();
@@ -54,22 +54,24 @@ namespace aecs
     {
         PacketBuilder pb;
         pb << encoded;
+        pb.pass(sizeof(int) + sizeof(ushort));
 
         while (pb) {
-            int id;
+            uint id;
             pb >> id;
+            std::vector<std::byte> sub = pb.getSub();
             try {
-                getComponentByComponentId(id).decode(pb.getSub());
+                getComponentByComponentId(id).decode(sub);
             } catch (std::exception &e) {
                 std::cerr << e.what() << std::endl;
             }
         }
     }
 
-    AbstractComponent &Entity::getComponentByComponentId(int id)
+    AbstractComponent &Entity::getComponentByComponentId(uint id)
     {
         for (auto &component : _components) {
-            if (component.second->id == id)
+            if (hashString(typeid(*component.second).name()) == id)
                 return *component.second;
         }
         throw std::runtime_error("Invalid component id");

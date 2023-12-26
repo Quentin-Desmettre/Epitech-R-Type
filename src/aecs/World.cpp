@@ -4,6 +4,7 @@
 
 #include "aecs/World.hpp"
 #include "aecs/Entity.hpp"
+#include "shared/PacketBuilder.hpp"
 #include <algorithm>
 #include <iostream>
 
@@ -118,5 +119,43 @@ namespace aecs
                 setClientInputs(_clientId, tmp);
             }
         }
+    }
+
+    Entity &World::decodeNewEntity(std::vector<std::byte> &data)
+    {
+        PacketBuilder pb;
+        int id;
+        pb << data;
+        pb >> id;
+        Entity &entity = createEntity(id);
+        ushort size;
+        pb >> size;
+        for (auto &i : decodeMap) {
+            std::cout << i.first << std::endl;
+        }
+        while (pb) {
+            uint componentId;
+            pb >> componentId;
+            // create a default component
+            std::vector<std::byte> sub = pb.getSub();
+            if (decodeMap.find(componentId) != decodeMap.end()) {
+                std::cout << "componentId: " << componentId << std::endl;
+                decodeMap.at(componentId)(entity, sub);
+                break;
+            }
+        }
+        // set the data of the server entity
+        entity.decode(data);
+
+        return entity;
+    }
+    void World::addDecodeMap(const std::type_info &type,
+                             const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map)
+    {
+        decodeMap[aecs::Entity::hashString(type.name())] = map;
+    }
+    bool World::getIsServer() const
+    {
+        return _isServer;
     }
 } // namespace aecs

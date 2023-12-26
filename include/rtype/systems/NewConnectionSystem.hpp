@@ -10,7 +10,7 @@
 #include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
 #include "rtype/components/ClientPingComponent.hpp"
-#include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include <SFML/Network.hpp>
 #include <SFML/System/Err.hpp>
@@ -124,11 +124,11 @@ namespace rtype
 
             // Get client id
             auto &playerEntity = _world.createEntity();
-            playerEntity.addComponent<ClientAdressComponent>(socket.getRemoteAddress().toInteger());
-            playerEntity.addComponent<ClientPingComponent>();
             // After this line, systems have been notified of the creation of the player, so every component
             // will be added to the entity before this line ends
-            std::size_t id = playerEntity.addComponent<PlayerComponent>().playerId;
+            playerEntity.addComponent<ClientAdressComponent>(socket.getRemoteAddress().toInteger());
+            playerEntity.addComponent<ClientPingComponent>();
+            std::size_t id = playerEntity.getComponent<PlayerComponent>().playerId;
 
             // Build packet
             sf::Packet packet = aecs::StaticPacketBuilder::buildConnectedPacket(id, _world);

@@ -12,11 +12,10 @@ namespace rtype
     class PositionComponent : public aecs::AbstractComponent
     {
       public:
-        PositionComponent(float x, float y) :
+        explicit PositionComponent(float x = 0, float y = 0) :
             x(x),
             y(y)
         {
-            id = 11;
         }
         ~PositionComponent() override = default;
         [[nodiscard]] std::vector<std::byte> encode() const override;

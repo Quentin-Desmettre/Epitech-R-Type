@@ -11,6 +11,8 @@
 #include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
 #include "rtype/components/ClientPingComponent.hpp"
+#include "rtype/components/PlayerComponent.hpp"
+#include "aecs/StaticPacketBuilder.hpp"
 #include <iostream>
 #include <map>
 

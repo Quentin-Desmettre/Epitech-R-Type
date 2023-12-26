@@ -18,6 +18,7 @@
 #include "rtype/systems/PhysicsSystem.hpp"
 #include "rtype/systems/ServerCorrectionsSystem.hpp"
 #include "rtype/systems/ServerInputsSystem.hpp"
+#include "rtype/systems/PlayerOnConnectionSystem.hpp"
 #include <chrono>
 #include <thread>
 
@@ -26,17 +27,12 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate) :
     _logicRefreshRate(logicRefreshRate)
 {
     EntityFactory::setWorld(&_world);
-    EntityFactory::createBackground(1, sf::Vector2f(8, 0));
-    EntityFactory::createBackground(2, sf::Vector2f(5, 0));
-    EntityFactory::createBackground(3, sf::Vector2f(3, 0));
-    EntityFactory::createBackground(4, sf::Vector2f(12, 0));
-    EntityFactory::createBackground(5, sf::Vector2f(15, 0));
-    auto &player = EntityFactory::createPlayer(true);
 
     // Network systems
     _world.registerSystem<NewConnectionSystem>(-3);
     _world.registerSystem<ServerInputsSystem>(-2);
     _world.registerSystem<DeleteClientSystem>(-1);
+    _world.registerSystem<PlayerOnConnectionSystem>(-1);
 
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
