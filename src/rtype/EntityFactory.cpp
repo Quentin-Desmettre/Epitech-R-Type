@@ -39,7 +39,7 @@ aecs::Entity &rtype::EntityFactory::toPlayer(aecs::Entity &entity)
     return entity;
 }
 
-aecs::Entity &rtype::EntityFactory::createPlayer(int clientID)
+aecs::Entity &rtype::EntityFactory::createPlayer(uint clientID)
 {
     auto &player = _world->createEntity(80);
     player.addComponent<PlayerComponent>(clientID);

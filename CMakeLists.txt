@@ -61,7 +61,8 @@ set(SERVER_SRC src/server/main.cpp
         src/rtype/components/MonsterComponent.cpp
         src/rtype/components/PlayerComponent.cpp
         src/rtype/components/PositionComponent.cpp
-        src/rtype/components/VelocityComponent.cpp)
+        src/rtype/components/VelocityComponent.cpp
+        include/rtype/systems/PlayerOnConnectionSystem.hpp)
 set(CLIENT_SRC src/client/main.cpp
         src/rtype/RTypeClient.cpp
         include/rtype/RTypeClient.hpp

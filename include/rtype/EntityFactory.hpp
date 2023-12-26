@@ -18,7 +18,7 @@ namespace rtype
     {
       public:
         ~EntityFactory() = default;
-        static aecs::Entity &createPlayer(int clientID = 0);
+        static aecs::Entity &createPlayer(uint clientID = 0);
         static aecs::Entity &toPlayer(aecs::Entity &entity);
         static aecs::Entity &createBullet(sf::Vector2f position, sf::Vector2f velocity, int team = 0, bool big = false);
         static aecs::Entity &toBullet(aecs::Entity &entity);
