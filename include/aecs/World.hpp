@@ -18,6 +18,7 @@
 #include <mutex>
 #include <typeindex>
 #include <vector>
+#include <functional>
 
 namespace aecs
 {

@@ -16,6 +16,7 @@
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include <iostream>
+
 namespace rtype
 {
     class ControlPlayerSystem : public aecs::ALogicSystem
@@ -45,8 +46,7 @@ namespace rtype
                 bool space = false;
                 bool shift = false;
 
-                auto &inputs = _world.getInputs();
-                for (auto &[playerId, clientInputs] : inputs) {
+                for (auto &[playerId, clientInputs] : updateParams.inputs) {
                     if (playerId != my.playerId) { // Apply inputs only for the player we're controlling
                         continue;
                     }

@@ -7,6 +7,7 @@
 #include "shared/PacketBuilder.hpp"
 #include <algorithm>
 #include <iostream>
+#include "rtype/systems/ServerInputsSystem.hpp"
 
 namespace aecs
 {
@@ -89,6 +90,10 @@ namespace aecs
         // Update systems
         for (auto &[system, _] : _sortedSystems) {
             auto changes = system->update(updateParams);
+
+            // inputs
+            if (dynamic_cast<rtype::ServerInputsSystem *>(system))
+                updateParams.inputs = getInputs();
 
             // Update entity changes
             updateParams.entityChanges.deletedEntities.insert(updateParams.entityChanges.deletedEntities.end(),
