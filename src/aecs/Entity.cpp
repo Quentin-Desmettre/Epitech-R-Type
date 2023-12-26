@@ -38,8 +38,7 @@ namespace aecs
     {
         PacketBuilder pb;
 
-        for (auto &component : _components)
-        {
+        for (auto &component : _components) {
             pb << component.second->id;
             std::cout << component.second->id << std::endl;
             pb += component.second->encode();
@@ -56,8 +55,7 @@ namespace aecs
         PacketBuilder pb;
         pb << encoded;
 
-        while (pb)
-        {
+        while (pb) {
             int id;
             pb >> id;
             try {
@@ -70,8 +68,7 @@ namespace aecs
 
     AbstractComponent &Entity::getComponentByComponentId(int id)
     {
-        for (auto &component : _components)
-        {
+        for (auto &component : _components) {
             if (component.second->id == id)
                 return *component.second;
         }

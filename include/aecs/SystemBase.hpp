@@ -24,17 +24,16 @@ namespace aecs
 #define MY_INPUTS(serverInputs)                                                                                        \
     ((serverInputs).find(0) != (serverInputs).end() ? (serverInputs).at(0) : aecs::ClientInputs())
 
-    typedef struct UpdateParams {
-        const ServerInputs &inputs;
-        float deltaTime;
-    } UpdateParams;
-
-
     typedef struct EntityChanges {
-        EntityChanges() = default;
         std::vector<unsigned int> deletedEntities;
         std::vector<unsigned int> editedEntities;
     } EntityChanges;
+
+    typedef struct UpdateParams {
+        ServerInputs inputs;
+        float deltaTime = 0;
+        EntityChanges entityChanges;
+    } UpdateParams;
 
     class ISystem
     {
@@ -46,7 +45,7 @@ namespace aecs
         virtual void onEntityModified(const aecs::EntityPtr &entity) = 0;
 
         // For logic systems
-        virtual EntityChanges update(const UpdateParams &updateParams) = 0;
+        virtual EntityChanges update(aecs::UpdateParams &updateParams) = 0;
 
         // For render systems
         virtual ClientInputs render() = 0;
@@ -81,7 +80,7 @@ namespace aecs
         ~ARenderSystem() override = default;
 
         // For logic systems ONLY
-        EntityChanges update(const UpdateParams &updateParams) override
+        EntityChanges update(aecs::UpdateParams &updateParams) override
         {
             throw std::runtime_error("IRenderSystem::update() should not be called");
         }

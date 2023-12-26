@@ -83,11 +83,25 @@ namespace aecs
         clock.restart();
         // Lock inputs
         std::lock_guard<std::mutex> lock(_renderInputsMutex);
-        UpdateParams updateParams = {getInputs(), deltaTime};
+        UpdateParams updateParams = {.inputs = getInputs(), .deltaTime = deltaTime, .entityChanges = {}};
 
         // Update systems
-        for (auto &[system, _] : _sortedSystems)
-            system->update(updateParams);
+        for (auto &[system, _] : _sortedSystems) {
+            auto changes = system->update(updateParams);
+
+            // Update entity changes
+            updateParams.entityChanges.deletedEntities.insert(updateParams.entityChanges.deletedEntities.end(),
+                                                              changes.deletedEntities.begin(),
+                                                              changes.deletedEntities.end());
+            updateParams.entityChanges.editedEntities.insert(updateParams.entityChanges.editedEntities.end(),
+                                                             changes.editedEntities.begin(),
+                                                             changes.editedEntities.end());
+        }
+
+        // Delete entities
+        for (auto &deletedEntityId : updateParams.entityChanges.deletedEntities) {
+            _entities.erase(deletedEntityId);
+        }
 
         // Clear
         // _renderInputs.clear();
@@ -101,7 +115,7 @@ namespace aecs
             auto tmp = _renderSystem->render();
             {
                 std::lock_guard<std::mutex> lock(_renderInputsMutex);
-                setClientInputs(0, tmp);
+                setClientInputs(_clientId, tmp);
             }
         }
     }

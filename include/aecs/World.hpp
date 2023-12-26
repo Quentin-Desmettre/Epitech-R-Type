@@ -9,6 +9,8 @@
 #include "SystemBase.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
+#include "shared/PacketBuilder.hpp"
+#include "SFML/Network/Packet.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
 #include <map>
@@ -48,17 +50,39 @@ namespace aecs
         void update();
         void render();
 
-        // TODO: put these 3 methods in GameState
-        std::vector<std::byte> serialize(); // TODO
-        void load(const std::vector<std::byte> &bytes)
-        {
-            load(bytes.data(), bytes.size());
-        }
-        void load(const void *data, std::size_t size); // TODO
-
         class GameState
         {
-        }; // TODO: implement GameState
+        };
+        typedef std::map<unsigned, std::vector<std::byte>> EncodedEntities;
+        struct EncodedGameState {
+            EncodedEntities encodedEntities;
+            unsigned tick;
+        };
+
+        // TODO: put this method in gameState
+        const std::vector<std::byte> serialize() const
+        {
+            sf::Packet packet;
+
+            packet << static_cast<std::uint32_t>(_tick);
+            packet << static_cast<std::uint32_t>(_entities.size());
+            for (auto &[id, entity] : _entities) {
+                auto encoded = entity->encode();
+                packet.append(encoded.data(), encoded.size());
+            }
+
+            return {
+                reinterpret_cast<const std::byte *>(packet.getData()),
+                reinterpret_cast<const std::byte *>(packet.getData()) + packet.getDataSize(),
+            };
+        };
+
+        // TODO
+        void load(const EncodedGameState &entities)
+        {
+            _tick = entities.tick;
+        }
+
         void setTick(unsigned tick)
         {
             _tick = tick;
@@ -69,9 +93,12 @@ namespace aecs
         }
 
         // Flush every gamestate before tick (including it)
-        const GameState &getGameState(int tick) const; // TODO
+        const GameState &getGameState(int tick) const
+        {
+            return {}; // TODO
+        };
 
-        const ServerInputs getInputs(int tick = -1) const
+        const ServerInputs getInputs(unsigned tick = -1) const
         {
             if (tick == -1)
                 tick = _tick;
@@ -124,7 +151,7 @@ namespace aecs
                 _renderInputs[_tick].insert({clientId, inputs});
         }
 
-        void setGameState(const GameState &gameState); // TODO
+        void setGameState(const GameState &gameState) {}; // TODO
 
         EntityPtr getEntity(std::size_t id) const
         {
@@ -144,6 +171,15 @@ namespace aecs
                     clients.push_back(entity);
             }
             return clients;
+        }
+
+        void setClientId(unsigned clientId)
+        {
+            _clientId = clientId;
+        }
+        [[nodiscard]] unsigned getClientId() const
+        {
+            return _clientId;
         }
 
         template <typename T, typename... Args>
@@ -199,6 +235,7 @@ namespace aecs
 
         unsigned _tick = 0;
         std::map<std::size_t, EntityPtr> _entities;
+        unsigned _clientId = 0;
         std::map<std::type_index, std::pair<std::shared_ptr<ISystem>, int>> _systems;
         std::vector<std::pair<ISystem *, int>> _sortedSystems;
 
