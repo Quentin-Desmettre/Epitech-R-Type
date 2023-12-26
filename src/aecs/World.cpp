@@ -7,6 +7,7 @@
 #include "shared/PacketBuilder.hpp"
 #include <algorithm>
 #include <iostream>
+#include "rtype/systems/ServerInputsSystem.hpp"
 
 namespace aecs
 {
@@ -87,8 +88,11 @@ namespace aecs
         UpdateParams updateParams = {getInputs(), deltaTime};
 
         // Update systems
-        for (auto &[system, _] : _sortedSystems)
+        for (auto &[system, _] : _sortedSystems) {
             system->update(updateParams);
+            if (dynamic_cast<rtype::ServerInputsSystem *>(system))
+                updateParams.inputs = getInputs();
+        }
 
         // Clear
         // _renderInputs.clear();

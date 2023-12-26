@@ -25,7 +25,7 @@ namespace aecs
     ((serverInputs).find(0) != (serverInputs).end() ? (serverInputs).at(0) : aecs::ClientInputs())
 
     typedef struct UpdateParams {
-        const ServerInputs &inputs;
+        ServerInputs inputs;
         float deltaTime;
     } UpdateParams;
 

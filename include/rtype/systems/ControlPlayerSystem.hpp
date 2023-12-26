@@ -16,6 +16,7 @@
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include <iostream>
+
 namespace rtype
 {
 #define ENABLE_NETWORK(entity)                                                                                         \
@@ -48,8 +49,7 @@ namespace rtype
                 bool space = false;
                 bool shift = false;
 
-                auto &inputs = _world.getInputs();
-                for (auto &[_, clientInputs] : inputs) {
+                for (auto &[_, clientInputs] : updateParams.inputs) {
                     for (auto &input : clientInputs) {
                         if (input == sf::Keyboard::Key::Z) {
                             ENABLE_NETWORK(entity);
