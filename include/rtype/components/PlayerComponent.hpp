@@ -11,12 +11,14 @@ namespace rtype
     class PlayerComponent : public aecs::AbstractComponent
     {
       public:
-        PlayerComponent() {id = 10;};
+        explicit PlayerComponent(int clientID = 0) :
+            clientID(clientID){};
         ~PlayerComponent() override = default;
         [[nodiscard]] std::vector<std::byte> encode() const override;
         void decode(const std::vector<std::byte> &encoded) override;
         float timeSinceLastShoot = 0;
         float timeInShift = 0;
+        int clientID = 0;
     };
 } // namespace rtype
 

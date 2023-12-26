@@ -38,10 +38,8 @@ namespace aecs
     {
         PacketBuilder pb;
 
-        for (auto &component : _components)
-        {
-            pb << component.second->id;
-            std::cout << component.second->id << std::endl;
+        for (auto &component : _components) {
+            pb << hashString(typeid(*component.second).name());
             pb += component.second->encode();
         }
         std::vector<std::byte> data = pb.getData();
@@ -55,24 +53,24 @@ namespace aecs
     {
         PacketBuilder pb;
         pb << encoded;
+        pb.pass(sizeof(int) + sizeof(ushort));
 
-        while (pb)
-        {
-            int id;
+        while (pb) {
+            uint id;
             pb >> id;
+            std::vector<std::byte> sub = pb.getSub();
             try {
-                getComponentByComponentId(id).decode(pb.getSub());
+                getComponentByComponentId(id).decode(sub);
             } catch (std::exception &e) {
                 std::cerr << e.what() << std::endl;
             }
         }
     }
 
-    AbstractComponent &Entity::getComponentByComponentId(int id)
+    AbstractComponent &Entity::getComponentByComponentId(uint id)
     {
-        for (auto &component : _components)
-        {
-            if (component.second->id == id)
+        for (auto &component : _components) {
+            if (hashString(typeid(*component.second).name()) == id)
                 return *component.second;
         }
         throw std::runtime_error("Invalid component id");

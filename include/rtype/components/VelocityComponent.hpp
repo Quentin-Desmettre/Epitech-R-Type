@@ -12,11 +12,10 @@ namespace rtype
     class VelocityComponent : public aecs::AbstractComponent
     {
       public:
-        VelocityComponent(float x, float y) :
+        explicit VelocityComponent(float x = 0, float y = 0) :
             x(x),
             y(y)
         {
-            id = 14;
         }
         ~VelocityComponent() override = default;
         [[nodiscard]] std::vector<std::byte> encode() const override;

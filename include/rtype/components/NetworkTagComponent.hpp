@@ -14,10 +14,8 @@ namespace rtype
     class NetworkTagComponent : public aecs::AbstractComponent
     {
       public:
-        explicit NetworkTagComponent(bool active = true)
-        {
-            id = 16;
-        };
+        explicit NetworkTagComponent(bool active = true) :
+            active(active){};
         ~NetworkTagComponent() override = default;
         bool active;
     };

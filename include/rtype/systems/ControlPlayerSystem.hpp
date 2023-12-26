@@ -95,8 +95,9 @@ namespace rtype
 
                 if (space && shift && my.timeInShift > 6) {
                     changes.editedEntities.push_back(
-                        EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 2), sf::Vector2f(100, 0), 0,
-                                                    true).getId());
+                        EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 2), sf::Vector2f(100, 0),
+                                                    0, true)
+                            .getId());
                     my.timeSinceLastShoot = 0;
                     my.timeInShift = 0;
                 }

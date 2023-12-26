@@ -22,6 +22,7 @@ namespace rtype
         void run();
 
       private:
+        void setDecodeMap();
         static void infinteLoop(int refreshRate, std::function<bool()> &&run, std::function<void()> &&function);
         aecs::World _world;
         int _renderRefreshRate;

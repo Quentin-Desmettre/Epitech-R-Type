@@ -20,19 +20,45 @@
 #include <chrono>
 #include <thread>
 
+#include "rtype/components/BulletComponent.hpp"
+#include "rtype/components/MonsterComponent.hpp"
+#include "rtype/components/PlayerComponent.hpp"
+void rtype::RTypeClient::setDecodeMap()
+{
+    _world.addDecodeMap(typeid(PlayerComponent), [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<PlayerComponent>();
+        auto &component = entity.getComponent<PlayerComponent>();
+        component.decode(data);
+        EntityFactory::toPlayer(entity);
+    });
+    _world.addDecodeMap(typeid(BulletComponent), [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<MonsterComponent>();
+        auto &component = entity.getComponent<BulletComponent>();
+        component.decode(data);
+        EntityFactory::toBullet(entity);
+    });
+    _world.addDecodeMap(typeid(MonsterComponent), [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<MonsterComponent>();
+        auto &component = entity.getComponent<MonsterComponent>();
+        component.decode(data);
+        EntityFactory::toEnemy(entity);
+    });
+}
+
 rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world(),
     _renderRefreshRate(renderRefreshRate),
     _logicRefreshRate(logicRefreshRate),
     _renderSystem(_world.registerRenderSystem<RenderSystem>())
 {
+    setDecodeMap();
     EntityFactory::setWorld(&_world);
     EntityFactory::createBackground(1, sf::Vector2f(8, 0));
     EntityFactory::createBackground(2, sf::Vector2f(5, 0));
     EntityFactory::createBackground(3, sf::Vector2f(3, 0));
     EntityFactory::createBackground(4, sf::Vector2f(12, 0));
     EntityFactory::createBackground(5, sf::Vector2f(15, 0));
-    EntityFactory::createPlayer(true);
+    EntityFactory::createPlayer();
 
     // Network systems
     _world.registerSystem<ClientServerDataHandlerSystem>(-2);

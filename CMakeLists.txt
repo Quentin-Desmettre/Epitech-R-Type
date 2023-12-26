@@ -56,7 +56,6 @@ set(SERVER_SRC src/server/main.cpp
         include/rtype/systems/DeleteClientSystem.hpp
         include/shared/PacketBuilder.hpp
         src/shared/PacketBuilder.cpp
-        include/rtype/ComponentList.hpp
         src/rtype/components/DamageCollisionComponent.cpp
         src/rtype/components/HPComponent.cpp
         src/rtype/components/MonsterComponent.cpp
@@ -74,7 +73,6 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/systems/ClientPingSystem.hpp
         include/shared/PacketBuilder.hpp
         src/shared/PacketBuilder.cpp
-        include/rtype/ComponentList.hpp
         src/rtype/components/DamageCollisionComponent.cpp
         src/rtype/components/HPComponent.cpp
         src/rtype/components/MonsterComponent.cpp
