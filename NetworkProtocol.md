@@ -87,9 +87,15 @@ With the following definitions:
 
 ## `CONNECTED` packet
 
-This packet contains the game state, as encoded by `aecs::GameState::encode()`.
+This packet contains the client ID, followed by the game state (same as [`GAME_STATE`](#gamestate-packet) packet).
 
-It is an alias of the [`GAME_STATE`](#gamestate-packet) packet.
+```
++-----------+------------+
+| 1 byte    | n bytes    |
++-----------+------------+
+| client ID | game state |
++-----------+------------+
+```
 
 ## `GAME_STATE` packet
 
@@ -108,9 +114,11 @@ Entities are encoded as follows:
 +----------------+----------------------+------------+
 | 4 bytes        | 2 bytes              | n bytes    |
 +----------------+----------------------+------------+
-| entity ID      | number of components | components |
+| entity ID      | data size            | components |
 +----------------+----------------------+------------+
 ```
+
+If the entity has to be removed, `data size` will be `0`, and `components` will be empty.
 
 Components are encoded as follows:
 ```
