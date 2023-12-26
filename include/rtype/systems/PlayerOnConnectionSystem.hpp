@@ -43,9 +43,10 @@ namespace rtype
         {
             if (entity->hasComponents(_componentsNeeded)) {
                 if (_entitiesMap.find(entity->getId()) == _entitiesMap.end()) {
-                    EntityFactory::createPlayer();
+                    _entitiesMap[entity->getId()] = entity;
+                    entity->addComponent<PlayerComponent>();
+                    EntityFactory::toPlayer(*entity);
                 }
-                _entitiesMap[entity->getId()] = entity;
             } else
                 _entitiesMap.erase(entity->getId());
         }

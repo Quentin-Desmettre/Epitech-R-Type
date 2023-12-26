@@ -45,7 +45,7 @@ namespace aecs
         }
         std::vector<std::byte> data = pb.getData();
         pb.clear();
-        pb << static_cast<int>(getId());
+        pb << static_cast<unsigned>(getId());
         pb += data;
         return pb.getData();
     }

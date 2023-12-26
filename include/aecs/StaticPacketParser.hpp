@@ -112,13 +112,13 @@ namespace aecs
 
             for (unsigned i = 0; i < numEntities; i++) {
                 unsigned entityId;
-                unsigned dataSize;
+                unsigned short dataSize;
                 packet >> entityId;
                 packet >> dataSize;
 
                 // get the next dataSize bytes
                 std::vector<std::byte> entityData(dataSize);
-                for (unsigned j = 0; j < dataSize; j++) {
+                for (unsigned short j = 0; j < dataSize; j++) {
                     std::uint8_t byte;
                     packet >> byte;
                     entityData[j] = *reinterpret_cast<std::byte *>(&byte);
