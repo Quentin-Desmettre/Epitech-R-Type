@@ -54,7 +54,7 @@ namespace rtype
             return false;
         }
 
-        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
         {
             std::vector<std::shared_ptr<aecs::Entity>> entities;
             aecs::EntityChanges changes;
@@ -87,7 +87,7 @@ namespace rtype
                         if (kill)
                             kll = true;
                         if (hp2.hp <= 0 || kill) {
-                            _world.destroyEntity(*entity2);
+                            //                            _world.destroyEntity(*entity2);
                             changes.deletedEntities.push_back(entity->getId());
                             entities.erase(entities.begin() + j);
                             j--;
@@ -99,7 +99,7 @@ namespace rtype
                     damage.invulnerability = 5;
                 }
                 if (hp.hp <= 0 || kll) {
-                    _world.destroyEntity(*entity);
+                    //                    _world.destroyEntity(*entity);
                     changes.deletedEntities.push_back(entity->getId());
                     entities.erase(entities.begin() + i);
                     i--;

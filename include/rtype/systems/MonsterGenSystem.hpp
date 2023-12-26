@@ -22,7 +22,7 @@ namespace rtype
 
         static aecs::Entity &addRandomEnemy();
 
-        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override;
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
     };
 
 } // namespace rtype

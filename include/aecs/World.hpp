@@ -6,11 +6,11 @@
 #define EPITECH_R_TYPE_WORLD_HPP
 
 #include "Entity.hpp"
+#include "SFML/Network/Packet.hpp"
 #include "SystemBase.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
 #include "shared/PacketBuilder.hpp"
-#include "SFML/Network/Packet.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
 #include <map>

@@ -12,7 +12,10 @@ namespace rtype
     {
       public:
         explicit MonsterComponent(bool lil = false) :
-            _lil(lil){id = 7;};
+            _lil(lil)
+        {
+            id = 7;
+        };
         ~MonsterComponent() override = default;
         float timeSinceLastShoot = 0;
         bool _lil = false;

@@ -9,6 +9,7 @@
 #include "rtype/components/HPComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/NetworkTagComponent.hpp"
 #include "rtype/components/ParallaxComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
@@ -16,9 +17,6 @@
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include <memory>
-#include "rtype/components/SpriteComponent.hpp"
-#include "rtype/components/VelocityComponent.hpp"
-#include "rtype/components/NetworkTagComponent.hpp"
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
 
@@ -30,8 +28,6 @@ aecs::Entity &rtype::EntityFactory::createPlayer(bool main, int nb, size_t id)
     player.addComponent<VelocityComponent>(0, 0);
     player.addComponent<SpriteComponent>("assets/sprites/PlayerNew.png", sf::Vector2f{96, 96},
                                          sf::IntRect(0, 0, 32, 32));
-    if (main)
-        player.addComponent<MyPlayerComponent>();
     player.addComponent<PlayerComponent>();
     player.addComponent<DamageCollisionComponent>(0, 0);
     player.addComponent<HPComponent>(50);
@@ -40,12 +36,12 @@ aecs::Entity &rtype::EntityFactory::createPlayer(bool main, int nb, size_t id)
     shader->setUniform("hue", 50 * nb - 50);
     shader->setUniform("saturation", float(!main));
     player.addComponent<ShaderComponent>(shader);
-    player.addComponent<NetworkTagComponent>();
 
     return player;
 }
 
-aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vector2f velocity, int team, bool big, size_t id)
+aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vector2f velocity, int team, bool big,
+                                                 size_t id)
 {
     auto &bullet = _world->createEntity(id);
     bullet.addComponent<AnimComponent>(0.5);

@@ -39,7 +39,7 @@ aecs::ClientInputs rtype::RenderSystem::render()
         sprite.sprite.setPosition(pos.x, pos.y);
         if (entity->hasComponent<ShaderComponent>()) {
             auto &shader = entity->getComponent<ShaderComponent>();
-            _window.draw(sprite.sprite, &(*shader.shader));
+            _window.draw(sprite.sprite, shader.shader.get());
         } else
             _window.draw(sprite.sprite);
     }

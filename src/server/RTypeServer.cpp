@@ -50,7 +50,7 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate) :
     _world.registerSystem<MonsterBullet>(1);
 
     // Network systems
-    _world.registerSystem<ServerCorrectionsSystem>(2);
+    _world.registerSystem<ServerCorrectionsSystem>(1000);
 }
 
 void rtype::RTypeServer::run()

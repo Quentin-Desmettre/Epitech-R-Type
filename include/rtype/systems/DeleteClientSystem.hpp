@@ -17,13 +17,13 @@ namespace rtype
     {
       public:
         DeleteClientSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {typeid(ClientAdressComponent)})
+            ALogicSystem(world, entities, {typeid(ClientAdressComponent), typeid(ClientPingComponent)})
         {
         }
 
         ~DeleteClientSystem() override = default;
 
-        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
         {
             for (auto &[id, entity] : _entitiesMap) {
                 auto &clientAdress = entity->getComponent<ClientAdressComponent>();
@@ -31,7 +31,8 @@ namespace rtype
                 if (clientAdress.adress == 0 || clock.getElapsedTime().asSeconds() >= 5) {
                     std::cout << "Client disconnected after " << clock.getElapsedTime().asSeconds() << " seconds"
                               << std::endl;
-                    _world.destroyEntity(*entity);
+                    //                    _world.destroyEntity(*entity);
+                    updateParams.entityChanges.deletedEntities.push_back(id);
                     break;
                 }
             }

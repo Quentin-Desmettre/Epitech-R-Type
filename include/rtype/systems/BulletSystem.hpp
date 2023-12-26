@@ -24,7 +24,7 @@ namespace rtype
         }
         ~BulletSystem() override = default;
 
-        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
         {
             std::vector<std::shared_ptr<aecs::Entity>> entities;
             aecs::EntityChanges changes;
@@ -38,7 +38,7 @@ namespace rtype
                 auto &entity = entities[i];
                 auto &position = entity->getComponent<PositionComponent>();
                 if (position.x < -100 || position.x > 1920 + 100 || position.y < -100 || position.y > 1080 + 100) {
-                    _world.destroyEntity(*entity);
+                    //                    _world.destroyEntity(*entity);
                     entities.erase(entities.begin() + i);
                     changes.deletedEntities.push_back(entity->getId());
                 }

@@ -8,8 +8,8 @@
 #include "rtype/systems/AnimSystem.hpp"
 #include "rtype/systems/BulletSystem.hpp"
 #include "rtype/systems/ClientInputSenderSystem.hpp"
-#include "rtype/systems/ClientServerDataHandlerSystem.hpp"
 #include "rtype/systems/ClientPingSystem.hpp"
+#include "rtype/systems/ClientServerDataHandlerSystem.hpp"
 #include "rtype/systems/ControlPlayerSystem.hpp"
 #include "rtype/systems/DamageCollisionSystem.hpp"
 #include "rtype/systems/InvulSystem.hpp"
@@ -32,7 +32,6 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     EntityFactory::createBackground(3, sf::Vector2f(3, 0));
     EntityFactory::createBackground(4, sf::Vector2f(12, 0));
     EntityFactory::createBackground(5, sf::Vector2f(15, 0));
-    EntityFactory::createPlayer(true);
 
     // Network systems
     _world.registerSystem<ClientServerDataHandlerSystem>(-2);
@@ -40,7 +39,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world.registerSystem<ClientPingSystem>(0);
 
     // commented to show that movement comes from server
-    // _world.registerSystem<ControlPlayerSystem>(0);
+    //    _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
     _world.registerSystem<AnimSystem>(1);
     _world.registerSystem<PhysicsSystem>(1);

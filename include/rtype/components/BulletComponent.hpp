@@ -12,7 +12,8 @@ namespace rtype
     class BulletComponent : public aecs::AbstractComponent
     {
       public:
-        BulletComponent() {
+        BulletComponent()
+        {
             id = 2;
         };
         ~BulletComponent() override = default;

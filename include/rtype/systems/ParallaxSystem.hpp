@@ -23,7 +23,7 @@ namespace rtype
         }
         ~ParallaxSystem() override = default;
 
-        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
         {
             aecs::EntityChanges changes;
             for (auto &[_id, entity] : _entitiesMap) {

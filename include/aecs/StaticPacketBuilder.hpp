@@ -6,8 +6,8 @@
 #define R_TYPE_STATICPACKETBUILDER_HPP
 
 #include "SFML/Network.hpp"
-#include "aecs/World.hpp"
 #include "StaticPacketParser.hpp"
+#include "aecs/World.hpp"
 
 namespace aecs
 {
@@ -68,7 +68,7 @@ namespace aecs
             return makeHeader(PacketTypes::CLIENT_PONG, content);
         }
 
-    private:
+      private:
         static sf::Packet makeHeader(PacketTypes packetType, const sf::Packet &from)
         {
             sf::Packet packet;
@@ -80,6 +80,6 @@ namespace aecs
         }
     };
 
-} // namespace rtype
+} // namespace aecs
 
-#endif //R_TYPE_STATICPACKETBUILDER_HPP
+#endif // R_TYPE_STATICPACKETBUILDER_HPP

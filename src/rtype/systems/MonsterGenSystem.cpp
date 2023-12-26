@@ -11,7 +11,7 @@ aecs::Entity &rtype::MonsterGenSystem::addRandomEnemy()
     return EntityFactory::createEnemy(sf::Vector2f(1080, std::rand() % 540), sf::Vector2f(-15, 0), lil);
 }
 
-aecs::EntityChanges rtype::MonsterGenSystem::update(const aecs::UpdateParams &updateParams)
+aecs::EntityChanges rtype::MonsterGenSystem::update(aecs::UpdateParams &updateParams)
 {
     std::size_t nbPlayer = _entitiesMap.size();
     static float time = 0;
@@ -21,7 +21,6 @@ aecs::EntityChanges rtype::MonsterGenSystem::update(const aecs::UpdateParams &up
     if (nbPlayer == 0) {
         return {};
     }
-    int rnd = 0;
 
     while (time > 1) {
         rnd = std::rand() % 100;
