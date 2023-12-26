@@ -8,11 +8,11 @@
 #pragma once
 
 #include "aecs/World.hpp"
+#include "rtype/components/MyPlayerComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
 #include <SFML/Network.hpp>
 #include <arpa/inet.h>
 #include <iostream>
-#include "rtype/components/PositionComponent.hpp"
-#include "rtype/components/MyPlayerComponent.hpp"
 
 enum PacketTypes : sf::Uint8 {
     NONE = 0x2A,
@@ -29,80 +29,71 @@ enum PacketTypes : sf::Uint8 {
 class StaticPacketParser
 {
   public:
-    struct PacketHeader {
-        sf::Uint16 size;
-        sf::Uint8 type;
-    };
-    struct SystemData {
-        aecs::World &world;
-        std::size_t clientId;
-        std::map<std::size_t, aecs::EntityPtr> &_entitiesMap;
+    struct ParsedPacket {
+        PacketTypes type;
+        aecs::ClientInputs newInputs;
+        std::map<std::size_t, std::vector<std::byte>> entityChanges;
     };
 
     static bool isPacketValid(sf::Packet &packet)
     {
         const void *data = packet.getData();
+        if (!data)
+            return false;
         const sf::Uint16 *cast_data = static_cast<const sf::Uint16 *>(data);
         return ntohs(cast_data[0]) == packet.getDataSize() - 2;
     }
 
-    static PacketTypes parsePacket(sf::Packet &packet, SystemData &data)
+    static ParsedPacket parsePacket(sf::Packet &packet)
     {
         if (!isPacketValid(packet))
-            return NONE;
+            return {.type = NONE, .newInputs = {}, .entityChanges = {}};
 
-        PacketHeader header = {.size = 0, .type = NONE};
-        packet >> header.size;
-        packet >> header.type;
+        sf::Uint16 size = 0;
+        sf::Uint8 type = NONE;
 
-        if (header.type == NONE)
-            return NONE;
+        packet >> size;
+        packet >> type;
+        if (type == NONE)
+            return {.type = NONE, .newInputs = {}, .entityChanges = {}};
 
-        switch (header.type) {
+        switch (type) {
         case CONNECTED:
-            return parseConnected(packet, data, header);
+            return parseConnected(packet);
         case GAME_CHANGES:
-            return parseGameChanges(packet, data, header);
+            return parseGameChanges(packet);
         case SERVER_PONG:
-            return parseServerPong(packet, data, header);
+            return parseServerPong(packet);
         case GAME_INPUT:
-            return parseGameInput(packet, data, header);
+            return parseGameInput(packet);
         case PING:
-            return parsePing(packet, data, header);
+            return parsePing(packet);
         case CLIENT_PONG:
-            return parseClientPong(packet, data, header);
+            return parseClientPong(packet);
         default:
-            return NONE;
+            return {.type = NONE, .newInputs = {}, .entityChanges = {}};
         }
     }
 
   protected:
   private:
-    static PacketTypes parseConnected(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static ParsedPacket parseConnected(sf::Packet &packet)
     {
-        return CONNECTED;
+        return {.type = CONNECTED, .newInputs = {}, .entityChanges = {}};
     }
 
-    static PacketTypes parseGameChanges(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static ParsedPacket parseGameChanges(sf::Packet &packet)
     {
-        for (auto &[_, entity] : data._entitiesMap) {
-            if (entity->hasComponent<rtype::MyPlayerComponent>()) {
-                auto &position = entity->getComponent<rtype::PositionComponent>();
-                packet >> position.x >> position.y;
-                std::cout << "x: " << position.x << " y: " << position.y << std::endl;
-                break;
-            }
-        }
-        return GAME_CHANGES;
+        return {.type = GAME_CHANGES, .newInputs = {}, .entityChanges = {}};
     }
 
-    static PacketTypes parseServerPong(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static ParsedPacket parseServerPong(sf::Packet &packet)
     {
         std::cout << "Pong" << std::endl;
-        return SERVER_PONG;
+        return {.type = SERVER_PONG, .newInputs = {}, .entityChanges = {}};
     }
 
-    static PacketTypes parseGameInput(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static ParsedPacket parseGameInput(sf::Packet &packet)
     {
         sf::Uint8 nbInputs;
         aecs::ClientInputs inputs;
@@ -114,19 +105,18 @@ class StaticPacketParser
             packet >> input;
             inputs.emplace_back(input);
         }
-        data.world.setClientInputs(data.clientId, inputs);
-        return GAME_INPUT;
+        return {.type = GAME_INPUT, .newInputs = inputs, .entityChanges = {}};
     }
 
-    static PacketTypes parsePing(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static ParsedPacket parsePing(sf::Packet &packet)
     {
         std::cout << "Ping" << std::endl;
-        return PING;
+        return {.type = PING, .newInputs = {}, .entityChanges = {}};
     }
 
-    static PacketTypes parseClientPong(sf::Packet &packet, SystemData &data, PacketHeader &header)
+    static ParsedPacket parseClientPong(sf::Packet &packet)
     {
         std::cout << "Pong" << std::endl;
-        return CLIENT_PONG;
+        return {.type = CLIENT_PONG, .newInputs = {}, .entityChanges = {}};
     }
 };

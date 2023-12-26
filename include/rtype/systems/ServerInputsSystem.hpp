@@ -44,21 +44,29 @@ namespace rtype
                 return {};
             }
 
-            StaticPacketParser::SystemData systemData = {
-                .world = _world, .clientId = clientId, ._entitiesMap = _entitiesMap};
-            PacketTypes type = StaticPacketParser::parsePacket(packet, systemData);
+            StaticPacketParser::ParsedPacket parsed = StaticPacketParser::parsePacket(packet);
 
-            if (type == NONE) {
+            switch (parsed.type) {
+            case NONE:
                 std::cerr << "Error parsing packet" << std::endl;
-                return {};
+                break;
+            case PING:
+                sendPong(sender);
+                break;
+            case CLIENT_PONG:
+                break;
+            case GAME_INPUT:
+                _world.setClientInputs(clientId, parsed.newInputs);
+                break;
+            default:
+                std::cerr << "Unexpected packet type" << std::endl;
+                break;
             }
 
             auto client = _entitiesMap.find(clientId);
             if (client == _entitiesMap.end())
                 return {};
 
-            if (type == PING)
-                sendPong(sender);
             client->second->getComponent<ClientPingComponent>().clock.restart();
             return {};
         }

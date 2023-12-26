@@ -65,8 +65,23 @@ namespace rtype
             // - push to queue
             // - do packet received X ms in the past
 
-            StaticPacketParser::SystemData systemData = {.world = _world, ._entitiesMap = _entitiesMap};
-            StaticPacketParser::parsePacket(packet, systemData);
+            StaticPacketParser::ParsedPacket parsed = StaticPacketParser::parsePacket(packet);
+
+            if (parsed.type == SERVER_PONG)
+                return {};
+            if (parsed.type != GAME_CHANGES) {
+                std::cerr << "Unexpected packet type" << std::endl;
+                return {};
+            }
+
+            for (auto &[_, entity] : _entitiesMap) {
+                if (entity->hasComponent<rtype::MyPlayerComponent>()) {
+                    auto &position = entity->getComponent<rtype::PositionComponent>();
+                    packet >> position.x >> position.y;
+                    std::cout << "x: " << position.x << " y: " << position.y << std::endl;
+                    break;
+                }
+            }
 
             // Send pong with tick
             unsigned tick = *(unsigned *)packet.getData(); // TODO: change how tick is get
