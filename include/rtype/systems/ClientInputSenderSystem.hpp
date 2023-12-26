@@ -5,10 +5,11 @@
 #ifndef R_TYPE_CLIENTINPUTSENDERSYSTEM_HPP
 #define R_TYPE_CLIENTINPUTSENDERSYSTEM_HPP
 
+#include "aecs/StaticPacketBuilder.hpp"
+#include "aecs/StaticPacketParser.hpp"
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
-#include "rtype/StaticPacketParser.hpp"
 #include "rtype/components/ClientPingComponent.hpp"
 #include <SFML/Network.hpp>
 
@@ -26,6 +27,7 @@ namespace rtype
             ALogicSystem(world, entities, {typeid(ClientPingComponent)})
         {
             _socket.setBlocking(false);
+            _socket.bind(CLIENT_INPUTS_PORT);
         }
 
         ~ClientInputSenderSystem() override = default;
@@ -33,24 +35,17 @@ namespace rtype
         /*
          * send inputs to server, via UDP
          */
-        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
         {
-            sf::Packet packet;
-            aecs::ClientInputs myInputs = MY_INPUTS(updateParams.inputs);
-            sf::Uint16 size = myInputs.size() + 2;
-
-            if (size == 2 || _entitiesMap.empty())
+            if (updateParams.inputs.empty() || updateParams.inputs.begin()->second.empty())
                 return {};
 
-            packet << size << PacketTypes::GAME_INPUT << static_cast<sf::Uint8>(size - 2);
-            for (auto &input : myInputs)
-                packet << static_cast<sf::Uint8>(input);
-
-            _socket.bind(CLIENT_INPUTS_PORT);
+            // Get the first inputs, as a client only has one player
+            std::vector<aecs::RenderInput> inputs = updateParams.inputs.begin()->second;
+            sf::Packet packet = aecs::StaticPacketBuilder::buildGameInputPacket(inputs);
             _socket.send(packet, "127.0.0.1", SERVER_INPUTS_PORT); // TODO: get from ac/av
             for (auto &[_, entity] : _entitiesMap) {
-                auto &component = entity->getComponent<ClientPingComponent>();
-                component.clock.restart();
+                entity->getComponent<ClientPingComponent>().clock.restart();
             }
             return {};
         }

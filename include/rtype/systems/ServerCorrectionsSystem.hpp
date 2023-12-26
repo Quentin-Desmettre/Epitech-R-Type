@@ -5,10 +5,10 @@
 #ifndef R_TYPE_SERVERCORRECTIONSSYSTEM_HPP
 #define R_TYPE_SERVERCORRECTIONSSYSTEM_HPP
 
+#include "aecs/StaticPacketParser.hpp"
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
-#include "rtype/StaticPacketParser.hpp"
 #include "rtype/components/NetworkTagComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include <iostream>
@@ -21,7 +21,7 @@ namespace rtype
       public:
         ServerCorrectionsSystem(aecs::World &world,
                                 const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {typeid(NetworkTagComponent)})
+            ALogicSystem(world, entities, {typeid(ClientAdressComponent)})
         {
             _socket.bind(SERVER_CORRECTIONS_PORT);
             _socket.setBlocking(false);
@@ -29,37 +29,43 @@ namespace rtype
 
         ~ServerCorrectionsSystem() override = default;
 
-        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
         {
-            std::vector<std::byte> data;
+            // Send edited / deleted entities
+            const auto &editedEntityIds = updateParams.entityChanges.editedEntities;
+            const auto &deletedEntityIds = updateParams.entityChanges.deletedEntities;
+            std::vector<aecs::EntityPtr> editedEntities, deletedEntities;
+            aecs::World::EncodedGameState state;
 
-            for (auto &[_, entity] : _entitiesMap) {
-                auto &networkTag = entity->getComponent<NetworkTagComponent>();
-                if (networkTag.active && entity->hasComponent<PositionComponent>()) {
-                    auto &position = entity->getComponent<PositionComponent>();
-                    std::vector<std::byte> posData = position.encode();
-
-                    data.insert(data.end(), posData.begin(), posData.end());
-                }
-                networkTag.active = false;
+            // Push edited entities in the game state
+            for (auto &editedEntityId : editedEntityIds) {
+                const auto &entity = _world.getEntity(editedEntityId);
+                if (!entity)
+                    continue;
+                state.encodedEntities[editedEntityId] = entity->encode();
             }
-            if (!data.empty())
-                sendDataToClients(data);
+
+            // Push deleted entities in the game state
+            for (auto &deletedEntityId : deletedEntityIds) {
+                const auto &entity = _world.getEntity(deletedEntityId);
+                if (!entity)
+                    continue;
+                state.encodedEntities[deletedEntityId] = {}; // Empty encoded entity means it's deleted
+            }
+
+            // Notify clients
+            sf::Packet packet = aecs::StaticPacketBuilder::buildGameChangesPacket({state});
+            sendDataToClients(packet);
+
             return {};
         }
 
       private:
-        void sendDataToClients(std::vector<std::byte> &data)
+        void sendDataToClients(sf::Packet data)
         {
-            sf::Packet packet;
-            sf::Uint16 size = data.size() + 1;
-
-            packet << size << GAME_CHANGES;
-            packet.append(data.data(), data.size());
-            for (auto &client : _world.getClients()) {
-                auto &clientAdress = client->getComponent<ClientAdressComponent>();
-                sf::Socket::Status status =
-                    _socket.send(packet, sf::IpAddress(clientAdress.adress), CLIENT_CORRECTIONS_PORT);
+            for (auto &[_, client] : _entitiesMap) {
+                auto &address = client->getComponent<ClientAdressComponent>().adress;
+                sf::Socket::Status status = _socket.send(data, sf::IpAddress(address), CLIENT_CORRECTIONS_PORT);
 
                 if (status != sf::Socket::Done)
                     std::cerr << "Error while sending data to client" << std::endl;

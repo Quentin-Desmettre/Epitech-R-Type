@@ -15,11 +15,13 @@
 #include <SFML/Network.hpp>
 #include <SFML/System/Err.hpp>
 #include <iostream>
+
 #ifdef SFML_SYSTEM_WINDOWS
 #include <winsock2.h>
 #else
 #include <sys/socket.h>
 #endif
+#include "aecs/StaticPacketBuilder.hpp"
 #include <cstring>
 #include <netinet/in.h>
 
@@ -84,7 +86,7 @@ namespace rtype
         ~NewConnectionSystem() override = default;
 
         // listen for new connections and send game state to new clients
-        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
         {
             sf::TcpSocket socket;
 
@@ -118,32 +120,24 @@ namespace rtype
 
         void handleClient(sf::TcpSocket &socket)
         {
-            sf::Packet packet;
+            // When a new client is connected, create its entity, send game state + its id
 
-            // Send game state
-            // auto &bytes = _world.serialize();
-            // packet.append(bytes.data(), bytes.size());
+            // Get client id
+            auto &playerEntity = _world.createEntity();
+            playerEntity.addComponent<ClientAdressComponent>(socket.getRemoteAddress().toInteger());
+            playerEntity.addComponent<ClientPingComponent>();
+            // After this line, systems have been notified of the creation of the player, so every component
+            // will be added to the entity before this line ends
+            std::size_t id = playerEntity.addComponent<PlayerComponent>().playerId;
 
-            // for testing purpose, send player position
-            for (auto &[_, entity] : _entitiesMap) {
-                if (entity->hasComponent<MyPlayerComponent>()) {
-                    auto &posComponent = entity->getComponent<PositionComponent>();
-                    packet << posComponent.x << posComponent.y;
-                    break;
-                }
-            }
+            // Build packet
+            sf::Packet packet = aecs::StaticPacketBuilder::buildConnectedPacket(id, _world);
 
-            if (socket.send(packet) != sf::Socket::Done)
+            // send
+            if (socket.send(packet) != sf::Socket::Done) {
                 std::cerr << "Failed to send game state to new client" << std::endl;
-            else
-                addClient(socket.getRemoteAddress());
-        }
-
-        void addClient(const sf::IpAddress &address)
-        {
-            aecs::Entity &entity = _world.createEntity();
-            entity.addComponent<ClientAdressComponent>(address.toInteger());
-            entity.addComponent<ClientPingComponent>();
+                _world.destroyEntity(playerEntity);
+            }
         }
 
         RTypeListener _listener;

@@ -32,8 +32,8 @@ namespace rtype
          * 2. Wait for message, containing game state
          * 3. set game state
          */
-        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
-        { // TODO: take as parameter a SystemParams object
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
+        {
             if (_connected)
                 return {};
 
@@ -53,12 +53,22 @@ namespace rtype
                 return {};
             }
 
-            // Set game state
-            // _world.load(packet.getData(), packet.getDataSize());
+            // Parse connected answer
+            aecs::StaticPacketParser::SystemData data{
+                .world = _world,
+                .clientId = 0,
+                ._entitiesMap = _entitiesMap,
+            };
+            auto parsed = aecs::StaticPacketParser::parsePacket(packet, data);
+            if (parsed.type != aecs::PacketTypes::CONNECTED) {
+                std::cerr << "Error parsing packet" << std::endl;
+                return {};
+            }
+            _world.load(parsed.entityChanges[0]);
+            _world.setClientId(parsed.clientId);
 
             // Create myself (to activate udp systems)
-            auto &myself = _world.createEntity();
-            myself.addComponent<ClientPingComponent>();
+            _world.createEntity().addComponent<ClientPingComponent>();
 
             _connected = true;
             return {};

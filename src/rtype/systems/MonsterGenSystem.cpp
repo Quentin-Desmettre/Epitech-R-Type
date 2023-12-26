@@ -22,6 +22,7 @@ aecs::EntityChanges rtype::MonsterGenSystem::update(aecs::UpdateParams &updatePa
         return {};
     }
 
+    int rnd;
     while (time > 1) {
         rnd = std::rand() % 100;
         if (rnd * nbPlayer < 10) {

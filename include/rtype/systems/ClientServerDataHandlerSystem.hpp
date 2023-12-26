@@ -5,10 +5,11 @@
 #ifndef R_TYPE_CLIENTSERVERDATAHANDLERSYSTEM_HPP
 #define R_TYPE_CLIENTSERVERDATAHANDLERSYSTEM_HPP
 
+#include "aecs/StaticPacketBuilder.hpp"
+#include "aecs/StaticPacketParser.hpp"
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
-#include "rtype/StaticPacketParser.hpp"
 #include "rtype/components/ClientPingComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
@@ -33,7 +34,7 @@ namespace rtype
       public:
         ClientServerDataHandlerSystem(aecs::World &world,
                                       const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {}),
+            ALogicSystem(world, entities, {typeid(ClientPingComponent)}),
             _maxReceivedTick(0),
             _tcpHandshakeSystem(world, entities)
         {
@@ -43,7 +44,7 @@ namespace rtype
 
         ~ClientServerDataHandlerSystem() override = default;
 
-        aecs::EntityChanges update(const aecs::UpdateParams &updateParams) override
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
         {
             _tcpHandshakeSystem.update(updateParams);
             if (!_tcpHandshakeSystem.isConnected())
@@ -53,6 +54,7 @@ namespace rtype
             sf::Packet packet;
             sf::IpAddress sender;
             unsigned short port;
+
             sf::Socket::Status status = _socket.receive(packet, sender, port);
 
             // If no packet, return
@@ -65,42 +67,43 @@ namespace rtype
             // - push to queue
             // - do packet received X ms in the past
 
-            StaticPacketParser::SystemData systemData = {.world = _world, ._entitiesMap = _entitiesMap};
-            StaticPacketParser::parsePacket(packet, systemData);
+            aecs::StaticPacketParser::SystemData systemData = {.world = _world, ._entitiesMap = _entitiesMap};
+            auto parsed = aecs::StaticPacketParser::parsePacket(packet, systemData);
+
+            // Check that it is a normal packet
+            if (parsed.type != aecs::GAME_CHANGES)
+                return {};
 
             // Send pong with tick
-            unsigned tick = *(unsigned *)packet.getData(); // TODO: change how tick is get
-            sf::Packet pongPacket;
-            pongPacket << static_cast<sf::Uint16>(5) << CLIENT_PONG << std::max(tick, _maxReceivedTick);
+            unsigned tick = parsed.tick;
+            sf::Packet pongPacket = aecs::StaticPacketBuilder::buildClientPongPacket(std::max(tick, _maxReceivedTick));
             _socket.send(pongPacket, sender, port);
 
             // Reset ping clock
-            for (auto &[_, entity] : _entitiesMap) {
-                if (entity->hasComponent<ClientPingComponent>()) {
-                    auto &component = entity->getComponent<ClientPingComponent>();
-                    component.clock.restart();
-                    break;
-                }
-            }
+            for (auto &[_, entity] : _entitiesMap)
+                entity->getComponent<ClientPingComponent>().clock.restart();
 
-            // Check if tick has already been checked
-            if (tick <= _maxReceivedTick)
-                return {};
+            // Do the changes
+            _world.load(parsed.entityChanges.back());
 
-            // Push to queue
-            auto now = std::chrono::duration_cast<std::chrono::milliseconds>(
-                std::chrono::system_clock::now().time_since_epoch());
-            _maxReceivedTick = tick;
-            _packets.emplace(packet, now);
-
-            // Do packet received X ms in the past
-            if (_packets.empty())
-                return {};
-            auto &[firstPacket, timeReceived] = _packets.front();
-            if (now - timeReceived < std::chrono::milliseconds(BUFFER_DELAY))
-                return {};
-            _packets.pop();
-            PacketHandler::handle(_world, firstPacket);
+            //            // Check if tick has already been checked
+            //            if (tick <= _maxReceivedTick)
+            //                return {};
+            //
+            //            // Push to queue
+            //            auto now = std::chrono::duration_cast<std::chrono::milliseconds>(
+            //                std::chrono::system_clock::now().time_since_epoch());
+            //            _maxReceivedTick = tick;
+            //            _packets.emplace(packet, now);
+            //
+            //            // Do packet received X ms in the past
+            //            if (_packets.empty())
+            //                return {};
+            //            auto &[firstPacket, timeReceived] = _packets.front();
+            //            if (now - timeReceived < std::chrono::milliseconds(BUFFER_DELAY))
+            //                return {};
+            //            _packets.pop();
+            //            PacketHandler::handle(_world, firstPacket);
             return {};
         }
 
