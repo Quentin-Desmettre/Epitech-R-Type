@@ -45,6 +45,7 @@ namespace rtype
                         velocity.x += -50;
                     }
                     if (input == sf::Keyboard::Key::D) {
+                        std::cout << "D" << std::endl;
                         velocity.x += 50;
                     }
                     if (input == sf::Keyboard::Key::Space) {

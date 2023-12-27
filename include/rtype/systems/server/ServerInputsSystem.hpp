@@ -28,9 +28,14 @@ namespace rtype
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
 
       private:
+        aecs::EntityPtr &findClient(std::size_t &clientId);
+        void handlePacket(aecs::StaticPacketParser::ParsedData &packet, aecs::UpdateParams &updateParams,
+                          std::size_t clientId);
         void sendPong(sf::IpAddress &sender);
 
         sf::UdpSocket _socket;
+        sf::IpAddress _sender;
+        unsigned short _port;
     };
 } // namespace rtype
 

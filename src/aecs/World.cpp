@@ -106,7 +106,9 @@ namespace aecs
 
         // Delete entities
         for (auto &deletedEntityId : updateParams.entityChanges.deletedEntities) {
-            destroyEntity(*_entities[deletedEntityId]);
+            auto it = _entities.find(deletedEntityId);
+            if (it != _entities.end())
+                destroyEntity(*it->second);
         }
 
         // Clear

@@ -6,7 +6,6 @@
 #define R_TYPE_PLAYERCOMPONENT_HPP
 
 #include "aecs/AbstractComponent.hpp"
-#include <cstdint>
 
 namespace rtype
 {

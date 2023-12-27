@@ -12,7 +12,7 @@ namespace rtype
     {
     }
 
-    aecs::EntityChanges BulletSystem::update(aecs::UpdateParams &updateParams)
+    aecs::EntityChanges BulletSystem::update(unused aecs::UpdateParams &updateParams)
     {
         std::vector<std::shared_ptr<aecs::Entity>> entities;
         aecs::EntityChanges changes;

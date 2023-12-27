@@ -4,7 +4,6 @@
 
 #include "rtype/components/PlayerComponent.hpp"
 #include "shared/PacketBuilder.hpp"
-#include <cstdint>
 
 std::uint8_t rtype::PlayerComponent::_maxPlayerId = 1;
 
