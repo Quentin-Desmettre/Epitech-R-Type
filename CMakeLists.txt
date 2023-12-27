@@ -28,7 +28,7 @@ set(SHARED_SRC
         src/rtype/EntityFactory.cpp
         include/rtype/systems/shared/InvulSystem.hpp
         include/rtype/systems/shared/MonsterGenSystem.hpp
-        src/rtype/systems/MonsterGenSystem.cpp
+        src/rtype/systems/shared/MonsterGenSystem.cpp
         include/rtype/components/MonsterComponent.hpp
         include/rtype/systems/shared/MonsterBullet.hpp
         src/rtype/components/SpriteComponent.cpp
@@ -37,7 +37,7 @@ set(SHARED_SRC
         include/rtype/components/VelocityComponent.hpp
         include/rtype/components/ParallaxComponent.hpp
         include/rtype/systems/shared/ParallaxSystem.hpp
-        include/rtype/systems/shared/PhysicsSystem.cpp
+        src/rtype/systems/shared/PhysicsSystem.cpp
         include/rtype/systems/shared/PhysicsSystem.hpp
         include/rtype/components/MyPlayerComponent.hpp
         include/rtype/systems/shared/ControlPlayerSystem.hpp
@@ -52,7 +52,15 @@ set(SHARED_SRC
         include/rtype/NetworkGlobals.hpp
         include/aecs/StaticPacketParser.hpp
         include/rtype/components/ClientAdressComponent.hpp
-        include/rtype/components/ClientPingComponent.hpp)
+        include/rtype/components/ClientPingComponent.hpp
+        src/rtype/systems/shared/ParallaxSystem.cpp
+        src/rtype/systems/shared/MonsterBullet.cpp
+        src/rtype/systems/shared/InvulSystem.cpp
+        src/rtype/systems/shared/DamageCollisionSystem.cpp
+        src/rtype/systems/shared/ControlPlayerSystem.cpp
+        src/rtype/systems/shared/BulletSystem.cpp
+        src/rtype/systems/shared/AnimPlayerSystem.cpp
+        src/rtype/systems/shared/AnimSystem.cpp)
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
         include/rtype/RTypeServer.hpp
@@ -72,15 +80,20 @@ set(SERVER_SRC src/server/main.cpp
         src/rtype/components/PlayerComponent.cpp
         src/rtype/components/PositionComponent.cpp
         src/rtype/components/VelocityComponent.cpp
-        include/rtype/systems/server/PlayerOnConnectionSystem.hpp)
+        include/rtype/systems/server/PlayerOnConnectionSystem.hpp
+        src/rtype/systems/server/DeleteClientSystem.cpp
+        src/rtype/systems/server/NewConnectionSystem.cpp
+        src/rtype/systems/server/PlayerOnConnectionSystem.cpp
+        src/rtype/systems/server/ServerCorrectionsSystem.cpp
+        src/rtype/systems/server/ServerInputsSystem.cpp)
 set(CLIENT_SRC src/client/main.cpp
         src/rtype/RTypeClient.cpp
         include/rtype/RTypeClient.hpp
-        src/rtype/systems/RenderSystem.cpp
+        src/rtype/systems/shared/RenderSystem.cpp
         include/rtype/systems/shared/RenderSystem.hpp
         include/rtype/systems/client/ServerConnectionSystem.hpp
         include/rtype/systems/client/ClientInputSenderSystem.hpp
-        include/rtype/systems/client/ClientServerDataHandlerSystem.cpp
+        src/rtype/systems/client/ClientServerDataHandlerSystem.cpp
         include/rtype/systems/client/ClientPingSystem.hpp
         include/shared/PacketBuilder.hpp
         src/shared/PacketBuilder.cpp
@@ -91,6 +104,9 @@ set(CLIENT_SRC src/client/main.cpp
         src/rtype/components/PositionComponent.cpp
         src/rtype/components/VelocityComponent.cpp
         include/aecs/StaticPacketBuilder.hpp
+        src/rtype/systems/client/ClientInputSenderSystem.cpp
+        src/rtype/systems/client/ClientPingSystem.cpp
+        src/rtype/systems/client/ServerConnectionSystem.cpp
 )
 
 include(FetchContent)

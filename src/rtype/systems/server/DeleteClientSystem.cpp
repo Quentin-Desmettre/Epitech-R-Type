@@ -3,6 +3,8 @@
 //
 
 #include "rtype/systems/server/DeleteClientSystem.hpp"
+#include "rtype/components/ClientAdressComponent.hpp"
+#include "rtype/components/ClientPingComponent.hpp"
 
 namespace rtype
 {

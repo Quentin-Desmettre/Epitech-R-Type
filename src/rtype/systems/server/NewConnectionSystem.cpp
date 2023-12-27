@@ -3,6 +3,18 @@
 //
 
 #include "rtype/systems/server/NewConnectionSystem.hpp"
+#include "aecs/StaticPacketBuilder.hpp"
+#include "rtype/NetworkGlobals.hpp"
+#include "rtype/components/ClientAdressComponent.hpp"
+#include "rtype/components/ClientPingComponent.hpp"
+#include "rtype/components/PlayerComponent.hpp"
+#include <iostream>
+
+#ifdef SFML_SYSTEM_WINDOWS
+#include <winsock2.h>
+#else
+#include <sys/socket.h>
+#endif
 
 namespace rtype
 {

@@ -2,14 +2,11 @@
 // Created by qdesmettre on 20/12/23.
 //
 
-#ifndef R_TYPE_DELETECLIENTSYSTEM_CPP
+#ifndef R_TYPE_DELETECLIENTSYSTEM_HPP
 #define R_TYPE_DELETECLIENTSYSTEM_HPP
 
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include "rtype/components/ClientAdressComponent.hpp"
-#include "rtype/components/ClientPingComponent.hpp"
-#include <iostream>
 
 namespace rtype
 {
@@ -24,4 +21,4 @@ namespace rtype
     };
 } // namespace rtype
 
-#endif // R_TYPE_DELETECLIENTSYSTEM_CPP
+#endif // R_TYPE_DELETECLIENTSYSTEM_HPP

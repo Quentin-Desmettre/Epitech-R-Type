@@ -17,28 +17,11 @@ namespace rtype
     class ClientPingSystem : public aecs::ALogicSystem
     {
       public:
-        ClientPingSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {typeid(ClientPingComponent)})
-        {
-            _socket.setBlocking(false);
-        }
+        ClientPingSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
 
         ~ClientPingSystem() override = default;
 
-        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
-        {
-            for (auto &[_, entity] : _entitiesMap) {
-                auto &component = entity->getComponent<ClientPingComponent>();
-                if (component.clock.getElapsedTime().asMilliseconds() < 1000)
-                    continue;
-
-                sf::Packet packet = aecs::StaticPacketBuilder::buildPingPacket();
-                _socket.send(packet, "127.0.0.1", SERVER_INPUTS_PORT); // TODO: get from ac/av
-
-                component.clock.restart();
-            }
-            return {};
-        }
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
 
       private:
         sf::UdpSocket _socket;

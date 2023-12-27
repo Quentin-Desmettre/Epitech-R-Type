@@ -5,24 +5,9 @@
 #ifndef R_TYPE_NEWCONNECTIONSYSTEM_HPP
 #define R_TYPE_NEWCONNECTIONSYSTEM_HPP
 
-#include "SFML/Network.hpp"
-#include "SFML/System/Err.hpp"
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include "rtype/NetworkGlobals.hpp"
-#include "rtype/components/ClientAdressComponent.hpp"
-#include "rtype/components/ClientPingComponent.hpp"
-#include "rtype/components/PlayerComponent.hpp"
-#include "rtype/components/PositionComponent.hpp"
-#include <iostream>
-
-#ifdef SFML_SYSTEM_WINDOWS
-#include <winsock2.h>
-#else
-#include <sys/socket.h>
-#endif
-#include "aecs/StaticPacketBuilder.hpp"
-#include <cstring>
+#include <SFML/Network.hpp>
 
 #if defined(WIN64) || defined(WIN32) || defined(WINNT)
 #include <windows.h>

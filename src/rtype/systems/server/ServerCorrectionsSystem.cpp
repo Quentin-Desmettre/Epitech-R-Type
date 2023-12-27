@@ -4,8 +4,8 @@
 
 #include "rtype/systems/server/ServerCorrectionsSystem.hpp"
 #include "aecs/StaticPacketBuilder.hpp"
-#include "rtype/components/ClientAdressComponent.hpp"
 #include "rtype/NetworkGlobals.hpp"
+#include "rtype/components/ClientAdressComponent.hpp"
 
 namespace rtype
 {
@@ -60,4 +60,5 @@ namespace rtype
                 std::cerr << "Error while sending data to client" << std::endl;
         }
     }
+
 } // namespace rtype
