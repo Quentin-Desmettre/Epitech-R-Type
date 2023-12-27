@@ -13,7 +13,6 @@
 #include <memory>
 #include <typeindex>
 #include <vector>
-#include <ranges>
 
 namespace aecs
 {

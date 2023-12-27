@@ -5,7 +5,6 @@
 #include "aecs/Entity.hpp"
 #include "aecs/World.hpp"
 #include "shared/PacketBuilder.hpp"
-#include <ranges>
 
 namespace aecs
 {
@@ -31,7 +30,7 @@ namespace aecs
 
     bool Entity::hasComponents(const std::vector<std::type_index> &components) const
     {
-        return std::ranges::all_of(components, [this](const auto &component) {
+        return std::all_of(components.begin(), components.end(), [this](const auto &component) {
             return _components.find(component) != _components.end();
         });
     }
