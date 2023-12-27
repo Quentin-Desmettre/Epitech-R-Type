@@ -15,6 +15,11 @@
 #include <vector>
 #include <cstdint>
 
+#ifdef WIN64
+    #define uint std::uint32_t
+    #define ushort std::uint16_t
+#endif
+
 namespace aecs
 {
 
