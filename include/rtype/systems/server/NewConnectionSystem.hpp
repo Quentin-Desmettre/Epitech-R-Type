@@ -12,8 +12,8 @@
 #include "rtype/components/ClientPingComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
-#include <SFML/Network.hpp>
-#include <SFML/System/Err.hpp>
+#include "SFML/Network.hpp"
+#include "SFML/System/Err.hpp"
 #include <iostream>
 
 #ifdef SFML_SYSTEM_WINDOWS

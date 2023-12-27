@@ -2,7 +2,7 @@
 // Created by qdesmettre on 05/12/23.
 //
 
-#include "rtype/systems/RenderSystem.hpp"
+#include "rtype/systems/shared/RenderSystem.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"

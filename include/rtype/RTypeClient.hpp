@@ -7,7 +7,7 @@
 
 #include "aecs/World.hpp"
 #include "rtype/EntityFactory.hpp"
-#include "rtype/systems/RenderSystem.hpp"
+#include "rtype/systems/shared/RenderSystem.hpp"
 #include <functional>
 
 namespace rtype

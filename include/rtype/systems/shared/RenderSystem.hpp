@@ -7,8 +7,8 @@
 
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
+#include "SFML/Graphics.hpp"
+#include "SFML/Window.hpp"
 
 namespace rtype
 {

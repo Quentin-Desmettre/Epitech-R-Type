@@ -7,7 +7,6 @@
 
 #pragma once
 
-#include "SFML/Network.hpp"
 #include "aecs/World.hpp"
 #include <iostream>
 
@@ -32,25 +31,25 @@ namespace aecs
             PacketTypes type;
 
             // Server received
-            aecs::ServerInputs inputs;
-            std::uint8_t tick;
+            aecs::ServerInputs inputs = {};
+            std::uint8_t tick = 0;
 
             // Client received
-            std::vector<aecs::World::EncodedGameState> entityChanges;
-            std::uint8_t clientId;
+            std::vector<aecs::World::EncodedGameState> entityChanges = {};
+            std::uint8_t clientId = 0;
         };
 
-        static bool isPacketValid(sf::Packet packet)
+        static bool isPacketValid(const PacketBuilder &packet)
         {
-            const std::size_t packetSize = packet.getDataSize();
-            std::uint16_t givenSize;
-
-            packet >> givenSize;
+            const std::size_t packetSize = packet.size();
+            std::uint16_t givenSize = reinterpret_cast<const std::uint16_t *>(packet.getData().data())[0];
             return packetSize == givenSize + 2;
         }
 
-        static ParsedData parsePacket(sf::Packet &packet, std::size_t clientId)
+        static ParsedData parsePacket(const sf::Packet& sfPack, std::size_t clientId)
         {
+            PacketBuilder packet(sfPack);
+
             if (!isPacketValid(packet))
                 return {.type = NONE};
 
@@ -82,7 +81,7 @@ namespace aecs
 
       protected:
       private:
-        static ParsedData parseConnected(sf::Packet &packet, std::size_t clientId)
+        static ParsedData parseConnected(PacketBuilder &packet, std::size_t clientId)
         {
             std::uint8_t myClientId;
             packet >> myClientId;
@@ -95,7 +94,7 @@ namespace aecs
             };
         }
 
-        static aecs::World::EncodedGameState parseGameState(sf::Packet &packet)
+        static aecs::World::EncodedGameState parseGameState(PacketBuilder &packet)
         {
             unsigned numEntities;
             aecs::World::EncodedGameState state;
@@ -122,7 +121,7 @@ namespace aecs
             return state;
         }
 
-        static ParsedData parseGameChanges(sf::Packet &packet, std::size_t clientId)
+        static ParsedData parseGameChanges(PacketBuilder &packet, std::size_t clientId)
         {
             std::uint8_t changeCount;
             packet >> changeCount;
@@ -145,7 +144,7 @@ namespace aecs
             return parsedData;
         }
 
-        static ParsedData parseServerPong(sf::Packet &packet, std::size_t clientId)
+        static ParsedData parseServerPong(PacketBuilder &packet, std::size_t clientId)
         {
             std::cout << "Pong" << std::endl;
             return {
@@ -153,7 +152,7 @@ namespace aecs
             };
         }
 
-        static ParsedData parseGameInput(sf::Packet &packet, std::size_t clientId)
+        static ParsedData parseGameInput(PacketBuilder &packet, std::size_t clientId)
         {
             sf::Uint8 nbInputs;
             aecs::ClientInputs inputs;
@@ -168,7 +167,7 @@ namespace aecs
             return {.type = GAME_INPUT, .inputs = {{clientId, inputs}}};
         }
 
-        static ParsedData parsePing(sf::Packet &packet, std::size_t clientId)
+        static ParsedData parsePing(PacketBuilder &packet, std::size_t clientId)
         {
             std::cout << "Ping" << std::endl;
             return {
@@ -176,7 +175,7 @@ namespace aecs
             };
         }
 
-        static ParsedData parseClientPong(sf::Packet &packet, std::size_t clientId)
+        static ParsedData parseClientPong(PacketBuilder &packet, std::size_t clientId)
         {
             std::uint8_t tick;
 

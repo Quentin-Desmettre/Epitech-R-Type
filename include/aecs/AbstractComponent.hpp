@@ -19,7 +19,10 @@ namespace aecs
         {
             return {};
         };
-        virtual void decode(const std::vector<std::byte> &data){};
+        virtual void decode(const std::vector<std::byte> &data)
+        {
+            (void)data;
+        };
     };
 } // namespace aecs
 

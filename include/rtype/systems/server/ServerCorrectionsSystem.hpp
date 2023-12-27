@@ -63,7 +63,7 @@ namespace rtype
         }
 
       private:
-        void sendDataToClients(sf::Packet data)
+        void sendDataToClients(sf::Packet &data)
         {
             for (auto &[_, client] : _entitiesMap) {
                 auto &address = client->getComponent<ClientAdressComponent>().adress;

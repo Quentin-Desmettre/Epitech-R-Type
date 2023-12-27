@@ -8,7 +8,7 @@
 std::vector<std::byte> rtype::DamageCollisionComponent::encode() const
 {
     PacketBuilder pb;
-    pb << team << damage << type << invulnerability;
+    pb << team << damage << (std::uint8_t)type << invulnerability;
     return pb.getData();
 }
 
@@ -16,7 +16,7 @@ void rtype::DamageCollisionComponent::decode(const std::vector<std::byte> &encod
 {
     PacketBuilder pb;
     pb << encoded;
-    int tmp = 0;
+    std::uint8_t tmp = 0;
     pb >> team >> damage >> tmp >> invulnerability;
     type = static_cast<ObjectType>(tmp);
 }

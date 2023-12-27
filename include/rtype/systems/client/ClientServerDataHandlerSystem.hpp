@@ -13,8 +13,8 @@
 #include "rtype/components/ClientPingComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
-#include "rtype/systems/ServerConnectionSystem.hpp"
-#include <SFML/Network.hpp>
+#include "ServerConnectionSystem.hpp"
+#include "SFML/Network.hpp"
 #include <cassert>
 #include <chrono>
 #include <queue>

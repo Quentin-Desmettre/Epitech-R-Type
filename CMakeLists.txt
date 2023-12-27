@@ -26,28 +26,28 @@ set(SHARED_SRC
         include/aecs/SystemBase.hpp
         include/rtype/EntityFactory.hpp
         src/rtype/EntityFactory.cpp
-        include/rtype/systems/InvulSystem.hpp
-        include/rtype/systems/MonsterGenSystem.hpp
+        include/rtype/systems/shared/InvulSystem.hpp
+        include/rtype/systems/shared/MonsterGenSystem.hpp
         src/rtype/systems/MonsterGenSystem.cpp
         include/rtype/components/MonsterComponent.hpp
-        include/rtype/systems/MonsterBullet.hpp
+        include/rtype/systems/shared/MonsterBullet.hpp
         src/rtype/components/SpriteComponent.cpp
         include/rtype/components/SpriteComponent.hpp
         include/rtype/components/PositionComponent.hpp
         include/rtype/components/VelocityComponent.hpp
         include/rtype/components/ParallaxComponent.hpp
-        include/rtype/systems/ParallaxSystem.hpp
-        include/rtype/systems/PhysicsSystem.cpp
-        include/rtype/systems/PhysicsSystem.hpp
+        include/rtype/systems/shared/ParallaxSystem.hpp
+        include/rtype/systems/shared/PhysicsSystem.cpp
+        include/rtype/systems/shared/PhysicsSystem.hpp
         include/rtype/components/MyPlayerComponent.hpp
-        include/rtype/systems/ControlPlayerSystem.hpp
-        include/rtype/systems/AnimPlayerSystem.hpp
+        include/rtype/systems/shared/ControlPlayerSystem.hpp
+        include/rtype/systems/shared/AnimPlayerSystem.hpp
         include/rtype/components/BulletComponent.hpp
-        include/rtype/systems/BulletSystem.hpp
+        include/rtype/systems/shared/BulletSystem.hpp
         include/rtype/components/AnimComponent.hpp
-        include/rtype/systems/AnimSystem.hpp
+        include/rtype/systems/shared/AnimSystem.hpp
         include/rtype/components/DamageCollisionComponent.hpp
-        include/rtype/systems/DamageCollisionSystem.hpp
+        include/rtype/systems/shared/DamageCollisionSystem.hpp
         include/rtype/components/HPComponent.hpp
         include/rtype/NetworkGlobals.hpp
         include/aecs/StaticPacketParser.hpp
@@ -57,13 +57,13 @@ set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
         include/rtype/RTypeServer.hpp
         include/rtype/components/MyPlayerComponent.hpp
-        include/rtype/systems/ControlPlayerSystem.hpp
-        include/rtype/systems/AnimPlayerSystem.hpp
-        include/rtype/systems/NewConnectionSystem.hpp
+        include/rtype/systems/shared/ControlPlayerSystem.hpp
+        include/rtype/systems/shared/AnimPlayerSystem.hpp
+        include/rtype/systems/server/NewConnectionSystem.hpp
         include/rtype/components/NetworkTagComponent.hpp
-        include/rtype/systems/ServerInputsSystem.hpp
-        include/rtype/systems/ServerCorrectionsSystem.hpp
-        include/rtype/systems/DeleteClientSystem.hpp
+        include/rtype/systems/server/ServerInputsSystem.hpp
+        include/rtype/systems/server/ServerCorrectionsSystem.hpp
+        include/rtype/systems/server/DeleteClientSystem.hpp
         include/shared/PacketBuilder.hpp
         src/shared/PacketBuilder.cpp
         src/rtype/components/DamageCollisionComponent.cpp
@@ -72,16 +72,16 @@ set(SERVER_SRC src/server/main.cpp
         src/rtype/components/PlayerComponent.cpp
         src/rtype/components/PositionComponent.cpp
         src/rtype/components/VelocityComponent.cpp
-        include/rtype/systems/PlayerOnConnectionSystem.hpp)
+        include/rtype/systems/server/PlayerOnConnectionSystem.hpp)
 set(CLIENT_SRC src/client/main.cpp
         src/rtype/RTypeClient.cpp
         include/rtype/RTypeClient.hpp
         src/rtype/systems/RenderSystem.cpp
-        include/rtype/systems/RenderSystem.hpp
-        include/rtype/systems/ServerConnectionSystem.hpp
-        include/rtype/systems/ClientInputSenderSystem.hpp
-        include/rtype/systems/ClientServerDataHandlerSystem.cpp
-        include/rtype/systems/ClientPingSystem.hpp
+        include/rtype/systems/shared/RenderSystem.hpp
+        include/rtype/systems/client/ServerConnectionSystem.hpp
+        include/rtype/systems/client/ClientInputSenderSystem.hpp
+        include/rtype/systems/client/ClientServerDataHandlerSystem.cpp
+        include/rtype/systems/client/ClientPingSystem.hpp
         include/shared/PacketBuilder.hpp
         src/shared/PacketBuilder.cpp
         src/rtype/components/DamageCollisionComponent.cpp

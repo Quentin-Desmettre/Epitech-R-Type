@@ -22,9 +22,6 @@ namespace aecs
     typedef std::vector<RenderInput> ClientInputs;
     typedef std::map<unsigned, ClientInputs> ServerInputs;
 
-#define MY_INPUTS(serverInputs)                                                                                        \
-    ((serverInputs).find(0) != (serverInputs).end() ? (serverInputs).at(0) : aecs::ClientInputs())
-
     typedef struct EntityChanges {
         std::vector<unsigned int> deletedEntities;
         std::vector<unsigned int> editedEntities;
@@ -81,7 +78,7 @@ namespace aecs
         ~ARenderSystem() override = default;
 
         // For logic systems ONLY
-        EntityChanges update(aecs::UpdateParams &updateParams) override
+        EntityChanges update(aecs::UpdateParams &) override
         {
             throw std::runtime_error("IRenderSystem::update() should not be called");
         }

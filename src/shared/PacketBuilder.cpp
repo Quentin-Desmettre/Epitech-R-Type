@@ -5,7 +5,7 @@
 #include "shared/PacketBuilder.hpp"
 #include <cstring>
 
-PacketBuilder &PacketBuilder::add(std::byte *rawPtr, size_t size)
+PacketBuilder &PacketBuilder::add(const std::byte *rawPtr, size_t size)
 {
     data.insert(data.end(), rawPtr, rawPtr + size);
     return *this;
@@ -26,55 +26,6 @@ PacketBuilder &PacketBuilder::operator<<(const std::string &str)
     return *this;
 }
 
-PacketBuilder &PacketBuilder::operator<<(int i)
-{
-    auto *rawPtr = reinterpret_cast<std::byte *>(&i);
-    add(rawPtr, sizeof(i));
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator<<(uint i)
-{
-    auto *rawPtr = reinterpret_cast<std::byte *>(&i);
-    add(rawPtr, sizeof(i));
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator<<(unsigned short i)
-{
-    auto *rawPtr = reinterpret_cast<std::byte *>(&i);
-    add(rawPtr, sizeof(i));
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator<<(float f)
-{
-    auto *rawPtr = reinterpret_cast<std::byte *>(&f);
-    add(rawPtr, sizeof(float));
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator<<(double d)
-{
-    auto *rawPtr = reinterpret_cast<std::byte *>(&d);
-    add(rawPtr, sizeof(d));
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator<<(bool b)
-{
-    auto *rawPtr = reinterpret_cast<std::byte *>(&b);
-    add(rawPtr, sizeof(b));
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator<<(char c)
-{
-    auto *rawPtr = reinterpret_cast<std::byte *>(&c);
-    add(rawPtr, sizeof(c));
-    return *this;
-}
-
 PacketBuilder &PacketBuilder::operator>>(std::string &str)
 {
     int size;
@@ -86,62 +37,12 @@ PacketBuilder &PacketBuilder::operator>>(std::string &str)
     return *this;
 }
 
-PacketBuilder &PacketBuilder::operator>>(int &i)
+const std::vector<std::byte> &PacketBuilder::getData() const
 {
-    std::byte *dt = data.data();
-    std::memcpy(&i, dt, sizeof(i));
-    data.erase(data.begin(), data.begin() + sizeof(i));
-    return *this;
-}
-PacketBuilder &PacketBuilder::operator>>(uint &i)
-{
-    std::byte *dt = data.data();
-    std::memcpy(&i, dt, sizeof(i));
-    data.erase(data.begin(), data.begin() + sizeof(i));
-    return *this;
+    return data;
 }
 
-PacketBuilder &PacketBuilder::operator>>(unsigned short &i)
-{
-    std::byte *dt = data.data();
-    std::memcpy(&i, dt, sizeof(i));
-    data.erase(data.begin(), data.begin() + sizeof(i));
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator>>(float &f)
-{
-    std::byte *dt = data.data();
-    std::memcpy(&f, dt, sizeof(float));
-    data.erase(data.begin(), data.begin() + sizeof(float));
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator>>(double &d)
-{
-    std::byte *dt = data.data();
-    std::memcpy(&d, dt, sizeof(d));
-    data.erase(data.begin(), data.begin() + sizeof(d));
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator>>(bool &b)
-{
-    std::byte *dt = data.data();
-    std::memcpy(&b, dt, sizeof(b));
-    data.erase(data.begin(), data.begin() + sizeof(b));
-    return *this;
-}
-
-PacketBuilder &PacketBuilder::operator>>(char &c)
-{
-    std::byte *dt = data.data();
-    std::memcpy(&c, dt, sizeof(c));
-    data.erase(data.begin(), data.begin() + sizeof(c));
-    return *this;
-}
-
-std::vector<std::byte> PacketBuilder::getData() const
+std::vector<std::byte> &PacketBuilder::getData()
 {
     return data;
 }
@@ -158,7 +59,12 @@ PacketBuilder &PacketBuilder::operator+=(const std::vector<std::byte> &newData)
     return *this;
 }
 
-PacketBuilder::operator std::vector<std::byte>() const
+PacketBuilder::operator const std::vector<std::byte>&() const
+{
+    return data;
+}
+
+PacketBuilder::operator std::vector<std::byte>&()
 {
     return data;
 }
@@ -180,4 +86,16 @@ std::vector<std::byte> PacketBuilder::getSub()
 void PacketBuilder::pass(int i)
 {
     data.erase(data.begin(), data.begin() + i);
+}
+
+std::size_t PacketBuilder::size() const
+{
+    return data.size();
+}
+
+sf::Packet PacketBuilder::toSfPacket() const
+{
+    sf::Packet packet;
+    packet.append(data.data(), data.size());
+    return packet;
 }

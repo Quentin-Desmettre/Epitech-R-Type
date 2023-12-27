@@ -69,19 +69,16 @@ namespace aecs
         // TODO: put this method in gameState
         const std::vector<std::byte> serialize() const
         {
-            sf::Packet packet;
+            PacketBuilder packet;
 
             packet << static_cast<std::uint32_t>(_tick);
             packet << static_cast<std::uint32_t>(_entities.size());
             for (auto &[id, entity] : _entities) {
-                auto encoded = entity->encode();
-                packet.append(encoded.data(), encoded.size());
+                const auto &encoded = entity->encode();
+                packet.add(encoded.data(), encoded.size());
             }
 
-            return {
-                reinterpret_cast<const std::byte *>(packet.getData()),
-                reinterpret_cast<const std::byte *>(packet.getData()) + packet.getDataSize(),
-            };
+            return packet.getData();
         };
 
         // TODO
@@ -104,7 +101,7 @@ namespace aecs
 
         const ServerInputs getInputs(unsigned tick = -1) const
         {
-            if (tick == -1)
+            if (tick == (unsigned)(-1))
                 tick = _tick;
             auto it = _renderInputs.find(tick);
 

@@ -16,7 +16,7 @@ namespace rtype
             PLAYER,
             ENEMY,
         };
-        enum ObjectType {
+        enum ObjectType : std::uint8_t {
             SM_BULLET,
             LG_BULLET,
             OTHER,

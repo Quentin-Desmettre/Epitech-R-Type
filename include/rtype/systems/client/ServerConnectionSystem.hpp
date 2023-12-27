@@ -10,7 +10,7 @@
 #include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
-#include <SFML/Network.hpp>
+#include "SFML/Network.hpp"
 #include <iostream>
 
 namespace rtype

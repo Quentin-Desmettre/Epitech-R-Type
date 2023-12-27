@@ -11,7 +11,7 @@
 #include "rtype/components/HPComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
-#include <SFML/Graphics.hpp>
+#include "SFML/Graphics.hpp"
 #include <iostream>
 namespace rtype
 {

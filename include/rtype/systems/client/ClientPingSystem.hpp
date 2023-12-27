@@ -10,7 +10,7 @@
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/ClientPingComponent.hpp"
-#include <SFML/Network.hpp>
+#include "SFML/Network.hpp"
 
 namespace rtype
 {

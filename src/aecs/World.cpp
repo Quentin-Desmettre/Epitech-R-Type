@@ -4,7 +4,7 @@
 
 #include "aecs/World.hpp"
 #include "aecs/Entity.hpp"
-#include "rtype/systems/ServerInputsSystem.hpp"
+#include "rtype/systems/server/ServerInputsSystem.hpp"
 #include "shared/PacketBuilder.hpp"
 #include <algorithm>
 #include <iostream>

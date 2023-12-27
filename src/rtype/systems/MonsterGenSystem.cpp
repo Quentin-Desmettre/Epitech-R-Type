@@ -2,7 +2,7 @@
 // Created by edo on 19/12/23.
 //
 
-#include "rtype/systems/MonsterGenSystem.hpp"
+#include "rtype/systems/shared/MonsterGenSystem.hpp"
 
 aecs::Entity &rtype::MonsterGenSystem::addRandomEnemy()
 {

@@ -31,7 +31,6 @@ namespace rtype
             for (auto &[_id, entity] : _entitiesMap) {
                 auto &position = entity->getComponent<PositionComponent>();
                 auto &velocity = entity->getComponent<VelocityComponent>();
-                auto &sprite = entity->getComponent<SpriteComponent>();
 
                 position.x += velocity.x * updateParams.deltaTime;
                 position.y += velocity.y * updateParams.deltaTime;
