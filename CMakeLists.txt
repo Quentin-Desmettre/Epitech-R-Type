@@ -110,6 +110,8 @@ target_link_libraries(r-type_server
 )
 
 if (WIN32 AND BUILD_SHARED_LIBS)
+    target_link_libraries(r-type_client PRIVATE ws2_32.lib)
+    target_link_libraries(r-type_server PRIVATE ws2_32.lib)
     add_custom_command(TARGET r-type_client POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:r-type_client> $<TARGET_FILE_DIR:r-type_client> COMMAND_EXPAND_LISTS)
     add_custom_command(TARGET r-type_server POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:r-type_server> $<TARGET_FILE_DIR:r-type_server> COMMAND_EXPAND_LISTS)
     set(CPACK_PRE_BUILD_SCRIPTS "${CMAKE_SOURCE_DIR}/Compilation/windows/windows.cmake")
