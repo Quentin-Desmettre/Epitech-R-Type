@@ -9,6 +9,7 @@
 #include <memory>
 #include <typeindex>
 #include <vector>
+#include <stdexcept>
 
 namespace aecs
 {

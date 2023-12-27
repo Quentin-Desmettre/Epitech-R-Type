@@ -13,6 +13,7 @@
 #include <memory>
 #include <typeindex>
 #include <vector>
+#include <cstdint>
 
 namespace aecs
 {
