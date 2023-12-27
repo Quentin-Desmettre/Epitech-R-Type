@@ -8,6 +8,7 @@
 #include "AbstractComponent.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <locale>
 #include <map>
 #include <memory>
 #include <typeindex>
