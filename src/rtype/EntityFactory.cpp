@@ -8,8 +8,6 @@
 #include "rtype/components/DamageCollisionComponent.hpp"
 #include "rtype/components/HPComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
-#include "rtype/components/MyPlayerComponent.hpp"
-#include "rtype/components/NetworkTagComponent.hpp"
 #include "rtype/components/ParallaxComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"

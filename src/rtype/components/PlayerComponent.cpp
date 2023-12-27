@@ -9,8 +9,8 @@
 std::uint8_t rtype::PlayerComponent::_maxPlayerId = 1;
 
 rtype::PlayerComponent::PlayerComponent() :
-    timeInShift(0),
     timeSinceLastShoot(0),
+    timeInShift(0),
     playerId(_maxPlayerId++)
 {
 }

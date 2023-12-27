@@ -9,8 +9,6 @@
 #include "aecs/World.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/BulletComponent.hpp"
-#include "rtype/components/MyPlayerComponent.hpp"
-#include "rtype/components/NetworkTagComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"

@@ -39,7 +39,6 @@ set(SHARED_SRC
         include/rtype/systems/shared/ParallaxSystem.hpp
         src/rtype/systems/shared/PhysicsSystem.cpp
         include/rtype/systems/shared/PhysicsSystem.hpp
-        include/rtype/components/MyPlayerComponent.hpp
         include/rtype/systems/shared/ControlPlayerSystem.hpp
         include/rtype/systems/shared/AnimPlayerSystem.hpp
         include/rtype/components/BulletComponent.hpp
@@ -66,11 +65,9 @@ set(SHARED_SRC
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
         include/rtype/RTypeServer.hpp
-        include/rtype/components/MyPlayerComponent.hpp
         include/rtype/systems/shared/ControlPlayerSystem.hpp
         include/rtype/systems/shared/AnimPlayerSystem.hpp
         include/rtype/systems/server/NewConnectionSystem.hpp
-        include/rtype/components/NetworkTagComponent.hpp
         include/rtype/systems/server/ServerInputsSystem.hpp
         include/rtype/systems/server/ServerCorrectionsSystem.hpp
         include/rtype/systems/server/DeleteClientSystem.hpp

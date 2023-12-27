@@ -17,10 +17,10 @@ rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f si
     }
     // scale sprite
     sf::Vector2<unsigned int> spSize = _texture.getSize();
-    if (rect.width < spSize.x) {
+    if ((unsigned)rect.width < spSize.x) {
         spSize.x = rect.width;
     }
-    if (rect.height < spSize.y) {
+    if ((unsigned)rect.height < spSize.y) {
         spSize.y = rect.height;
     }
 

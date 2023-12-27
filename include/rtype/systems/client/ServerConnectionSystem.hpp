@@ -11,7 +11,6 @@
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/ClientPingComponent.hpp"
-#include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include <iostream>
 

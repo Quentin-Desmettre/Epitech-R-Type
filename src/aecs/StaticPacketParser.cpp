@@ -5,8 +5,6 @@
 ** StaticPacketParser
 */
 
-#pragma once
-
 #include "aecs/StaticPacketParser.hpp"
 
 namespace aecs
@@ -14,8 +12,8 @@ namespace aecs
     bool StaticPacketParser::isPacketValid(const PacketBuilder &packet)
     {
         const std::size_t packetSize = packet.size();
-        std::uint16_t givenSize = reinterpret_cast<const std::uint16_t *>(packet.getData().data())[0];
-        return packetSize == givenSize + 2;
+        std::uint16_t givenSize = reinterpret_cast<const std::uint16_t *>(packet.getData().data())[0] + 2;
+        return packetSize == givenSize;
     }
 
     StaticPacketParser::ParsedData StaticPacketParser::parsePacket(const sf::Packet &sfPack, std::size_t clientId)
