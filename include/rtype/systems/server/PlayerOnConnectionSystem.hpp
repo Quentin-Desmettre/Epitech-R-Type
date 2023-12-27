@@ -19,37 +19,15 @@ namespace rtype
     class PlayerOnConnectionSystem : public aecs::ALogicSystem
     {
       public:
-        PlayerOnConnectionSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities,
-                         {typeid(ClientAdressComponent)})
-        {
-        }
+        PlayerOnConnectionSystem(aecs::World &world,
+                                 const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
         ~PlayerOnConnectionSystem() override = default;
 
-        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
-        {
-            aecs::EntityChanges changes;
-            return {};
-        }
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
 
-        void onEntityAdded(const aecs::EntityPtr &entity) override
-        {
-            if (entity->hasComponents(_componentsNeeded)) {
-                _entitiesMap[entity->getId()] = entity;
-            }
-        }
+        void onEntityAdded(const aecs::EntityPtr &entity) override;
 
-        void onEntityModified(const aecs::EntityPtr &entity) override
-        {
-            if (entity->hasComponents(_componentsNeeded)) {
-                if (_entitiesMap.find(entity->getId()) == _entitiesMap.end()) {
-                    _entitiesMap[entity->getId()] = entity;
-                    entity->addComponent<PlayerComponent>();
-                    EntityFactory::toPlayer(*entity);
-                }
-            } else
-                _entitiesMap.erase(entity->getId());
-        }
+        void onEntityModified(const aecs::EntityPtr &entity) override;
     };
 
 } // namespace rtype

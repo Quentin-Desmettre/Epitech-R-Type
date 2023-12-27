@@ -5,12 +5,14 @@
 #ifndef R_TYPE_SERVERCONNECTIONSYSTEM_HPP
 #define R_TYPE_SERVERCONNECTIONSYSTEM_HPP
 
+#include "SFML/Network.hpp"
+#include "aecs/StaticPacketParser.hpp"
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
+#include "rtype/components/ClientPingComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
-#include "SFML/Network.hpp"
 #include <iostream>
 
 namespace rtype

@@ -5,6 +5,8 @@
 #ifndef R_TYPE_CLIENTSERVERDATAHANDLERSYSTEM_HPP
 #define R_TYPE_CLIENTSERVERDATAHANDLERSYSTEM_HPP
 
+#include "SFML/Network.hpp"
+#include "ServerConnectionSystem.hpp"
 #include "aecs/StaticPacketBuilder.hpp"
 #include "aecs/StaticPacketParser.hpp"
 #include "aecs/SystemBase.hpp"
@@ -13,8 +15,6 @@
 #include "rtype/components/ClientPingComponent.hpp"
 #include "rtype/components/MyPlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
-#include "ServerConnectionSystem.hpp"
-#include "SFML/Network.hpp"
 #include <cassert>
 #include <chrono>
 #include <queue>

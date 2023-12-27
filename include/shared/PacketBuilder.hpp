@@ -4,19 +4,18 @@
 
 #ifndef R_TYPE_PACKETBUILDER_HPP
 #define R_TYPE_PACKETBUILDER_HPP
+#include "SFML/Network/Packet.hpp"
 #include <SFML/Graphics.hpp>
+#include <cstdint>
 #include <cstring>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <cstdint>
-#include "SFML/Network/Packet.hpp"
 
 #if defined(WIN64) || defined(WIN32) || defined(WINNT)
-    #define uint std::uint32_t
-    #define ushort std::uint16_t
+#define uint std::uint32_t
+#define ushort std::uint16_t
 #endif
-
 
 class PacketBuilder
 {
@@ -24,10 +23,8 @@ class PacketBuilder
     PacketBuilder() = default;
     explicit PacketBuilder(const sf::Packet &packet)
     {
-        data = std::vector<std::byte>{
-            reinterpret_cast<const std::byte *>(packet.getData()),
-            reinterpret_cast<const std::byte *>(packet.getData()) + packet.getDataSize()
-        };
+        data = std::vector<std::byte>{reinterpret_cast<const std::byte *>(packet.getData()),
+                                      reinterpret_cast<const std::byte *>(packet.getData()) + packet.getDataSize()};
     }
 
     ~PacketBuilder() = default;
@@ -39,7 +36,7 @@ class PacketBuilder
     PacketBuilder &operator<<(const std::string &str);
 
     // template for integral and floating point types
-    template<class T>
+    template <class T>
     PacketBuilder &operator<<(const T toAdd)
     {
         static_assert(std::is_integral<T>::value || std::is_floating_point<T>::value,
@@ -54,7 +51,7 @@ class PacketBuilder
     std::vector<std::byte> getSub();
     PacketBuilder &operator>>(std::string &str);
 
-    template<class T>
+    template <class T>
     PacketBuilder &operator>>(T &toGet)
     {
         static_assert(std::is_integral<T>::value || std::is_floating_point<T>::value,

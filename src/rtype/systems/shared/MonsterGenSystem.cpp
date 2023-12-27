@@ -4,6 +4,12 @@
 
 #include "rtype/systems/shared/MonsterGenSystem.hpp"
 
+rtype::MonsterGenSystem::MonsterGenSystem(aecs::World &world,
+                                          const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+    ALogicSystem(world, entities, {typeid(PlayerComponent)})
+{
+}
+
 aecs::Entity &rtype::MonsterGenSystem::addRandomEnemy()
 {
     int rnd = std::rand() % 100;

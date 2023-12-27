@@ -5,10 +5,10 @@
 #ifndef R_TYPE_RENDERSYSTEM_HPP
 #define R_TYPE_RENDERSYSTEM_HPP
 
-#include "aecs/SystemBase.hpp"
-#include "aecs/World.hpp"
 #include "SFML/Graphics.hpp"
 #include "SFML/Window.hpp"
+#include "aecs/SystemBase.hpp"
+#include "aecs/World.hpp"
 
 namespace rtype
 {

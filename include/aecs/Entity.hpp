@@ -8,16 +8,16 @@
 #include "AbstractComponent.hpp"
 #include <algorithm>
 #include <cstddef>
+#include <cstdint>
 #include <locale>
 #include <map>
 #include <memory>
 #include <typeindex>
 #include <vector>
-#include <cstdint>
 
 #if defined(WIN64) || defined(WIN32) || defined(WINNT)
-    #define uint std::uint32_t
-    #define ushort std::uint16_t
+#define uint std::uint32_t
+#define ushort std::uint16_t
 #endif
 
 namespace aecs

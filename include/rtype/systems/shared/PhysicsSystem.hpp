@@ -18,27 +18,10 @@ namespace rtype
     class PhysicsSystem : public aecs::ALogicSystem
     {
       public:
-        PhysicsSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities,
-                         {typeid(PositionComponent), typeid(VelocityComponent), typeid(SpriteComponent)})
-        {
-        }
+        PhysicsSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
         ~PhysicsSystem() override = default;
 
-        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override
-        {
-            aecs::EntityChanges changes;
-            for (auto &[_id, entity] : _entitiesMap) {
-                auto &position = entity->getComponent<PositionComponent>();
-                auto &velocity = entity->getComponent<VelocityComponent>();
-
-                position.x += velocity.x * updateParams.deltaTime;
-                position.y += velocity.y * updateParams.deltaTime;
-                if (velocity.x != 0 || velocity.y != 0)
-                    changes.editedEntities.push_back(entity->getId());
-            }
-            return changes;
-        }
+        aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
     };
 
 } // namespace rtype

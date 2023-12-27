@@ -7,9 +7,9 @@
 
 #include <map>
 #include <memory>
+#include <stdexcept>
 #include <typeindex>
 #include <vector>
-#include <stdexcept>
 
 namespace aecs
 {

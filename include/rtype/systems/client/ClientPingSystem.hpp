@@ -5,12 +5,12 @@
 #ifndef R_TYPE_CLIENTPINGSYSTEM_HPP
 #define R_TYPE_CLIENTPINGSYSTEM_HPP
 
+#include "SFML/Network.hpp"
 #include "aecs/StaticPacketParser.hpp"
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/NetworkGlobals.hpp"
 #include "rtype/components/ClientPingComponent.hpp"
-#include "SFML/Network.hpp"
 
 namespace rtype
 {

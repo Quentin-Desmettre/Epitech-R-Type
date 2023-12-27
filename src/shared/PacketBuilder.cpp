@@ -59,12 +59,12 @@ PacketBuilder &PacketBuilder::operator+=(const std::vector<std::byte> &newData)
     return *this;
 }
 
-PacketBuilder::operator const std::vector<std::byte>&() const
+PacketBuilder::operator const std::vector<std::byte> &() const
 {
     return data;
 }
 
-PacketBuilder::operator std::vector<std::byte>&()
+PacketBuilder::operator std::vector<std::byte> &()
 {
     return data;
 }

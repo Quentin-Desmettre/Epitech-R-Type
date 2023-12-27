@@ -14,10 +14,7 @@ namespace rtype
     class MonsterGenSystem : public aecs::ALogicSystem
     {
       public:
-        MonsterGenSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-            ALogicSystem(world, entities, {typeid(PlayerComponent)})
-        {
-        }
+        MonsterGenSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
         ~MonsterGenSystem() override = default;
 
         static aecs::Entity &addRandomEnemy();

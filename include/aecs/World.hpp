@@ -13,12 +13,12 @@
 #include "shared/PacketBuilder.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
+#include <functional>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <typeindex>
 #include <vector>
-#include <functional>
 
 namespace aecs
 {
@@ -85,6 +85,7 @@ namespace aecs
         void load(const EncodedGameState &entities)
         {
             _tick = entities.tick;
+            std::cerr << "Loading " << entities.encodedEntities.size() << " entities" << std::endl;
         }
 
         void setTick(unsigned tick)
