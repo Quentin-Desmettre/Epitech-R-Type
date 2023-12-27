@@ -23,7 +23,13 @@
 #endif
 #include "aecs/StaticPacketBuilder.hpp"
 #include <cstring>
-#include <netinet/in.h>
+
+#if defined(WIN64) || defined(WIN32) || defined(WINNT)
+    #include <winsock2.h>
+    #include <windows.h>
+#else
+    #include <netinet/in.h>
+#endif
 
 namespace rtype
 {
@@ -40,7 +46,11 @@ namespace rtype
                 return sf::Socket::Error;
 
             sockaddr_in addr = createAddress(address.toInteger(), port);
-            setsockopt(getHandle(), SOL_SOCKET, SO_REUSEADDR, &addr, sizeof(addr));
+            #if defined(WIN64) || defined(WIN32) || defined(WINNT)
+                setsockopt(getHandle(), SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&addr), sizeof(addr));
+            #else
+                setsockopt(getHandle(), SOL_SOCKET, SO_REUSEADDR, &addr, sizeof(addr));
+            #endif
             if (bind(getHandle(), reinterpret_cast<sockaddr *>(&addr), sizeof(addr)) == -1) {
                 sf::err() << "Failed to bind listener socket to port " << port << std::endl;
                 return sf::Socket::Error;

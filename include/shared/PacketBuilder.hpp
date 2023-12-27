@@ -12,6 +12,12 @@
 #include <cstdint>
 #include "SFML/Network/Packet.hpp"
 
+#if defined(WIN64) || defined(WIN32) || defined(WINNT)
+    #define uint std::uint32_t
+    #define ushort std::uint16_t
+#endif
+
+
 class PacketBuilder
 {
   public:
