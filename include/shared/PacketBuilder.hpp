@@ -21,11 +21,7 @@ class PacketBuilder
 {
   public:
     PacketBuilder() = default;
-    explicit PacketBuilder(const sf::Packet &packet)
-    {
-        data = std::vector<std::byte>{reinterpret_cast<const std::byte *>(packet.getData()),
-                                      reinterpret_cast<const std::byte *>(packet.getData()) + packet.getDataSize()};
-    }
+    explicit PacketBuilder(const sf::Packet &packet);
 
     ~PacketBuilder() = default;
 

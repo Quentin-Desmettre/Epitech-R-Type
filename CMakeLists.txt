@@ -60,7 +60,9 @@ set(SHARED_SRC
         src/rtype/systems/shared/ControlPlayerSystem.cpp
         src/rtype/systems/shared/BulletSystem.cpp
         src/rtype/systems/shared/AnimPlayerSystem.cpp
-        src/rtype/systems/shared/AnimSystem.cpp)
+        src/rtype/systems/shared/AnimSystem.cpp
+        src/aecs/StaticPacketBuilder.cpp
+        src/aecs/StaticPacketParser.cpp)
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
         include/rtype/RTypeServer.hpp

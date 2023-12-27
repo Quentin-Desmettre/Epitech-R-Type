@@ -58,7 +58,7 @@ namespace aecs
         ~ASystem() override = default;
 
         void onEntityAdded(const aecs::EntityPtr &entity) override;
-        void onEntityRemoved(const aecs::EntityPtr &entity) final;
+        void onEntityRemoved(const aecs::EntityPtr &entity) override;
         void onEntityModified(const aecs::EntityPtr &entity) override;
 
       protected:
@@ -71,38 +71,23 @@ namespace aecs
     {
       public:
         ARenderSystem(aecs::World &world, const std::map<std::size_t, EntityPtr> &entities,
-                      const std::vector<std::type_index> &componentsNeeded) :
-            ASystem(world, entities, componentsNeeded)
-        {
-        }
+                      const std::vector<std::type_index> &componentsNeeded);
         ~ARenderSystem() override = default;
 
         // For logic systems ONLY
-        EntityChanges update(aecs::UpdateParams &) override
-        {
-            throw std::runtime_error("IRenderSystem::update() should not be called");
-        }
+        EntityChanges update(aecs::UpdateParams &) override;
     };
 
     class ALogicSystem : public ASystem
     {
       public:
         ALogicSystem(aecs::World &world, const std::map<std::size_t, EntityPtr> &entities,
-                     const std::vector<std::type_index> &componentsNeeded) :
-            ASystem(world, entities, componentsNeeded)
-        {
-        }
+                     const std::vector<std::type_index> &componentsNeeded);
         ~ALogicSystem() override = default;
 
         // For render systems ONLY
-        ClientInputs render() override
-        {
-            throw std::runtime_error("ILogicSystem::render() should not be called");
-        }
-        [[nodiscard]] bool isOpen() const override
-        {
-            throw std::runtime_error("ILogicSystem::isOpen() should not be called");
-        }
+        ClientInputs render() override;
+        [[nodiscard]] bool isOpen() const override;
     };
 
 } // namespace aecs

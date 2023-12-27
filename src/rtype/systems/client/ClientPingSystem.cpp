@@ -2,8 +2,8 @@
 // Created by qdesmettre on 20/12/23.
 //
 
-#include "aecs/StaticPacketBuilder.hpp"
 #include "rtype/systems/client/ClientPingSystem.hpp"
+#include "aecs/StaticPacketBuilder.hpp"
 
 namespace rtype
 {

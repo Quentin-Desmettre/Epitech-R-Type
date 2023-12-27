@@ -35,4 +35,32 @@ namespace aecs
         else
             _entitiesMap.erase(entity->getId());
     }
+
+    // Render systems
+    ARenderSystem::ARenderSystem(aecs::World &world, const std::map<std::size_t, EntityPtr> &entities,
+                                 const std::vector<std::type_index> &componentsNeeded) :
+        ASystem(world, entities, componentsNeeded)
+    {
+    }
+
+    EntityChanges ARenderSystem::update(aecs::UpdateParams &)
+    {
+        throw std::runtime_error("IRenderSystem::update() should not be called");
+    }
+
+    // Logic systems
+    ALogicSystem::ALogicSystem(aecs::World &world, const std::map<std::size_t, EntityPtr> &entities,
+                               const std::vector<std::type_index> &componentsNeeded) :
+        ASystem(world, entities, componentsNeeded)
+    {
+    }
+
+    ClientInputs ALogicSystem::render()
+    {
+        throw std::runtime_error("IRenderSystem::render() should not be called");
+    }
+    bool ALogicSystem::isOpen() const
+    {
+        throw std::runtime_error("IRenderSystem::isOpen() should not be called");
+    }
 } // namespace aecs

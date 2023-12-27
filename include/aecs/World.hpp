@@ -25,20 +25,25 @@ namespace aecs
     class World
     {
       public:
+        // Typedefs & structs
+        typedef std::map<unsigned, std::vector<std::byte>> EncodedEntities;
+        struct EncodedGameState {
+            EncodedEntities encodedEntities;
+            unsigned tick;
+        };
+
+        // Ctor / dtor
         friend class Entity;
-        World(bool isServer = false) :
-            _isServer(isServer)
-        {
-        }
+        explicit World(bool isServer = false);
         ~World() = default;
 
+        // Methods
         Entity &createEntity(size_t id = -1);
 
         void addDecodeMap(const std::type_info &type,
                           const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map);
 
         Entity &decodeNewEntity(std::vector<std::byte> &data);
-        void decodeComponent(Entity &entity, int id, std::vector<std::byte> &data);
 
         template <typename T, typename... Args>
         T &addComponent(Entity &entity, Args &&...args)
@@ -57,132 +62,25 @@ namespace aecs
         void update();
         void render();
 
-        class GameState
-        {
-        };
-        typedef std::map<unsigned, std::vector<std::byte>> EncodedEntities;
-        struct EncodedGameState {
-            EncodedEntities encodedEntities;
-            unsigned tick;
-        };
+        [[nodiscard]] std::vector<std::byte> serialize() const;
 
-        // TODO: put this method in gameState
-        const std::vector<std::byte> serialize() const
-        {
-            PacketBuilder packet;
+        void load(const EncodedGameState &entities);
 
-            packet << static_cast<std::uint32_t>(_tick);
-            packet << static_cast<std::uint32_t>(_entities.size());
-            for (auto &[id, entity] : _entities) {
-                const auto &encoded = entity->encode();
-                packet.add(encoded.data(), encoded.size());
-            }
+        void setTick(unsigned tick);
+        [[nodiscard]] unsigned getTick() const;
 
-            return packet.getData();
-        };
+        [[nodiscard]] ServerInputs getInputs(unsigned tick = -1) const;
 
-        // TODO
-        void load(const EncodedGameState &entities)
-        {
-            _tick = entities.tick;
-            std::cerr << "Loading " << entities.encodedEntities.size() << " entities" << std::endl;
-        }
+        [[nodiscard]] ClientInputs getClientInputs(unsigned clientId, std::size_t tick = -1) const;
 
-        void setTick(unsigned tick)
-        {
-            _tick = tick;
-        }
-        unsigned getTick() const
-        {
-            return _tick;
-        }
+        void setInputs(const ServerInputs &inputs);
 
-        // Flush every gamestate before tick (including it)
-        const GameState &getGameState(int tick) const;
+        void setClientInputs(unsigned clientId, const ClientInputs &inputs);
 
-        const ServerInputs getInputs(unsigned tick = -1) const
-        {
-            if (tick == (unsigned)(-1))
-                tick = _tick;
-            auto it = _renderInputs.find(tick);
+        [[nodiscard]] EntityPtr getEntity(std::size_t id) const;
 
-            if (it == _renderInputs.end())
-                return {};
-            return it->second;
-        }
-
-        const ClientInputs getClientInputs(unsigned clientId, int tick = -1) const
-        {
-            if (tick == -1)
-                tick = _tick;
-            auto it = _renderInputs.find(tick);
-
-            if (it == _renderInputs.end())
-                return {};
-            auto it2 = it->second.find(clientId);
-            if (it2 == it->second.end())
-                return {};
-            return it2->second;
-        }
-
-        void setInputs(const ServerInputs &inputs)
-        {
-            for (auto it = _renderInputs.begin(); it != _renderInputs.end();) {
-                if (it->first < _tick - 600)
-                    it = _renderInputs.erase(it);
-                else
-                    ++it;
-            }
-            if (_renderInputs.find(_tick) == _renderInputs.end())
-                _renderInputs[_tick] = inputs;
-            else
-                _renderInputs[_tick].insert(inputs.begin(), inputs.end());
-        }
-
-        void setClientInputs(unsigned clientId, const ClientInputs &inputs)
-        {
-            for (auto it = _renderInputs.begin(); it != _renderInputs.end();) {
-                if (it->first < _tick - 600)
-                    it = _renderInputs.erase(it);
-                else
-                    ++it;
-            }
-            if (_renderInputs.find(_tick) == _renderInputs.end())
-                _renderInputs[_tick] = {{clientId, inputs}};
-            else
-                _renderInputs[_tick].insert({clientId, inputs});
-        }
-
-        void setGameState(const GameState &gameState) {}; // TODO
-
-        EntityPtr getEntity(std::size_t id) const
-        {
-            auto it = _entities.find(id);
-
-            if (it == _entities.end())
-                return nullptr;
-            return it->second;
-        }
-
-        std::vector<EntityPtr> getClients() const
-        {
-            std::vector<EntityPtr> clients;
-
-            for (auto &[_, entity] : _entities) {
-                if (entity->hasComponent<rtype::ClientAdressComponent>())
-                    clients.push_back(entity);
-            }
-            return clients;
-        }
-
-        void setClientId(unsigned clientId)
-        {
-            _clientId = clientId;
-        }
-        [[nodiscard]] unsigned getClientId() const
-        {
-            return _clientId;
-        }
+        void setClientId(unsigned clientId);
+        [[nodiscard]] unsigned getClientId() const;
 
         template <typename T, typename... Args>
         T &registerRenderSystem(Args &&...args)

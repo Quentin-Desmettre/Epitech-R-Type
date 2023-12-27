@@ -37,10 +37,7 @@ namespace aecs
 
         [[nodiscard]] std::size_t getId() const;
 
-        static constexpr unsigned int hashString(const char *str, int h = 0)
-        {
-            return !str[h] ? 5381 : (hashString(str, h + 1) * 33) ^ str[h];
-        }
+        static constexpr unsigned int hashString(const char *str, int h = 0);
 
         template <typename T, typename... Args>
         T &addComponent(Args &&...args)

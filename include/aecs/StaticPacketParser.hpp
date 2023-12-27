@@ -39,153 +39,20 @@ namespace aecs
             std::uint8_t clientId = 0;
         };
 
-        static bool isPacketValid(const PacketBuilder &packet)
-        {
-            const std::size_t packetSize = packet.size();
-            std::uint16_t givenSize = reinterpret_cast<const std::uint16_t *>(packet.getData().data())[0];
-            return packetSize == givenSize + 2;
-        }
+        static bool isPacketValid(const PacketBuilder &packet);
 
-        static ParsedData parsePacket(const sf::Packet &sfPack, std::size_t clientId)
-        {
-            PacketBuilder packet(sfPack);
-
-            if (!isPacketValid(packet))
-                return {.type = NONE};
-
-            sf::Uint16 size = 0;
-            sf::Uint8 type = NONE;
-
-            packet >> size;
-            packet >> type;
-            if (type == NONE)
-                return {.type = NONE};
-
-            switch (type) {
-            case CONNECTED:
-                return parseConnected(packet, clientId);
-            case GAME_CHANGES:
-                return parseGameChanges(packet, clientId);
-            case SERVER_PONG:
-                return parseServerPong(packet, clientId);
-            case GAME_INPUT:
-                return parseGameInput(packet, clientId);
-            case PING:
-                return parsePing(packet, clientId);
-            case CLIENT_PONG:
-                return parseClientPong(packet, clientId);
-            default:
-                return {.type = NONE};
-            }
-        }
+        static ParsedData parsePacket(const sf::Packet &sfPack, std::size_t clientId);
 
       protected:
       private:
-        static ParsedData parseConnected(PacketBuilder &packet, std::size_t)
-        {
-            std::uint8_t myClientId;
-            packet >> myClientId;
+        static aecs::World::EncodedGameState parseGameState(PacketBuilder &packet);
 
-            aecs::World::EncodedGameState state = parseGameState(packet);
-            return {
-                .type = CONNECTED,
-                .entityChanges = {state},
-                .clientId = myClientId,
-            };
-        }
-
-        static aecs::World::EncodedGameState parseGameState(PacketBuilder &packet)
-        {
-            unsigned numEntities;
-            aecs::World::EncodedGameState state;
-            packet >> state.tick;
-            packet >> numEntities;
-
-            for (unsigned i = 0; i < numEntities; i++) {
-                unsigned entityId;
-                unsigned short dataSize;
-                packet >> entityId;
-                packet >> dataSize;
-
-                // get the next dataSize bytes
-                std::vector<std::byte> entityData(dataSize);
-                for (unsigned short j = 0; j < dataSize; j++) {
-                    std::uint8_t byte;
-                    packet >> byte;
-                    entityData[j] = *reinterpret_cast<std::byte *>(&byte);
-                }
-
-                // Put it in the map
-                state.encodedEntities[entityId] = entityData;
-            }
-            return state;
-        }
-
-        static ParsedData parseGameChanges(PacketBuilder &packet, std::size_t)
-        {
-            std::uint8_t changeCount;
-            packet >> changeCount;
-
-            // Get changes
-            ParsedData parsedData = {
-                .type = GAME_CHANGES,
-            };
-            for (std::uint8_t i = 0; i < changeCount; i++) {
-                aecs::World::EncodedGameState state = parseGameState(packet);
-                parsedData.entityChanges.push_back(state);
-            }
-
-            // Sort, such that entity changes are in order of tick increasing
-            std::sort(parsedData.entityChanges.begin(), parsedData.entityChanges.end(),
-                      [](const auto &a, const auto &b) {
-                          return a.tick < b.tick;
-                      });
-            std::cout << "Received " << parsedData.entityChanges.size() << " changes" << std::endl;
-            return parsedData;
-        }
-
-        static ParsedData parseServerPong(PacketBuilder &, std::size_t)
-        {
-            std::cout << "Pong" << std::endl;
-            return {
-                .type = SERVER_PONG,
-            };
-        }
-
-        static ParsedData parseGameInput(PacketBuilder &packet, std::size_t clientId)
-        {
-            sf::Uint8 nbInputs;
-            aecs::ClientInputs inputs;
-
-            packet >> nbInputs;
-            inputs.reserve(nbInputs);
-            for (sf::Uint8 i = 0; i < nbInputs; i++) {
-                sf::Uint8 input;
-                packet >> input;
-                inputs.emplace_back(input);
-            }
-            return {.type = GAME_INPUT, .inputs = {{clientId, inputs}}};
-        }
-
-        static ParsedData parsePing(PacketBuilder &, std::size_t)
-        {
-            std::cout << "Ping" << std::endl;
-            return {
-                .type = PING,
-            };
-        }
-
-        static ParsedData parseClientPong(PacketBuilder &packet, std::size_t)
-        {
-            std::uint8_t tick;
-
-            packet >> tick;
-            std::cout << "Client pong: " << static_cast<int>(tick) << std::endl;
-            return {
-                .type = CLIENT_PONG,
-                .tick = tick,
-            };
-        }
+        static ParsedData parseConnected(PacketBuilder &packet, std::size_t clientId);
+        static ParsedData parseGameChanges(PacketBuilder &packet, std::size_t clientId);
+        static ParsedData parseServerPong(PacketBuilder &packet, std::size_t clientId);
+        static ParsedData parseGameInput(PacketBuilder &packet, std::size_t clientId);
+        static ParsedData parsePing(PacketBuilder &packet, std::size_t clientId);
+        static ParsedData parseClientPong(PacketBuilder &packet, std::size_t clientId);
     };
 
 } // namespace aecs

@@ -15,14 +15,8 @@ namespace aecs
       public:
         virtual ~AbstractComponent() = 0;
 
-        [[nodiscard]] virtual std::vector<std::byte> encode() const
-        {
-            return {};
-        };
-        virtual void decode(const std::vector<std::byte> &data)
-        {
-            (void)data;
-        };
+        [[nodiscard]] virtual std::vector<std::byte> encode() const;
+        virtual void decode(const std::vector<std::byte> &data);
     };
 } // namespace aecs
 

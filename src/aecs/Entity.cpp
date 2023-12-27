@@ -18,6 +18,11 @@ namespace aecs
             _id = id;
     }
 
+    constexpr unsigned int Entity::hashString(const char *str, int h)
+    {
+        return !str[h] ? 5381 : (hashString(str, h + 1) * 33) ^ str[h];
+    }
+
     std::size_t Entity::getId() const
     {
         return _id;

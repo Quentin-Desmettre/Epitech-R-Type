@@ -5,6 +5,14 @@
 #include "shared/PacketBuilder.hpp"
 #include <cstring>
 
+PacketBuilder::PacketBuilder(const sf::Packet &packet)
+{
+    data = std::vector<std::byte>{
+        reinterpret_cast<const std::byte *>(packet.getData()),
+        reinterpret_cast<const std::byte *>(packet.getData()) + packet.getDataSize()
+    };
+}
+
 PacketBuilder &PacketBuilder::add(const std::byte *rawPtr, size_t size)
 {
     data.insert(data.end(), rawPtr, rawPtr + size);
