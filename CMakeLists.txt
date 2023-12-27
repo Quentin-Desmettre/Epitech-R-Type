@@ -3,6 +3,16 @@ cmake_minimum_required(VERSION 3.5)
 project(r-type LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Release)
+endif()
+
+if (NOT WIN32)
+    set(CMAKE_CXX_FLAGS "-Wall -Wextra")
+    set(CMAKE_CXX_FLAGS_DEBUG "-g")
+    set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+endif ()
+
 include_directories(include)
 
 set(SHARED_SRC
@@ -101,10 +111,31 @@ target_link_libraries(r-type_server
 
 if (WIN32 AND BUILD_SHARED_LIBS)
     add_custom_command(TARGET r-type_client POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:r-type_client> $<TARGET_FILE_DIR:r-type_client> COMMAND_EXPAND_LISTS)
-endif ()
-if (WIN32 AND BUILD_SHARED_LIBS)
     add_custom_command(TARGET r-type_server POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_RUNTIME_DLLS:r-type_server> $<TARGET_FILE_DIR:r-type_server> COMMAND_EXPAND_LISTS)
+    set(CPACK_PRE_BUILD_SCRIPTS "${CMAKE_SOURCE_DIR}/Compilation/windows/windows.cmake")
 endif ()
 
-install(TARGETS r-type_client r-type_server)
+if (UNIX)
+    set(CMAKE_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/install" CACHE PATH "Installation directory")
+    set(CPACK_PRE_BUILD_SCRIPTS "${CMAKE_SOURCE_DIR}/Compilation/linux/linux.cmake")
+endif ()
 
+if (APPLE AND CMAKE_BUILD_TYPE STREQUAL "Release")
+    set_target_properties(r-type_client PROPERTIES
+            BUILD_WITH_INSTALL_RPATH TRUE
+            INSTALL_RPATH "@executable_path/../lib"
+    )
+    set_target_properties(r-type_server PROPERTIES
+            BUILD_WITH_INSTALL_RPATH TRUE
+            INSTALL_RPATH "@executable_path/../lib"
+    )
+    set(CPACK_PRE_BUILD_SCRIPTS "${CMAKE_SOURCE_DIR}/Compilation/macos/macos.cmake")
+endif()
+
+install(TARGETS r-type_client r-type_server DESTINATION bin)
+install(DIRECTORY assets DESTINATION .)
+
+set(CPACK_PACKAGE_VERSION_MAJOR "${RTYPE_MAJOR_VERSION}")
+set(CPACK_PACKAGE_VERSION_MINOR "${RTYPE_MINOR_VERSION}")
+set(CPACK_BUNDLE_NAME "R-Type")
+include(CPack)
