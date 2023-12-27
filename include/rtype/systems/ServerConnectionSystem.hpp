@@ -54,12 +54,7 @@ namespace rtype
             }
 
             // Parse connected answer
-            aecs::StaticPacketParser::SystemData data{
-                .world = _world,
-                .clientId = 0,
-                ._entitiesMap = _entitiesMap,
-            };
-            auto parsed = aecs::StaticPacketParser::parsePacket(packet, data);
+            auto parsed = aecs::StaticPacketParser::parsePacket(packet, 0);
             if (parsed.type != aecs::PacketTypes::CONNECTED) {
                 std::cerr << "Error parsing packet" << std::endl;
                 return {};

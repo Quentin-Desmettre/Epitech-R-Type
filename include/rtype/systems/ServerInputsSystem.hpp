@@ -43,29 +43,39 @@ namespace rtype
                 return {};
 
             // Get player from it
-            std::size_t clientId = getClientId(sender);
-            if (clientId == -1 || _entitiesMap.find(clientId) == _entitiesMap.end()) {
+            std::size_t clientId = -1;
+            aecs::EntityPtr &client = _entitiesMap.begin()->second;
+            for (auto &[id, entity] : _entitiesMap) {
+                auto &clientAdress = entity->getComponent<ClientAdressComponent>();
+                if (clientAdress.adress == sender.toInteger()) {
+                    clientId = entity->getComponent<PlayerComponent>().playerId;
+                    client = entity;
+                    break;
+                }
+            }
+            if (clientId == -1) {
                 std::cerr << "Unknown client \"" << sender.toString() << "\"" << std::endl;
                 return {};
             }
-            auto client = _entitiesMap[clientId];
 
-            // Parse packet
-            aecs::StaticPacketParser::SystemData systemData = {
-                .world = _world, .clientId = clientId, ._entitiesMap = _entitiesMap};
-            aecs::StaticPacketParser::ParsedData parsed = aecs::StaticPacketParser::parsePacket(packet, systemData);
-            if (parsed.type == aecs::NONE) {
+            aecs::StaticPacketParser::ParsedData parsed = aecs::StaticPacketParser::parsePacket(packet, clientId);
+
+            switch (parsed.type) {
+            case aecs::NONE:
                 std::cerr << "Error parsing packet" << std::endl;
-                return {};
-            }
-
-            // Handle GAME_INPUT
-            if (parsed.type == aecs::GAME_INPUT)
-                updateParams.inputs[clientId] = parsed.inputs[clientId];
-
-            // Handle PING
-            if (parsed.type == aecs::PING)
+                break;
+            case aecs::PING:
                 sendPong(sender);
+                break;
+            case aecs::CLIENT_PONG:
+                break;
+            case aecs::GAME_INPUT:
+                updateParams.inputs[clientId] = parsed.inputs[clientId];
+                break;
+            default:
+                std::cerr << "Unexpected packet type" << std::endl;
+                break;
+            }
 
             // Anyway, reset ping clock
             client->getComponent<ClientPingComponent>().clock.restart();
@@ -80,16 +90,6 @@ namespace rtype
 
             if (status != sf::Socket::Done)
                 std::cerr << "Error sending packet" << std::endl;
-        }
-
-        std::size_t getClientId(const sf::IpAddress &sender)
-        {
-            for (auto &[id, entity] : _entitiesMap) {
-                auto &clientAdress = entity->getComponent<ClientAdressComponent>();
-                if (clientAdress.adress == sender.toInteger())
-                    return entity->getComponent<PlayerComponent>().playerId;
-            }
-            return -1;
         }
 
         sf::UdpSocket _socket;

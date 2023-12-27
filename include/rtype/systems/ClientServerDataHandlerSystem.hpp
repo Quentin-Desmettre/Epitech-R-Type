@@ -67,24 +67,35 @@ namespace rtype
             // - push to queue
             // - do packet received X ms in the past
 
-            aecs::StaticPacketParser::SystemData systemData = {.world = _world, ._entitiesMap = _entitiesMap};
-            auto parsed = aecs::StaticPacketParser::parsePacket(packet, systemData);
+            aecs::StaticPacketParser::ParsedData parsed = aecs::StaticPacketParser::parsePacket(packet, 0);
 
-            // Check that it is a normal packet
-            if (parsed.type != aecs::GAME_CHANGES)
+            if (parsed.type == aecs::SERVER_PONG)
                 return {};
+            if (parsed.type != aecs::GAME_CHANGES) {
+                std::cerr << "Unexpected packet type" << std::endl;
+                return {};
+            }
+
+            // for (auto &[_, entity] : _entitiesMap) {
+            //     if (entity->hasComponent<rtype::MyPlayerComponent>()) {
+            //         auto &position = entity->getComponent<rtype::PositionComponent>();
+            //         packet >> position.x >> position.y;
+            //         std::cout << "x: " << position.x << " y: " << position.y << std::endl;
+            //         break;
+            //     }
+            // }
 
             // Send pong with tick
             unsigned tick = parsed.tick;
             sf::Packet pongPacket = aecs::StaticPacketBuilder::buildClientPongPacket(std::max(tick, _maxReceivedTick));
-            _socket.send(pongPacket, sender, port);
+            _socket.send(pongPacket, sender, SERVER_INPUTS_PORT);
 
             // Reset ping clock
             for (auto &[_, entity] : _entitiesMap)
                 entity->getComponent<ClientPingComponent>().clock.restart();
 
             // Do the changes
-            _world.load(parsed.entityChanges.back());
+            // _world.load(parsed.entityChanges.back());
 
             //            // Check if tick has already been checked
             //            if (tick <= _maxReceivedTick)

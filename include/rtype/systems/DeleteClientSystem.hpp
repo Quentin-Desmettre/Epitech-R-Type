@@ -31,9 +31,7 @@ namespace rtype
                 if (clientAdress.adress == 0 || clock.getElapsedTime().asSeconds() >= 5) {
                     std::cout << "Client disconnected after " << clock.getElapsedTime().asSeconds() << " seconds"
                               << std::endl;
-                    //                    _world.destroyEntity(*entity);
                     updateParams.entityChanges.deletedEntities.push_back(id);
-                    break;
                 }
             }
             return {};

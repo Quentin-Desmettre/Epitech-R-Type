@@ -14,7 +14,6 @@
 
 namespace rtype
 {
-
     class ClientPingSystem : public aecs::ALogicSystem
     {
       public:

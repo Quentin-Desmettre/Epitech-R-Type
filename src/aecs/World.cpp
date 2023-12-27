@@ -4,10 +4,10 @@
 
 #include "aecs/World.hpp"
 #include "aecs/Entity.hpp"
+#include "rtype/systems/ServerInputsSystem.hpp"
 #include "shared/PacketBuilder.hpp"
 #include <algorithm>
 #include <iostream>
-#include "rtype/systems/ServerInputsSystem.hpp"
 
 namespace aecs
 {
@@ -91,10 +91,6 @@ namespace aecs
         for (auto &[system, _] : _sortedSystems) {
             auto changes = system->update(updateParams);
 
-            // inputs
-            if (dynamic_cast<rtype::ServerInputsSystem *>(system))
-                updateParams.inputs = getInputs();
-
             // Update entity changes
             updateParams.entityChanges.deletedEntities.insert(updateParams.entityChanges.deletedEntities.end(),
                                                               changes.deletedEntities.begin(),
@@ -106,7 +102,7 @@ namespace aecs
 
         // Delete entities
         for (auto &deletedEntityId : updateParams.entityChanges.deletedEntities) {
-            _entities.erase(deletedEntityId);
+            destroyEntity(*_entities[deletedEntityId]);
         }
 
         // Clear

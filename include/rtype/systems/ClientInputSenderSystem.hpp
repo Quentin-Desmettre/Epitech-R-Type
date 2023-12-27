@@ -44,9 +44,8 @@ namespace rtype
             std::vector<aecs::RenderInput> inputs = updateParams.inputs.begin()->second;
             sf::Packet packet = aecs::StaticPacketBuilder::buildGameInputPacket(inputs);
             _socket.send(packet, "127.0.0.1", SERVER_INPUTS_PORT); // TODO: get from ac/av
-            for (auto &[_, entity] : _entitiesMap) {
+            for (auto &[_, entity] : _entitiesMap)
                 entity->getComponent<ClientPingComponent>().clock.restart();
-            }
             return {};
         }
 

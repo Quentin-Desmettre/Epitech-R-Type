@@ -37,6 +37,8 @@ namespace rtype
             std::vector<aecs::EntityPtr> editedEntities, deletedEntities;
             aecs::World::EncodedGameState state;
 
+            if (editedEntityIds.empty() && deletedEntityIds.empty())
+                return {};
             // Push edited entities in the game state
             for (auto &editedEntityId : editedEntityIds) {
                 const auto &entity = _world.getEntity(editedEntityId);

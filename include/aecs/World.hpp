@@ -100,10 +100,7 @@ namespace aecs
         }
 
         // Flush every gamestate before tick (including it)
-        const GameState &getGameState(int tick) const
-        {
-            return {}; // TODO
-        };
+        const GameState &getGameState(int tick) const;
 
         const ServerInputs getInputs(unsigned tick = -1) const
         {
