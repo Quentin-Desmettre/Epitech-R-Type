@@ -266,9 +266,9 @@ namespace aecs
         for (const auto &[id, encodedEntity] : entities.encodedEntities) {
             auto entity = getEntity(id);
 
-            if (!entity) {
+            if (!entity)
                 decodeNewEntity(createEntity(id), encodedEntity);
-            } else
+            else
                 entity->decode(encodedEntity);
         }
 

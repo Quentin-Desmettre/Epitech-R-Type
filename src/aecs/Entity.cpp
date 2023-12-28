@@ -63,6 +63,8 @@ namespace aecs
             uint id;
             pb >> id;
             std::vector<std::byte> sub = pb.getSub();
+            if (sub.empty())
+                continue;
             try {
                 getComponentByComponentId(id).decode(sub);
             } catch (std::exception &e) {
@@ -77,6 +79,6 @@ namespace aecs
             if (hashString(typeid(*component.second).name()) == id)
                 return *component.second;
         }
-        throw std::runtime_error("Invalid component id");
+        throw std::runtime_error("Invalid component id " + std::to_string(id));
     }
 } // namespace aecs

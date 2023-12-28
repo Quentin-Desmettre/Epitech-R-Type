@@ -53,11 +53,11 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
 {
     setDecodeMap();
     EntityFactory::setWorld(&_world);
-    EntityFactory::createBackground(1, sf::Vector2f(8, 0));
-    EntityFactory::createBackground(2, sf::Vector2f(5, 0));
-    EntityFactory::createBackground(3, sf::Vector2f(3, 0));
-    EntityFactory::createBackground(4, sf::Vector2f(12, 0));
-    EntityFactory::createBackground(5, sf::Vector2f(15, 0));
+    // EntityFactory::createBackground(1, sf::Vector2f(8, 0));
+    // EntityFactory::createBackground(2, sf::Vector2f(5, 0));
+    // EntityFactory::createBackground(3, sf::Vector2f(3, 0));
+    // EntityFactory::createBackground(4, sf::Vector2f(12, 0));
+    // EntityFactory::createBackground(5, sf::Vector2f(15, 0));
 
     // Network systems
     _world.registerSystem<ClientServerDataHandlerSystem>(-2);
@@ -72,7 +72,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world.registerSystem<ParallaxSystem>(1);
     _world.registerSystem<BulletSystem>(1);
     _world.registerSystem<DamageCollisionSystem>(1);
-    _world.registerSystem<MonsterGenSystem>(1);
+    // _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
     _world.registerSystem<MonsterBullet>(1);
 }
