@@ -58,39 +58,36 @@ namespace rtype
             auto &damage = entity->getComponent<DamageCollisionComponent>();
             auto &hp = entity->getComponent<HPComponent>();
             sf::Rect rect = getRect(entity);
-            float dmg = 0;
-            bool kll = false;
+//            bool kll = false;
             for (size_t j = i + 1; j < entities.size(); j++) {
                 auto &entity2 = entities[j];
                 auto &damage2 = entity2->getComponent<DamageCollisionComponent>();
                 auto &hp2 = entity2->getComponent<HPComponent>();
                 sf::Rect rect2 = getRect(entity2);
                 if (rect.intersects(rect2) && damage.team != damage2.team) {
-                    dmg += damage2.damage;
-                    if (damage2.invulnerability == 0) {
+                    if (damage.damage != 0 && damage2.invulnerability == 0) {
                         hp2.hp -= damage.damage;
                         damage2.invulnerability = 5;
                     }
-                    bool kill = killed(entity, entity2);
-                    if (kill)
-                        kll = true;
-                    if (hp2.hp <= 0 || kill) {
-                        //                            _world.destroyEntity(*entity2);
-                        changes.deletedEntities.push_back(entity->getId());
+                    if (damage2.damage != 0 && damage.invulnerability == 0) {
+                        hp.hp -= damage2.damage;
+                        damage.invulnerability = 5;
+                    }
+//                    bool kill = killed(entity, entity2);
+//                    if (kill)
+//                        kll = true;
+                    if (hp2.hp <= 0) {
+                        changes.deletedEntities.push_back(entity2->getId());
                         entities.erase(entities.begin() + j);
                         j--;
                     }
+                    if (hp.hp <= 0) {
+                        changes.deletedEntities.push_back(entity->getId());
+                        entities.erase(entities.begin() + i);
+                        i--;
+                        break;
+                    }
                 }
-            }
-            if (dmg > 0 && damage.invulnerability == 0) {
-                hp.hp -= dmg;
-                damage.invulnerability = 5;
-            }
-            if (hp.hp <= 0 || kll) {
-                //                    _world.destroyEntity(*entity);
-                changes.deletedEntities.push_back(entity->getId());
-                entities.erase(entities.begin() + i);
-                i--;
             }
         }
         return changes;

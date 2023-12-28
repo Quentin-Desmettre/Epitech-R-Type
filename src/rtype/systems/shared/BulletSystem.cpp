@@ -26,8 +26,6 @@ namespace rtype
             auto &entity = entities[i];
             auto &position = entity->getComponent<PositionComponent>();
             if (position.x < -100 || position.x > 1920 + 100 || position.y < -100 || position.y > 1080 + 100) {
-                //                    _world.destroyEntity(*entity);
-                entities.erase(entities.begin() + i);
                 changes.deletedEntities.push_back(entity->getId());
             }
         }

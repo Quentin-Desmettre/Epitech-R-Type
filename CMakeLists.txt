@@ -84,7 +84,8 @@ set(SERVER_SRC src/server/main.cpp
         src/rtype/systems/server/NewConnectionSystem.cpp
         src/rtype/systems/server/PlayerOnConnectionSystem.cpp
         src/rtype/systems/server/ServerCorrectionsSystem.cpp
-        src/rtype/systems/server/ServerInputsSystem.cpp)
+        src/rtype/systems/server/ServerInputsSystem.cpp
+        src/rtype/components/BulletComponent.cpp)
 set(CLIENT_SRC src/client/main.cpp
         src/rtype/RTypeClient.cpp
         include/rtype/RTypeClient.hpp
@@ -106,6 +107,7 @@ set(CLIENT_SRC src/client/main.cpp
         src/rtype/systems/client/ClientInputSenderSystem.cpp
         src/rtype/systems/client/ClientPingSystem.cpp
         src/rtype/systems/client/ServerConnectionSystem.cpp
+        src/rtype/components/BulletComponent.cpp
 )
 
 include(FetchContent)
