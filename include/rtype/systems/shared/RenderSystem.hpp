@@ -18,10 +18,17 @@ namespace rtype
         RenderSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
         ~RenderSystem() override = default;
 
+        void onEntityAdded(const aecs::EntityPtr &entity) override;
+        void onEntityRemoved(const aecs::EntityPtr &entity) override;
+        void onEntityModified(const aecs::EntityPtr &entity) override;
+
         aecs::ClientInputs render() override;
         [[nodiscard]] bool isOpen() const override;
 
       private:
+        void _sortEntities();
+
+        std::vector<aecs::EntityPtr> _sortedEntities;
         sf::RenderWindow _window;
     };
 } // namespace rtype

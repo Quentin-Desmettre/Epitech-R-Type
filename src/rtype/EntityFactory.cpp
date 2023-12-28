@@ -129,7 +129,7 @@ aecs::Entity &rtype::EntityFactory::createBackground(int id, sf::Vector2f speed)
 {
     auto &back = _world->createEntity();
     back.addComponent<SpriteComponent>("assets/sprites/Back" + std::to_string(id) + ".png", sf::Vector2f{1088, 640},
-                                       sf::IntRect{0, 0, 272 * 2, 160});
+                                       sf::IntRect{0, 0, 272 * 2, 160}, -6 + id);
     back.addComponent<PositionComponent>(0, 0);
     back.addComponent<ParallaxComponent>(speed);
     return back;

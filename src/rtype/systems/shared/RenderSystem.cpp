@@ -14,6 +14,49 @@ rtype::RenderSystem::RenderSystem(aecs::World &world,
 {
 }
 
+void rtype::RenderSystem::onEntityAdded(const aecs::EntityPtr &entity)
+{
+    ARenderSystem::onEntityAdded(entity);
+
+    if (entity->hasComponents(_componentsNeeded)) {
+        _sortedEntities.push_back(entity);
+        _sortEntities();
+    }
+}
+
+void rtype::RenderSystem::onEntityRemoved(const aecs::EntityPtr &entity)
+{
+    ARenderSystem::onEntityRemoved(entity);
+
+    if (entity->hasComponents(_componentsNeeded)) {
+        _sortedEntities.erase(std::remove(_sortedEntities.begin(), _sortedEntities.end(), entity),
+                              _sortedEntities.end());
+    }
+}
+
+void rtype::RenderSystem::onEntityModified(const aecs::EntityPtr &entity)
+{
+    ARenderSystem::onEntityModified(entity);
+
+    if (entity->hasComponents(_componentsNeeded)) {
+        if (std::find(_sortedEntities.begin(), _sortedEntities.end(), entity) == _sortedEntities.end())
+            _sortedEntities.push_back(entity);
+        _sortEntities();
+    } else {
+        _sortedEntities.erase(std::remove(_sortedEntities.begin(), _sortedEntities.end(), entity),
+                              _sortedEntities.end());
+    }
+}
+
+void rtype::RenderSystem::_sortEntities()
+{
+    std::sort(_sortedEntities.begin(), _sortedEntities.end(), [](const auto &a, const auto &b) {
+        int indexA = ((aecs::EntityPtr)a)->getComponent<SpriteComponent>().zIndex;
+        int indexB = ((aecs::EntityPtr)b)->getComponent<SpriteComponent>().zIndex;
+        return indexA < indexB;
+    });
+}
+
 aecs::ClientInputs rtype::RenderSystem::render()
 {
     aecs::ClientInputs inputs;
@@ -33,7 +76,7 @@ aecs::ClientInputs rtype::RenderSystem::render()
 
     // Render
     _window.clear(sf::Color(63, 63, 63));
-    for (auto &[id, entity] : _entitiesMap) {
+    for (auto &entity : _sortedEntities) {
         auto &sprite = entity->getComponent<rtype::SpriteComponent>();
         auto &pos = entity->getComponent<PositionComponent>();
         sprite.sprite.setPosition(pos.x, pos.y);
