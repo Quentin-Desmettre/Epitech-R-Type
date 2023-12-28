@@ -32,7 +32,7 @@ void rtype::RTypeClient::setDecodeMap()
         EntityFactory::toPlayer(entity);
     });
     _world.addDecodeMap(typeid(BulletComponent), [](aecs::Entity &entity, const std::vector<std::byte> &data) {
-        entity.addComponent<MonsterComponent>();
+        entity.addComponent<BulletComponent>();
         auto &component = entity.getComponent<BulletComponent>();
         component.decode(data);
         EntityFactory::toBullet(entity);
