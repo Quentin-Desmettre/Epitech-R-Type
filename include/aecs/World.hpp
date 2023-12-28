@@ -43,7 +43,7 @@ namespace aecs
         void addDecodeMap(const std::type_info &type,
                           const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map);
 
-        Entity &decodeNewEntity(std::vector<std::byte> &data);
+        void decodeNewEntity(Entity &entity, const std::vector<std::byte> &data);
 
         template <typename T, typename... Args>
         T &addComponent(Entity &entity, Args &&...args)

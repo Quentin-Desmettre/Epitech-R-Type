@@ -27,6 +27,7 @@ namespace rtype
 
         if (editedEntityIds.empty() && deletedEntityIds.empty())
             return {};
+        state.tick = _world.getTick();
         // Push edited entities in the game state
         for (auto &editedEntityId : editedEntityIds) {
             const auto &entity = _world.getEntity(editedEntityId);

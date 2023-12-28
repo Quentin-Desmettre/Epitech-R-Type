@@ -48,15 +48,6 @@ namespace rtype
             return {};
         }
 
-        // for (auto &[_, entity] : _entitiesMap) {
-        //     if (entity->hasComponent<rtype::MyPlayerComponent>()) {
-        //         auto &position = entity->getComponent<rtype::PositionComponent>();
-        //         packet >> position.x >> position.y;
-        //         std::cout << "x: " << position.x << " y: " << position.y << std::endl;
-        //         break;
-        //     }
-        // }
-
         // Send pong with tick
         unsigned tick = parsed.tick;
         sf::Packet pongPacket = aecs::StaticPacketBuilder::buildClientPongPacket(std::max(tick, _maxReceivedTick));
@@ -67,7 +58,9 @@ namespace rtype
             entity->getComponent<ClientPingComponent>().clock.restart();
 
         // Do the changes
-        // _world.load(parsed.entityChanges.back());
+        for (const auto &change : parsed.entityChanges) {
+            _world.load(change);
+        }
 
         //            // Check if tick has already been checked
         //            if (tick <= _maxReceivedTick)

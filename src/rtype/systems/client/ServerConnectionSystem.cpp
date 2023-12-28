@@ -45,7 +45,8 @@ namespace rtype
             std::cerr << "Error parsing packet" << std::endl;
             return {};
         }
-        _world.load(parsed.entityChanges[0]);
+        for (auto &entity : parsed.entityChanges)
+            _world.load(entity);
         _world.setClientId(parsed.clientId);
 
         // Create myself (to activate udp systems)

@@ -12,9 +12,13 @@ namespace aecs
     Entity::Entity(World &world, std::size_t id) :
         _world(world)
     {
-        if (id == (std::size_t)(-1))
-            _id = _idCounter++;
-        else
+        if (!_idCounter && !_world.getIsServer())
+            _idCounter = 1;
+
+        if (id == (std::size_t)(-1)) {
+            _id = _idCounter;
+            _idCounter += 2;
+        } else
             _id = id;
     }
 
@@ -53,7 +57,7 @@ namespace aecs
     {
         PacketBuilder pb;
         pb << encoded;
-        pb.pass(sizeof(int) + sizeof(ushort));
+        // pb.pass(sizeof(int) + sizeof(ushort));
 
         while (pb) {
             uint id;

@@ -128,15 +128,13 @@ namespace aecs
         }
     }
 
-    Entity &World::decodeNewEntity(std::vector<std::byte> &data)
+    void World::decodeNewEntity(Entity &entity, const std::vector<std::byte> &data)
     {
         PacketBuilder pb;
-        int id;
+
         pb << data;
-        pb >> id;
-        Entity &entity = createEntity(id);
-        ushort size;
-        pb >> size;
+        // ushort size;
+        // pb >> size;
         for (auto &i : decodeMap) {
             std::cout << i.first << std::endl;
         }
@@ -153,8 +151,6 @@ namespace aecs
         }
         // set the data of the server entity
         entity.decode(data);
-
-        return entity;
     }
 
     void World::addDecodeMap(const std::type_info &type,
@@ -266,8 +262,18 @@ namespace aecs
 
     void World::load(const aecs::World::EncodedGameState &entities)
     {
+        // Load entities
+        for (const auto &[id, encodedEntity] : entities.encodedEntities) {
+            auto entity = getEntity(id);
+
+            if (!entity) {
+                decodeNewEntity(createEntity(id), encodedEntity);
+            } else
+                entity->decode(encodedEntity);
+        }
+
+        // Set tick
         _tick = entities.tick;
-        std::cerr << "Loading " << entities.encodedEntities.size() << " entities" << std::endl;
     }
 
 } // namespace aecs
