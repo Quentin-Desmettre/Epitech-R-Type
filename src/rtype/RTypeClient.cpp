@@ -70,11 +70,10 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world.registerSystem<AnimSystem>(1);
     _world.registerSystem<PhysicsSystem>(1);
     _world.registerSystem<ParallaxSystem>(1);
-    _world.registerSystem<BulletSystem>(1);
+//    _world.registerSystem<BulletSystem>(1);
     _world.registerSystem<DamageCollisionSystem>(1);
     // _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
-    _world.registerSystem<MonsterBullet>(1);
 }
 
 void rtype::RTypeClient::run()

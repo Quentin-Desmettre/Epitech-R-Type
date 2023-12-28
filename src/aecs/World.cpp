@@ -135,16 +135,12 @@ namespace aecs
         pb << data;
         // ushort size;
         // pb >> size;
-        for (auto &i : decodeMap) {
-            std::cout << i.first << std::endl;
-        }
         while (pb) {
             uint componentId;
             pb >> componentId;
             // create a default component
             std::vector<std::byte> sub = pb.getSub();
             if (decodeMap.find(componentId) != decodeMap.end()) {
-                std::cout << "componentId: " << componentId << std::endl;
                 decodeMap.at(componentId)(entity, sub);
                 break;
             }

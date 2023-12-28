@@ -112,9 +112,9 @@ aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vecto
     toEnemy(enemy);
     enemy.addComponent<PositionComponent>(position.x, position.y);
     if (lil)
-        enemy.addComponent<VelocityComponent>(velocity.x * 1.5, velocity.y * 1.5);
+        enemy.addComponent<VelocityComponent>(velocity.x * 1.25, velocity.y * 1.25);
     else
-        enemy.addComponent<VelocityComponent>(velocity.x, velocity.y);
+        enemy.addComponent<VelocityComponent>(velocity.x * 0.75, velocity.y * 0.75);
     if (lil) {
         enemy.addComponent<DamageCollisionComponent>(1, 5);
         enemy.addComponent<HPComponent>(1);

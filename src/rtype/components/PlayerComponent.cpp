@@ -17,7 +17,7 @@ rtype::PlayerComponent::PlayerComponent() :
 std::vector<std::byte> rtype::PlayerComponent::encode() const
 {
     PacketBuilder pb;
-    pb << timeInShift << timeSinceLastShoot << playerId;
+    pb << timeInShift << timeSinceLastShoot << static_cast<int>(playerId);
     return pb.getData();
 }
 

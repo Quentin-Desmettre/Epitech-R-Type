@@ -98,7 +98,7 @@ namespace aecs
         ParsedData parsedData = {
             .type = GAME_CHANGES,
         };
-        for (std::uint8_t i = 0; i < changeCount; i++) {
+        for (std::uint8_t i = 0; i < changeCount && packet; i++) {
             aecs::World::EncodedGameState state = parseGameState(packet);
             parsedData.entityChanges.push_back(state);
         }
