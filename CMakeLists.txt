@@ -97,8 +97,8 @@ set(SERVER_SRC src/server/main.cpp
 set(CLIENT_SRC src/client/main.cpp
         src/rtype/RTypeClient.cpp
         include/rtype/RTypeClient.hpp
-        src/rtype/systems/shared/RenderSystem.cpp
-        include/rtype/systems/shared/RenderSystem.hpp
+        src/rtype/systems/client/RenderSystem.cpp
+        include/rtype/systems/client/RenderSystem.hpp
         include/rtype/systems/client/ServerConnectionSystem.hpp
         include/rtype/systems/client/ClientInputSenderSystem.hpp
         src/rtype/systems/client/ClientServerDataHandlerSystem.cpp

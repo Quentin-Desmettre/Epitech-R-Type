@@ -2,7 +2,7 @@
 // Created by qdesmettre on 05/12/23.
 //
 
-#include "rtype/systems/shared/RenderSystem.hpp"
+#include "rtype/systems/client/RenderSystem.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
@@ -16,44 +16,47 @@ rtype::RenderSystem::RenderSystem(aecs::World &world,
 
 void rtype::RenderSystem::onEntityAdded(const aecs::EntityPtr &entity)
 {
-    ARenderSystem::onEntityAdded(entity);
-
     if (entity->hasComponents(_componentsNeeded)) {
-        _sortedEntities.push_back(entity);
-        _sortEntities();
+        addEntity(entity);
     }
 }
 
 void rtype::RenderSystem::onEntityRemoved(const aecs::EntityPtr &entity)
 {
-    ARenderSystem::onEntityRemoved(entity);
-
     if (entity->hasComponents(_componentsNeeded)) {
-        _sortedEntities.erase(std::remove(_sortedEntities.begin(), _sortedEntities.end(), entity),
-                              _sortedEntities.end());
+        deleteEntity(entity->getId());
     }
 }
 
 void rtype::RenderSystem::onEntityModified(const aecs::EntityPtr &entity)
 {
-    ARenderSystem::onEntityModified(entity);
+    bool hasComponents = entity->hasComponents(_componentsNeeded);
+    bool isInMap = _entitiesMap.find(entity->getId()) != _entitiesMap.end();
 
-    if (entity->hasComponents(_componentsNeeded)) {
-        if (std::find(_sortedEntities.begin(), _sortedEntities.end(), entity) == _sortedEntities.end())
-            _sortedEntities.push_back(entity);
-        _sortEntities();
-    } else {
-        _sortedEntities.erase(std::remove(_sortedEntities.begin(), _sortedEntities.end(), entity),
-                              _sortedEntities.end());
+    if (hasComponents && !isInMap) {
+        addEntity(entity);
+    } else if (!hasComponents && isInMap) {
+        deleteEntity(entity->getId());
     }
+}
+
+void rtype::RenderSystem::addEntity(const aecs::EntityPtr &entity)
+{
+    _entitiesToAdd.push_back(entity);
+}
+
+void rtype::RenderSystem::deleteEntity(std::size_t entityId)
+{
+    _entitiesToDelete.push_back(entityId);
 }
 
 void rtype::RenderSystem::_sortEntities()
 {
-    std::sort(_sortedEntities.begin(), _sortedEntities.end(), [](const auto &a, const auto &b) {
-        int indexA = ((aecs::EntityPtr)a)->getComponent<SpriteComponent>().zIndex;
-        int indexB = ((aecs::EntityPtr)b)->getComponent<SpriteComponent>().zIndex;
-        return indexA < indexB;
+    _sortedEntities.clear();
+    for (auto &entity : _entitiesMap)
+        _sortedEntities.push_back(entity.second);
+    std::sort(_sortedEntities.begin(), _sortedEntities.end(), [](const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) {
+        return lhs->getComponent<rtype::SpriteComponent>().zIndex < rhs->getComponent<rtype::SpriteComponent>().zIndex;
     });
 }
 
@@ -76,6 +79,7 @@ aecs::ClientInputs rtype::RenderSystem::render()
 
     // Render
     _window.clear(sf::Color(63, 63, 63));
+    _flushBuffers();
     for (auto &entity : _sortedEntities) {
         auto &sprite = entity->getComponent<rtype::SpriteComponent>();
         auto &pos = entity->getComponent<PositionComponent>();
@@ -87,10 +91,30 @@ aecs::ClientInputs rtype::RenderSystem::render()
             _window.draw(sprite.sprite);
     }
     _window.display();
+    _flushBuffers();
     return inputs;
 }
 
 bool rtype::RenderSystem::isOpen() const
 {
     return _window.isOpen();
+}
+
+void rtype::RenderSystem::_flushBuffers()
+{
+    // Add entities
+    for (auto &entity : _entitiesToAdd)
+        _entitiesMap[entity->getId()] = entity;
+
+    // Delete entities
+    for (auto &id : _entitiesToDelete) {
+        _entitiesMap.erase(id);
+    }
+
+    // Clear buffers
+    _entitiesToDelete.clear();
+    _entitiesToAdd.clear();
+
+    // Sort entities
+    _sortEntities();
 }

@@ -9,6 +9,8 @@
 #include "SFML/Window.hpp"
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
+#include "rtype/components/SpriteComponent.hpp"
+#include <set>
 
 namespace rtype
 {
@@ -26,9 +28,23 @@ namespace rtype
         [[nodiscard]] bool isOpen() const override;
 
       private:
+        struct EntityCompare
+        {
+            bool operator()(const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) const
+            {
+                return lhs->getComponent<SpriteComponent>().zIndex < rhs->getComponent<SpriteComponent>().zIndex;
+            }
+        };
         void _sortEntities();
 
+        void _flushBuffers();
+        void addEntity(const aecs::EntityPtr &entity);
+        void deleteEntity(std::size_t entityId);
+
         std::vector<aecs::EntityPtr> _sortedEntities;
+        std::vector<std::size_t> _entitiesToDelete;
+        std::vector<aecs::EntityPtr> _entitiesToAdd;
+
         sf::RenderWindow _window;
     };
 } // namespace rtype

@@ -29,6 +29,10 @@ namespace aecs
 
     void World::destroyEntity(Entity &entity)
     {
+        if (_entities.find(entity.getId()) == _entities.end()) {
+            std::cerr << "connait pas " << entity.getId() << std::endl;
+            return;
+        }
         // Notify systems
         onEntityRemoved(_entities[entity.getId()]);
 
