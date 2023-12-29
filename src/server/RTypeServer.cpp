@@ -53,7 +53,7 @@ void rtype::RTypeServer::run()
 {
     infinteLoop(
         _logicRefreshRate,
-        [this]() {
+        []() {
             return true;
         },
         [this]() {

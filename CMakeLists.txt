@@ -79,6 +79,9 @@ set(SHARED_SRC
         src/rtype/systems/shared/MonsterGenSystem.cpp
         src/rtype/systems/shared/ParallaxSystem.cpp
         src/rtype/systems/shared/PhysicsSystem.cpp
+        src/shared/ArgParser.cpp
+        include/shared/ArgParser.hpp
+        include/shared/Utils.hpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
