@@ -6,9 +6,9 @@
 */
 #ifndef R_TYPE_UTILS_HPP
     #define R_TYPE_UTILS_HPP
-
-#include <regex>
-#include <iostream>
+    #include <regex>
+    #include <iostream>
+    #include <cstring>
 
 class Utils {
   public:
