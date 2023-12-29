@@ -1,5 +1,4 @@
 #include "rtype/RTypeClient.hpp"
-#include <SFML/Graphics.hpp>
 #include "shared/ArgParser.hpp"
 
 int main(int ac, char **av)
