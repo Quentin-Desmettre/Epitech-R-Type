@@ -27,39 +27,35 @@ namespace rtype
         sf::IpAddress sender;
         unsigned short port;
 
-        sf::Socket::Status status = _socket.receive(packet, sender, port);
+        while (_socket.receive(packet, sender, port) == sf::Socket::Done) {
+            // If packet:
+            // - send pong
+            // - check if tick has already been checked
+            // - push to queue
+            // - do packet received X ms in the past
 
-        // If no packet, return
-        if (status != sf::Socket::Done)
-            return {};
+            aecs::StaticPacketParser::ParsedData parsed = aecs::StaticPacketParser::parsePacket(packet, 0);
 
-        // If packet:
-        // - send pong
-        // - check if tick has already been checked
-        // - push to queue
-        // - do packet received X ms in the past
+            if (parsed.type == aecs::SERVER_PONG)
+                return {};
+            if (parsed.type != aecs::GAME_CHANGES) {
+                std::cerr << "Unexpected packet type" << std::endl;
+                return {};
+            }
 
-        aecs::StaticPacketParser::ParsedData parsed = aecs::StaticPacketParser::parsePacket(packet, 0);
+            // Send pong with tick
+            unsigned tick = parsed.tick;
+            sf::Packet pongPacket = aecs::StaticPacketBuilder::buildClientPongPacket(std::max(tick, _maxReceivedTick));
+            _socket.send(pongPacket, sender, SERVER_INPUTS_PORT);
 
-        if (parsed.type == aecs::SERVER_PONG)
-            return {};
-        if (parsed.type != aecs::GAME_CHANGES) {
-            std::cerr << "Unexpected packet type" << std::endl;
-            return {};
-        }
+            // Reset ping clock
+            for (auto &[_, entity] : _entitiesMap)
+                entity->getComponent<ClientPingComponent>().clock.restart();
 
-        // Send pong with tick
-        unsigned tick = parsed.tick;
-        sf::Packet pongPacket = aecs::StaticPacketBuilder::buildClientPongPacket(std::max(tick, _maxReceivedTick));
-        _socket.send(pongPacket, sender, SERVER_INPUTS_PORT);
-
-        // Reset ping clock
-        for (auto &[_, entity] : _entitiesMap)
-            entity->getComponent<ClientPingComponent>().clock.restart();
-
-        // Do the changes
-        for (const auto &change : parsed.entityChanges) {
-            _world.load(change);
+            // Do the changes
+            for (const auto &change : parsed.entityChanges) {
+                _world.load(change);
+            }
         }
 
         //            // Check if tick has already been checked

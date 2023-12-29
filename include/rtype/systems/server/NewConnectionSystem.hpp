@@ -40,7 +40,7 @@ namespace rtype
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
 
       private:
-        bool isClientAlreadyConnected(const sf::IpAddress &address);
+        std::pair<bool, aecs::Entity *> getClientInfo(const sf::IpAddress &address);
 
         aecs::Entity *handleClient(sf::TcpSocket &socket);
 

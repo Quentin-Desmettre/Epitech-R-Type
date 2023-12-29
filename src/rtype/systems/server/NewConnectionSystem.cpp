@@ -60,7 +60,7 @@ namespace rtype
 
     NewConnectionSystem::NewConnectionSystem(aecs::World &world,
                                              const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-        ALogicSystem(world, entities, {}),
+        ALogicSystem(world, entities, {typeid(ClientAdressComponent), typeid(PlayerComponent)}),
         _listener()
     {
         _listener.listen(SERVER_TCP_PORT);
@@ -71,13 +71,14 @@ namespace rtype
     aecs::EntityChanges NewConnectionSystem::update(aecs::UpdateParams &updateParams)
     {
         sf::TcpSocket socket;
+        aecs::EntityChanges changes;
 
         socket.setBlocking(false);
         while (_listener.accept(socket) == sf::Socket::Done) {
-            if (isClientAlreadyConnected(socket.getRemoteAddress())) {
+            auto [isConnected, player] = getClientInfo(socket.getRemoteAddress());
+            if (isConnected) {
                 std::cout << "Client already connected" << std::endl;
-                socket.disconnect();
-                continue;
+                changes.deletedEntities.push_back(player->getId());
             }
 
             std::cout << "New connection from " << socket.getRemoteAddress() << std::endl;
@@ -86,19 +87,17 @@ namespace rtype
                 updateParams.entityChanges.editedEntities.push_back(entity->getId());
             socket.disconnect();
         }
-        return {};
+        return changes;
     }
 
-    bool NewConnectionSystem::isClientAlreadyConnected(const sf::IpAddress &address)
+    std::pair<bool, aecs::Entity *> NewConnectionSystem::getClientInfo(const sf::IpAddress &address)
     {
         for (auto &[_, entity] : _entitiesMap) {
-            if (!entity->hasComponent<ClientAdressComponent>())
-                continue;
             auto &clientAdress = entity->getComponent<ClientAdressComponent>();
             if (clientAdress.adress == address.toInteger())
-                return true;
+                return {true, entity.get()};
         }
-        return false;
+        return {false, nullptr};
     }
 
     aecs::Entity *NewConnectionSystem::handleClient(sf::TcpSocket &socket)
