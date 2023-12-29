@@ -9,15 +9,14 @@
 
 ArgParser::ArgParser(int ac, char **av) {
     for (int i = 0; i < ac; i++) {
-        if (strcmp(av[i], "-h") == 0)
-            _help = true;
-        if (strcmp(av[i], "--help") == 0)
+        std::string arg = av[i];
+        if (arg == "-h" || arg == "--help")
             _help = true;
         if (i + 1 >= ac)
             break;
-        if (strcmp(av[i], "--ip") == 0)
+        if (arg == "--ip")
             _ip = av[i + 1];
-        if (strcmp(av[i], "--port") == 0)
+        if (arg == "--port")
             _port = av[i + 1];
     }
 }
