@@ -119,18 +119,14 @@ FetchContent_MakeAvailable(SFML)
 
 include_directories(${SFML_SOURCE_DIR}/include)
 
-add_library(r-type_static STATIC ${SHARED_SRC})
+add_library(r-type_shared SHARED ${SHARED_SRC})
+target_link_libraries(r-type_shared PUBLIC sfml-graphics sfml-network)
 
 add_executable(r-type_client ${CLIENT_SRC})
 add_executable(r-type_server ${SERVER_SRC})
 
-target_link_libraries(r-type_client PRIVATE sfml-graphics sfml-network r-type_static)
-target_link_libraries(r-type_server
-        PRIVATE
-        sfml-graphics
-        sfml-network
-        r-type_static
-)
+target_link_libraries(r-type_client PRIVATE r-type_shared)
+target_link_libraries(r-type_server PRIVATE r-type_shared)
 
 if (WIN32 AND BUILD_SHARED_LIBS)
     target_link_libraries(r-type_client PRIVATE ws2_32.lib)
