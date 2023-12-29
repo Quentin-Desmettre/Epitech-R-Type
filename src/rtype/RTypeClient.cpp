@@ -5,6 +5,7 @@
 #include "rtype/RTypeClient.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/systems/client/ClientInputSenderSystem.hpp"
+#include "rtype/systems/client/DamageSoundSystem.hpp"
 #include "rtype/systems/client/ClientPingSystem.hpp"
 #include "rtype/systems/client/ClientServerDataHandlerSystem.hpp"
 #include "rtype/systems/shared/AnimPlayerSystem.hpp"
@@ -23,6 +24,7 @@
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
+#include "rtype/components/MusicComponent.hpp"
 void rtype::RTypeClient::setDecodeMap()
 {
     _world.addDecodeMap(typeid(PlayerComponent), [](aecs::Entity &entity, const std::vector<std::byte> &data) {
@@ -53,7 +55,8 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
 {
     setDecodeMap();
     EntityFactory::setWorld(&_world);
-    EntityFactory::createBackground(1, sf::Vector2f(8, 0));
+    auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
+    bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
     EntityFactory::createBackground(2, sf::Vector2f(5, 0));
     EntityFactory::createBackground(3, sf::Vector2f(3, 0));
     EntityFactory::createBackground(4, sf::Vector2f(12, 0));
@@ -72,6 +75,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
     _world.registerSystem<ParallaxSystem>(1);
 //    _world.registerSystem<BulletSystem>(1);
     _world.registerSystem<DamageCollisionSystem>(1);
+    _world.registerSystem<DamageSoundSystem>(1);
     // _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
 }

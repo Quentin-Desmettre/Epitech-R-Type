@@ -58,7 +58,6 @@ aecs::Entity &rtype::EntityFactory::toBullet(aecs::Entity &entity)
         entity.addComponent<SpriteComponent>("assets/sprites/Bullet.png", sf::Vector2f(20 * 3, 14 * 3),
                                              sf::IntRect(0, 0, 20, 14));
     if (!_world->getIsServer()) {
-        std::shared_ptr<sf::Shader> shader = std::make_shared<sf::Shader>();
         entity.addComponent<AnimComponent>(0.5);
         entity.addComponent<PositionComponent>();
         entity.addComponent<DamageCollisionComponent>();
@@ -94,7 +93,6 @@ aecs::Entity &rtype::EntityFactory::toEnemy(aecs::Entity &entity)
         entity.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102),
                                              sf::IntRect(52 * (rand() % 5), 0, 52, 34));
     if (!_world->getIsServer()) {
-        std::shared_ptr<sf::Shader> shader = std::make_shared<sf::Shader>();
         entity.addComponent<AnimComponent>(1);
         entity.addComponent<PositionComponent>();
         entity.addComponent<DamageCollisionComponent>();

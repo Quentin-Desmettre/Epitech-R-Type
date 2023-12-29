@@ -68,21 +68,25 @@ namespace rtype
                     if (damage.damage != 0 && damage2.invulnerability == 0) {
                         hp2.hp -= damage.damage;
                         damage2.invulnerability = 5;
+                        damage2.damaged = true;
                     }
                     if (damage2.damage != 0 && damage.invulnerability == 0) {
                         hp.hp -= damage2.damage;
                         damage.invulnerability = 5;
+                        damage.damaged = true;
                     }
 //                    bool kill = killed(entity, entity2);
 //                    if (kill)
 //                        kll = true;
                     if (hp2.hp <= 0) {
-                        changes.deletedEntities.push_back(entity2->getId());
+                        if (_world.getIsServer())
+                            changes.deletedEntities.push_back(entity2->getId());
                         entities.erase(entities.begin() + j);
                         j--;
                     }
                     if (hp.hp <= 0) {
-                        changes.deletedEntities.push_back(entity->getId());
+                        if (_world.getIsServer())
+                            changes.deletedEntities.push_back(entity->getId());
                         entities.erase(entities.begin() + i);
                         i--;
                         break;

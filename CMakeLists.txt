@@ -109,6 +109,10 @@ set(CLIENT_SRC src/client/main.cpp
         src/rtype/systems/client/ClientInputSenderSystem.cpp
         src/rtype/systems/client/ClientPingSystem.cpp
         src/rtype/systems/client/ServerConnectionSystem.cpp
+        include/rtype/systems/client/DamageSoundSystem.hpp
+        include/rtype/components/MusicComponent.hpp
+        src/rtype/components/MusicComponent.cpp
+        src/rtype/systems/client/DamageSoundSystem.cpp
 )
 
 include(FetchContent)
@@ -125,7 +129,7 @@ target_link_libraries(r-type_shared PUBLIC sfml-graphics sfml-network)
 add_executable(r-type_client ${CLIENT_SRC})
 add_executable(r-type_server ${SERVER_SRC})
 
-target_link_libraries(r-type_client PRIVATE r-type_shared)
+target_link_libraries(r-type_client PRIVATE r-type_shared sfml-audio)
 target_link_libraries(r-type_server PRIVATE r-type_shared)
 
 if (WIN32 AND BUILD_SHARED_LIBS)

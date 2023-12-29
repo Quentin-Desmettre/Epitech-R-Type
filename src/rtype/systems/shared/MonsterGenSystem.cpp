@@ -21,12 +21,12 @@ aecs::EntityChanges rtype::MonsterGenSystem::update(aecs::UpdateParams &updatePa
 {
     std::size_t nbPlayer = _entitiesMap.size();
     static float time = 0;
-    time += updateParams.deltaTime;
     aecs::EntityChanges changes;
 
     if (nbPlayer == 0) {
         return {};
     }
+    time += updateParams.deltaTime;
 
     int rnd;
     while (time > 1) {

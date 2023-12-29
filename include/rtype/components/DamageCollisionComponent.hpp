@@ -33,6 +33,7 @@ namespace rtype
         float damage = 0;
         ObjectType type = OTHER;
         float invulnerability = 0;
+        bool damaged = false;
     };
 } // namespace rtype
 
