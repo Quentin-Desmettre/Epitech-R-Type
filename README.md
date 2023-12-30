@@ -1,74 +1,138 @@
+# Epitech - R-Type
 
+R-Type is a 2D horizontal scrolling shoot 'em up arcade game developed by Irem and published in 1987.
 
-## How to use the ECS
+The main goal of this project is to create a clone of this game using modern C++ and the SFML library.
 
-### 1. Create a new ECS instance
+But, in addition,
+to build this game, we must create a game engine, and the game must provide a multiplayer mode
+(using an authoritative server and a client), through the use of the UDP protocol.
 
-```c++
-aecs::World world;
+# Summary
+
+- [How to run the game](#how-to-run-the-game)
+  - [Build from source](#build-from-source)
+    - [Requirements](#requirements)
+    - [Build](#build)
+  - [Download the latest release](#download-the-latest-release)
+  - [Run the game](#run-the-game)
+- [How to play](#how-to-play)
+  - [Controls](#controls)
+  - [Gameplay](#gameplay)
+- [Contribution guidelines](#contribution-guidelines)
+- [Developer documentation](#developer-documentation)
+- [License](#license)
+- [Authors](#authors)
+
+# How to run the game
+
+To run the game, can either
+
+- [Build it from source](#build-from-source) (longer, for developers or curious people)
+- [Download the latest release](#download-the-latest-release) (faster, for players)
+
+## Build from source
+
+### Requirements
+
+- [CMake](https://cmake.org/) (>= 3.22)
+
+If running on a Linux system, you will also need these packages to use SFML:
+
+- freetype
+- x11
+- xrandr
+- udev
+- opengl
+- flac
+- ogg
+- vorbis
+- vorbisenc
+- vorbisfile
+- openal
+- pthread
+
+> The exact name of the packages may vary from distribution to distribution. Once those packages are installed, don't forget to install their development headers as well.
+
+### Build
+
+Once you have cloned the repository and opened a terminal in the project's root directory, you can run the following command:
+
+```bash
+./run.sh
 ```
 
-### 2. Create an entity
+This script will do everything for you, pulling the SFML from source and building it, and then building the game.
+You will be left with 2 executables at the root of the repository: `r-type_client` and `r-type_server`,
+which are the client and server executables respectively.
 
-```c++
-aecs::Entity &entity = world.createEntity();
+> Note that the first build may take a while, as it will build *everything* from source. 
+Subsequent builds will be much faster, as only the modified files will be recompiled.
+
+## Download the latest release
+
+You can download the latest release [here]().
+
+Please select the appropriate archive for your system (Windows, Linux or macOS).
+
+
+## Run the game
+
+To run the game, you will need to run the server first, and then the client.
+
+Run the server with the following command:
+
+```bash
+./r-type_server [port]
 ```
 
-### 3. Attach a component to an entity
+With `[port]` being the port you want the server to listen on.
 
-```c++
-entity.addComponent<Position>(10, 20);
-// or
-world.addComponent<Position>(entity, 10, 20);
+Then, run the client with the following command:
+
+```bash
+./r-type_client [server ip] [server port]
 ```
 
-### 4. Add some systems
+With `[server ip]` being the IP address of the server, and `[server port]` being the port the server is listening on.
 
-Each system constructor **_MUST_** take as their 2 first parameters a `aecs::World&` and a `std::vector<std::shared_ptr<Entity>>`.
-This vector contains all the entities; It is then the system's job to filter the entities it needs.
+# How to play
 
-Also, when you create/destroy/modify an entity, the `onEntityAdded`/`onEntityRemoved`/`onEntityModified` methods of
-every system are called respectively, with the entity as parameter. It is then the system's job to filter the entities.
+## Controls
 
-An entity is considered modified when a component is added/removed to it.
+- **Move left**: `Q`
+- **Move right**: `D`
+- **Move up**: `Z`
+- **Move down**: `S`
+- **Shoot**: `Space`
+- **Charge**: `Left Shift`
+- **Quit**: `Escape`
 
-```c++
-world.registerSystem<MoveSystem>(priority, /* Additional params to pass to ctor */);
-world.setSystemPriority<MoveSystem>(priority); // If necessary
-```
+## Gameplay
 
-### 5. Set a render system
+The goal of the game is to kill as many enemies as possible, without dying. Each enemy killed will give you 1 point.
 
-```c++
-world.registerRenderSystem<RenderSystem>(/* Additional params to pass to ctor */);
-```
+Once you have died, you can rejoin the game by quitting and relaunching the client, restarting the game with 0 points.
 
-### 6. Update & render
 
-```c++
-world.update();
-world.render();
-```
+# Contribution guidelines
 
-## Utility functions
+If you want to contribute to this project, please read the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
-```c++
-// Destroy an entity
-world.destroyEntity(entity);
+# Developer documentation
 
-// Check if an entity has a component
-entity.hasComponent<Position>();
+You can find an extended documentation of the project [here](./docs/index.md).
 
-// Get a component from an entity
-entity.getComponent<Position>();
+You will find everything technical you need to know in order to start coding on this project.
 
-// Remove components from an entity
-entity.removeComponent<Position>();
-world.removeComponent<Position>(entity);
+# License
 
-// Change system priority
-world.setSystemPriority<MoveSystem>(priority);
+This project is licensed under the [MIT License](LICENSE).
 
-// Remove a system
-world.removeSystem<MoveSystem>();
-```
+# Authors
+
+- [**Quentin Desmettre**](mailto:quentin.desmettre@epitech.eu)
+- [**Paulin Leclercq**](mailto:paulin.leclercq@epitech.eu)
+- [**Edgar Lecuyer**](mailto:edgar.lecuyer@epitech.eu)
+- [**Noa Trachez**](mailto:noa.trachez@epitech.eu)
+- [**Clement Vandeville**](mailto:clement.vandeville@epitech.eu)
