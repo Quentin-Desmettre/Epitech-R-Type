@@ -1,5 +1,5 @@
 
-# AECS - Network Protocol
+# Epitech - R-Type AECS Network Protocol
 
 This document describes the network protocol used by AECS to communicate between clients and the server.
 
@@ -13,6 +13,7 @@ The client and the server mainly communicate over a UDP connection, and use TCP 
 - [Step 4: Sending data, server side](#step-4-sending-data-server-side)
 - [Step 5: Receiving data, client side](#step-5-receiving-data-client-side)
 - [Packet Structures](#packet-structures)
+- [Protocol Diagram](#protocol-diagram)
 
 ## Step 1: Establishing a connection
 
@@ -59,7 +60,7 @@ The client may then push these changes to a queue, and dequeue them 30ms later, 
 
 # Packet Structures
 
-Every packet follows the follow architecture:
+Every packet follows the following architecture:
 
 ```
 +-------------+-------------+-------------+
@@ -175,3 +176,7 @@ This packet contains the game tick of the last change the client received.
 | tick    |
 +---------+
 ```
+
+# Protocol Diagram
+
+![Protocol Diagram](protocol.png)
