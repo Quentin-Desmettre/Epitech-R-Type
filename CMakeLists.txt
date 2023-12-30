@@ -86,7 +86,7 @@ set(SERVER_SRC src/server/main.cpp
         src/rtype/systems/server/ServerCorrectionsSystem.cpp
         src/rtype/systems/server/ServerInputsSystem.cpp)
 set(CLIENT_SRC src/client/main.cpp
-        src/rtype/RTypeClient.cpp
+        src/client/RTypeClient.cpp
         include/rtype/RTypeClient.hpp
         src/rtype/systems/shared/RenderSystem.cpp
         include/rtype/systems/shared/RenderSystem.hpp
