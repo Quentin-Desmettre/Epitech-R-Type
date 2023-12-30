@@ -74,11 +74,16 @@ namespace rtype
         aecs::EntityChanges changes;
 
         socket.setBlocking(false);
+        if (_entitiesMap.size() >= 4)
+            return {};
         while (_listener.accept(socket) == sf::Socket::Done) {
             auto [isConnected, player] = getClientInfo(socket.getRemoteAddress());
             if (isConnected) {
                 std::cout << "Client already connected" << std::endl;
                 changes.deletedEntities.push_back(player->getId());
+                auto *playerComponent = player->safeGetComponent<PlayerComponent>();
+                if (playerComponent)
+                    playerComponent->unUsePlayerId();
             }
 
             std::cout << "New connection from " << socket.getRemoteAddress() << std::endl;
@@ -114,6 +119,8 @@ namespace rtype
 
         // Build packet
         sf::Packet packet = aecs::StaticPacketBuilder::buildConnectedPacket(id, _world);
+
+        std::cout << "id: " << id << std::endl;
 
         // send
         if (socket.send(packet) != sf::Socket::Done) {
