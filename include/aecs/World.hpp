@@ -69,11 +69,9 @@ namespace aecs
         void setTick(unsigned tick);
         [[nodiscard]] unsigned getTick() const;
 
+        [[nodiscard]] ServerInputs popInputs();
+
         [[nodiscard]] ServerInputs getInputs(unsigned tick = -1) const;
-
-        [[nodiscard]] ClientInputs getClientInputs(unsigned clientId, std::size_t tick = -1) const;
-
-        void setInputs(const ServerInputs &inputs);
 
         void setClientInputs(unsigned clientId, const ClientInputs &inputs);
 
