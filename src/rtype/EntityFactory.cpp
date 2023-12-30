@@ -58,7 +58,6 @@ aecs::Entity &rtype::EntityFactory::toBullet(aecs::Entity &entity)
         entity.addComponent<SpriteComponent>("assets/sprites/Bullet.png", sf::Vector2f(20 * 3, 14 * 3),
                                              sf::IntRect(0, 0, 20, 14));
     if (!_world->getIsServer()) {
-        std::shared_ptr<sf::Shader> shader = std::make_shared<sf::Shader>();
         entity.addComponent<AnimComponent>(0.5);
         entity.addComponent<PositionComponent>();
         entity.addComponent<DamageCollisionComponent>();
@@ -94,7 +93,6 @@ aecs::Entity &rtype::EntityFactory::toEnemy(aecs::Entity &entity)
         entity.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102),
                                              sf::IntRect(52 * (rand() % 5), 0, 52, 34));
     if (!_world->getIsServer()) {
-        std::shared_ptr<sf::Shader> shader = std::make_shared<sf::Shader>();
         entity.addComponent<AnimComponent>(1);
         entity.addComponent<PositionComponent>();
         entity.addComponent<DamageCollisionComponent>();
@@ -112,9 +110,9 @@ aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vecto
     toEnemy(enemy);
     enemy.addComponent<PositionComponent>(position.x, position.y);
     if (lil)
-        enemy.addComponent<VelocityComponent>(velocity.x * 1.5, velocity.y * 1.5);
+        enemy.addComponent<VelocityComponent>(velocity.x * 1.25, velocity.y * 1.25);
     else
-        enemy.addComponent<VelocityComponent>(velocity.x, velocity.y);
+        enemy.addComponent<VelocityComponent>(velocity.x * 0.75, velocity.y * 0.75);
     if (lil) {
         enemy.addComponent<DamageCollisionComponent>(1, 5);
         enemy.addComponent<HPComponent>(1);
@@ -129,7 +127,7 @@ aecs::Entity &rtype::EntityFactory::createBackground(int id, sf::Vector2f speed)
 {
     auto &back = _world->createEntity();
     back.addComponent<SpriteComponent>("assets/sprites/Back" + std::to_string(id) + ".png", sf::Vector2f{1088, 640},
-                                       sf::IntRect{0, 0, 272 * 2, 160});
+                                       sf::IntRect{0, 0, 272 * 2, 160}, -6 + id);
     back.addComponent<PositionComponent>(0, 0);
     back.addComponent<ParallaxComponent>(speed);
     return back;

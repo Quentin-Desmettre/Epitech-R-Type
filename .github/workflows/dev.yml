@@ -12,7 +12,7 @@ env:
 
 jobs:
   build_all:
-    name: Generate Build Artifacts
+    name: Build Checker
     strategy:
       matrix:
         vars:

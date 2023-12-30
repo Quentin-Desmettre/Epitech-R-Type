@@ -87,10 +87,19 @@ namespace aecs
         {
             static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
 
-            auto *component = dynamic_cast<T *>(_components.at(typeid(T)).get());
-            if (!component)
+            if (!hasComponent<T>())
                 throw std::runtime_error("Invalid component type");
-            return *component;
+            return *dynamic_cast<T *>(_components.at(typeid(T)).get());
+        }
+
+        template<typename T>
+        [[nodiscard]] T *safeGetComponent() const
+        {
+            static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");
+
+            if (!hasComponent<T>())
+                return nullptr;
+            return dynamic_cast<T *>(_components.at(typeid(T)).get());
         }
 
         [[nodiscard]] std::vector<std::byte> encode() const;

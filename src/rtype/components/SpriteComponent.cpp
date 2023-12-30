@@ -4,8 +4,9 @@
 
 #include "rtype/components/SpriteComponent.hpp"
 
-rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size, sf::IntRect rect) :
-    _size(size)
+rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size, sf::IntRect rect, int zIndex) :
+    _size(size),
+    zIndex(zIndex)
 {
     if (!_texture.loadFromFile(path))
         throw std::runtime_error("Cannot load texture: " + path);

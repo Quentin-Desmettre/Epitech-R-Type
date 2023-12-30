@@ -56,7 +56,8 @@ namespace rtype
                 }
             }
             if (space && !shift && my.timeSinceLastShoot > 3) {
-                EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 32), sf::Vector2f(100, 0), 0);
+                if (_world.getIsServer())
+                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 32), sf::Vector2f(100, 0), 0);
                 my.timeSinceLastShoot = 0;
             }
             if (shift && my.timeSinceLastShoot > 6) {
@@ -73,10 +74,11 @@ namespace rtype
                 sprite.sprite.setColor(sf::Color(255, 255, 255, 255));
 
             if (space && shift && my.timeInShift > 6) {
-                changes.editedEntities.push_back(
-                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 2), sf::Vector2f(100, 0), 0,
-                                                true)
-                        .getId());
+                if (_world.getIsServer())
+                    changes.editedEntities.push_back(
+                        EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 2), sf::Vector2f(100, 0), 0,
+                                                    true)
+                            .getId());
                 my.timeSinceLastShoot = 0;
                 my.timeInShift = 0;
             }

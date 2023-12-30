@@ -37,3 +37,5 @@ build
 cmake-build-debug
 r-type_client
 r-type_server
+
+.DS_Store

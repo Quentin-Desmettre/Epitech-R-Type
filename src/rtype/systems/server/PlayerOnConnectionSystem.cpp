@@ -16,6 +16,11 @@ namespace rtype
 
     aecs::EntityChanges PlayerOnConnectionSystem::update(aecs::UpdateParams &)
     {
+        aecs::EntityChanges changes;
+        while (!_deletedEntities.empty()) {
+            changes.deletedEntities.push_back(_deletedEntities[0]);
+            _deletedEntities.erase(_deletedEntities.begin());
+        }
         return {};
     }
 
@@ -36,6 +41,13 @@ namespace rtype
             }
         } else
             _entitiesMap.erase(entity->getId());
+    }
+    void PlayerOnConnectionSystem::onEntityRemoved(const aecs::EntityPtr &entity)
+    {
+        if (entity->hasComponents(_componentsNeeded)) {
+            _entitiesMap.erase(entity->getId());
+            _deletedEntities.push_back(entity->getId());
+        }
     }
 
 } // namespace rtype

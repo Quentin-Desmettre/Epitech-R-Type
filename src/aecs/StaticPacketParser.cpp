@@ -98,7 +98,7 @@ namespace aecs
         ParsedData parsedData = {
             .type = GAME_CHANGES,
         };
-        for (std::uint8_t i = 0; i < changeCount; i++) {
+        for (std::uint8_t i = 0; i < changeCount && packet; i++) {
             aecs::World::EncodedGameState state = parseGameState(packet);
             parsedData.entityChanges.push_back(state);
         }
@@ -107,7 +107,7 @@ namespace aecs
         std::sort(parsedData.entityChanges.begin(), parsedData.entityChanges.end(), [](const auto &a, const auto &b) {
             return a.tick < b.tick;
         });
-        std::cout << "Received " << parsedData.entityChanges.size() << " changes" << std::endl;
+//        std::cout << "Received " << parsedData.entityChanges.size() << " changes" << std::endl;
         return parsedData;
     }
 
@@ -147,7 +147,7 @@ namespace aecs
         std::uint8_t tick;
 
         packet >> tick;
-        std::cout << "Client pong: " << static_cast<int>(tick) << std::endl;
+//        std::cout << "Client pong: " << static_cast<int>(tick) << std::endl;
         return {
             .type = CLIENT_PONG,
             .tick = tick,

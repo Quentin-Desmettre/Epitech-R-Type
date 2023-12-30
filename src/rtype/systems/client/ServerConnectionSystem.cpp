@@ -18,7 +18,7 @@ namespace rtype
      * 2. Wait for message, containing game state
      * 3. set game state
      */
-    aecs::EntityChanges ServerConnectionSystem::update(aecs::UpdateParams &updateParams)
+    aecs::EntityChanges ServerConnectionSystem::update(unused aecs::UpdateParams &updateParams)
     {
         if (_connected)
             return {};
@@ -45,7 +45,8 @@ namespace rtype
             std::cerr << "Error parsing packet" << std::endl;
             return {};
         }
-        _world.load(parsed.entityChanges[0]);
+        for (auto &entity : parsed.entityChanges)
+            _world.load(entity);
         _world.setClientId(parsed.clientId);
 
         // Create myself (to activate udp systems)

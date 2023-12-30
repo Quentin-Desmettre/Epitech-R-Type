@@ -16,6 +16,10 @@ namespace rtype
             big(big){};
         ~BulletComponent() override = default;
         bool big = false;
+
+
+        [[nodiscard]] std::vector<std::byte> encode() const override;
+        void decode(const std::vector<std::byte> &encoded) override;
     };
 } // namespace rtype
 

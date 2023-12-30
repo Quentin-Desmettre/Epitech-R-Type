@@ -43,7 +43,7 @@ namespace aecs
         void addDecodeMap(const std::type_info &type,
                           const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map);
 
-        Entity &decodeNewEntity(std::vector<std::byte> &data);
+        void decodeNewEntity(Entity &entity, const std::vector<std::byte> &data);
 
         template <typename T, typename... Args>
         T &addComponent(Entity &entity, Args &&...args)
@@ -69,11 +69,9 @@ namespace aecs
         void setTick(unsigned tick);
         [[nodiscard]] unsigned getTick() const;
 
+        [[nodiscard]] ServerInputs popInputs();
+
         [[nodiscard]] ServerInputs getInputs(unsigned tick = -1) const;
-
-        [[nodiscard]] ClientInputs getClientInputs(unsigned clientId, std::size_t tick = -1) const;
-
-        void setInputs(const ServerInputs &inputs);
 
         void setClientInputs(unsigned clientId, const ClientInputs &inputs);
 

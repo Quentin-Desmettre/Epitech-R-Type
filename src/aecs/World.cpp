@@ -29,6 +29,10 @@ namespace aecs
 
     void World::destroyEntity(Entity &entity)
     {
+        if (_entities.find(entity.getId()) == _entities.end()) {
+            std::cerr << "connait pas " << entity.getId() << std::endl;
+            return;
+        }
         // Notify systems
         onEntityRemoved(_entities[entity.getId()]);
 
@@ -87,9 +91,13 @@ namespace aecs
     {
         float deltaTime = clock.getElapsedTime().asSeconds() * 10;
         clock.restart();
+        UpdateParams updateParams;
         // Lock inputs
-        std::lock_guard<std::mutex> lock(_renderInputsMutex);
-        UpdateParams updateParams = {.inputs = getInputs(), .deltaTime = deltaTime, .entityChanges = {}};
+        {
+            std::lock_guard<std::mutex> lock(_renderInputsMutex);
+            updateParams = {
+                .inputs = _isServer ? getInputs() : popInputs(), .deltaTime = deltaTime, .entityChanges = {}};
+        }
 
         // Update systems
         for (auto &[system, _] : _sortedSystems) {
@@ -106,7 +114,9 @@ namespace aecs
 
         // Delete entities
         for (auto &deletedEntityId : updateParams.entityChanges.deletedEntities) {
-            destroyEntity(*_entities[deletedEntityId]);
+            auto it = _entities.find(deletedEntityId);
+            if (it != _entities.end())
+                destroyEntity(*it->second);
         }
 
         // Clear
@@ -126,33 +136,25 @@ namespace aecs
         }
     }
 
-    Entity &World::decodeNewEntity(std::vector<std::byte> &data)
+    void World::decodeNewEntity(Entity &entity, const std::vector<std::byte> &data)
     {
         PacketBuilder pb;
-        int id;
+
         pb << data;
-        pb >> id;
-        Entity &entity = createEntity(id);
-        ushort size;
-        pb >> size;
-        for (auto &i : decodeMap) {
-            std::cout << i.first << std::endl;
-        }
+        // ushort size;
+        // pb >> size;
         while (pb) {
             uint componentId;
             pb >> componentId;
             // create a default component
             std::vector<std::byte> sub = pb.getSub();
             if (decodeMap.find(componentId) != decodeMap.end()) {
-                std::cout << "componentId: " << componentId << std::endl;
                 decodeMap.at(componentId)(entity, sub);
                 break;
             }
         }
         // set the data of the server entity
         entity.decode(data);
-
-        return entity;
     }
 
     void World::addDecodeMap(const std::type_info &type,
@@ -209,6 +211,16 @@ namespace aecs
         return packet.getData();
     }
 
+    ServerInputs World::popInputs()
+    {
+        if (_renderInputs.find(0) == _renderInputs.end())
+            return {};
+        ServerInputs inputs = _renderInputs[0];
+
+        _renderInputs.erase(0);
+        return inputs;
+    }
+
     ServerInputs World::getInputs(unsigned int tick) const
     {
         if (tick == (unsigned)(-1))
@@ -220,52 +232,41 @@ namespace aecs
         return it->second;
     }
 
-    ClientInputs World::getClientInputs(unsigned int clientId, std::size_t tick) const
-    {
-        if (tick == (std::size_t)(-1))
-            tick = _tick;
-        auto it = _renderInputs.find(tick);
-
-        if (it == _renderInputs.end())
-            return {};
-        auto it2 = it->second.find(clientId);
-        if (it2 == it->second.end())
-            return {};
-        return it2->second;
-    }
-
-    void World::setInputs(const aecs::ServerInputs &inputs)
-    {
-        for (auto it = _renderInputs.begin(); it != _renderInputs.end();) {
-            if (it->first < _tick - 600)
-                it = _renderInputs.erase(it);
-            else
-                ++it;
-        }
-        if (_renderInputs.find(_tick) == _renderInputs.end())
-            _renderInputs[_tick] = inputs;
-        else
-            _renderInputs[_tick].insert(inputs.begin(), inputs.end());
-    }
-
     void World::setClientInputs(unsigned clientId, const ClientInputs &inputs)
     {
+        unsigned tick = _isServer ? _tick : 0;
+
         for (auto it = _renderInputs.begin(); it != _renderInputs.end();) {
-            if (it->first < _tick - 600)
+            if (it->first < tick - 600)
                 it = _renderInputs.erase(it);
             else
                 ++it;
         }
-        if (_renderInputs.find(_tick) == _renderInputs.end())
-            _renderInputs[_tick] = {{clientId, inputs}};
+        if (_renderInputs.find(tick) == _renderInputs.end())
+            _renderInputs[tick] = {{clientId, inputs}};
         else
-            _renderInputs[_tick].insert({clientId, inputs});
+            _renderInputs[tick].insert({clientId, inputs});
     }
 
     void World::load(const aecs::World::EncodedGameState &entities)
     {
+        // Load entities
+        for (const auto &[id, encodedEntity] : entities.encodedEntities) {
+            auto entity = getEntity(id);
+
+            if (encodedEntity.empty()) {
+                if (entity)
+                    destroyEntity(*entity);
+                continue;
+            }
+            if (!entity)
+                decodeNewEntity(createEntity(id), encodedEntity);
+            else
+                entity->decode(encodedEntity);
+        }
+
+        // Set tick
         _tick = entities.tick;
-        std::cerr << "Loading " << entities.encodedEntities.size() << " entities" << std::endl;
     }
 
 } // namespace aecs

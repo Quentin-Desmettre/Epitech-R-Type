@@ -16,96 +16,103 @@ endif ()
 include_directories(include)
 
 set(SHARED_SRC
-        include/aecs/World.hpp
-        include/aecs/AbstractComponent.hpp
+        # ECS
         src/aecs/AbstractComponent.cpp
         src/aecs/Entity.cpp
-        include/aecs/Entity.hpp
-        src/aecs/World.cpp
-        src/aecs/SystemBase.cpp
-        include/aecs/SystemBase.hpp
-        include/rtype/EntityFactory.hpp
-        src/rtype/EntityFactory.cpp
-        include/rtype/systems/shared/InvulSystem.hpp
-        include/rtype/systems/shared/MonsterGenSystem.hpp
-        src/rtype/systems/shared/MonsterGenSystem.cpp
-        include/rtype/components/MonsterComponent.hpp
-        include/rtype/systems/shared/MonsterBullet.hpp
-        src/rtype/components/SpriteComponent.cpp
-        include/rtype/components/SpriteComponent.hpp
-        include/rtype/components/PositionComponent.hpp
-        include/rtype/components/VelocityComponent.hpp
-        include/rtype/components/ParallaxComponent.hpp
-        include/rtype/systems/shared/ParallaxSystem.hpp
-        src/rtype/systems/shared/PhysicsSystem.cpp
-        include/rtype/systems/shared/PhysicsSystem.hpp
-        include/rtype/systems/shared/ControlPlayerSystem.hpp
-        include/rtype/systems/shared/AnimPlayerSystem.hpp
-        include/rtype/components/BulletComponent.hpp
-        include/rtype/systems/shared/BulletSystem.hpp
-        include/rtype/components/AnimComponent.hpp
-        include/rtype/systems/shared/AnimSystem.hpp
-        include/rtype/components/DamageCollisionComponent.hpp
-        include/rtype/systems/shared/DamageCollisionSystem.hpp
-        include/rtype/components/HPComponent.hpp
-        include/rtype/NetworkGlobals.hpp
-        include/aecs/StaticPacketParser.hpp
-        include/rtype/components/ClientAdressComponent.hpp
-        include/rtype/components/ClientPingComponent.hpp
-        src/rtype/systems/shared/ParallaxSystem.cpp
-        src/rtype/systems/shared/MonsterBullet.cpp
-        src/rtype/systems/shared/InvulSystem.cpp
-        src/rtype/systems/shared/DamageCollisionSystem.cpp
-        src/rtype/systems/shared/ControlPlayerSystem.cpp
-        src/rtype/systems/shared/BulletSystem.cpp
-        src/rtype/systems/shared/AnimPlayerSystem.cpp
-        src/rtype/systems/shared/AnimSystem.cpp
         src/aecs/StaticPacketBuilder.cpp
-        src/aecs/StaticPacketParser.cpp)
-set(SERVER_SRC src/server/main.cpp
-        src/server/RTypeServer.cpp
-        include/rtype/RTypeServer.hpp
-        include/rtype/systems/shared/ControlPlayerSystem.hpp
-        include/rtype/systems/shared/AnimPlayerSystem.hpp
-        include/rtype/systems/server/NewConnectionSystem.hpp
-        include/rtype/systems/server/ServerInputsSystem.hpp
-        include/rtype/systems/server/ServerCorrectionsSystem.hpp
-        include/rtype/systems/server/DeleteClientSystem.hpp
+        src/aecs/StaticPacketParser.cpp
+        src/aecs/SystemBase.cpp
+        src/aecs/World.cpp
+        include/aecs/AbstractComponent.hpp
+        include/aecs/Entity.hpp
+        include/aecs/StaticPacketBuilder.hpp
+        include/aecs/StaticPacketParser.hpp
+        include/aecs/SystemBase.hpp
+        include/aecs/World.hpp
+
+        # Other
+        include/rtype/EntityFactory.hpp
+        include/rtype/NetworkGlobals.hpp
         include/shared/PacketBuilder.hpp
         src/shared/PacketBuilder.cpp
+        src/rtype/EntityFactory.cpp
+
+        # Components
+        include/rtype/components/AnimComponent.hpp
+        include/rtype/components/BulletComponent.hpp
+        include/rtype/components/ClientAdressComponent.hpp
+        include/rtype/components/ClientPingComponent.hpp
+        include/rtype/components/DamageCollisionComponent.hpp
+        include/rtype/components/HPComponent.hpp
+        include/rtype/components/MonsterComponent.hpp
+        include/rtype/components/ParallaxComponent.hpp
+        include/rtype/components/PositionComponent.hpp
+        include/rtype/components/SpriteComponent.hpp
+        include/rtype/components/VelocityComponent.hpp
+        src/rtype/components/BulletComponent.cpp
         src/rtype/components/DamageCollisionComponent.cpp
         src/rtype/components/HPComponent.cpp
         src/rtype/components/MonsterComponent.cpp
         src/rtype/components/PlayerComponent.cpp
         src/rtype/components/PositionComponent.cpp
+        src/rtype/components/SpriteComponent.cpp
         src/rtype/components/VelocityComponent.cpp
+
+        # Systems
+        include/rtype/systems/shared/AnimPlayerSystem.hpp
+        include/rtype/systems/shared/AnimSystem.hpp
+        include/rtype/systems/shared/BulletSystem.hpp
+        include/rtype/systems/shared/ControlPlayerSystem.hpp
+        include/rtype/systems/shared/DamageCollisionSystem.hpp
+        include/rtype/systems/shared/InvulSystem.hpp
+        include/rtype/systems/shared/MonsterBullet.hpp
+        include/rtype/systems/shared/MonsterGenSystem.hpp
+        include/rtype/systems/shared/ParallaxSystem.hpp
+        include/rtype/systems/shared/PhysicsSystem.hpp
+        src/rtype/systems/shared/AnimPlayerSystem.cpp
+        src/rtype/systems/shared/AnimSystem.cpp
+        src/rtype/systems/shared/BulletSystem.cpp
+        src/rtype/systems/shared/ControlPlayerSystem.cpp
+        src/rtype/systems/shared/DamageCollisionSystem.cpp
+        src/rtype/systems/shared/InvulSystem.cpp
+        src/rtype/systems/shared/MonsterBullet.cpp
+        src/rtype/systems/shared/MonsterGenSystem.cpp
+        src/rtype/systems/shared/ParallaxSystem.cpp
+        src/rtype/systems/shared/PhysicsSystem.cpp
+        src/shared/ArgParser.cpp
+        include/shared/ArgParser.hpp
+        include/shared/Utils.hpp
+)
+set(SERVER_SRC src/server/main.cpp
+        src/server/RTypeServer.cpp
+        include/rtype/RTypeServer.hpp
+        include/rtype/systems/server/NewConnectionSystem.hpp
+        include/rtype/systems/server/ServerInputsSystem.hpp
+        include/rtype/systems/server/ServerCorrectionsSystem.hpp
+        include/rtype/systems/server/DeleteClientSystem.hpp
         include/rtype/systems/server/PlayerOnConnectionSystem.hpp
         src/rtype/systems/server/DeleteClientSystem.cpp
         src/rtype/systems/server/NewConnectionSystem.cpp
         src/rtype/systems/server/PlayerOnConnectionSystem.cpp
         src/rtype/systems/server/ServerCorrectionsSystem.cpp
-        src/rtype/systems/server/ServerInputsSystem.cpp)
+        src/rtype/systems/server/ServerInputsSystem.cpp
+)
 set(CLIENT_SRC src/client/main.cpp
         src/client/RTypeClient.cpp
         include/rtype/RTypeClient.hpp
-        src/rtype/systems/shared/RenderSystem.cpp
-        include/rtype/systems/shared/RenderSystem.hpp
+        src/rtype/systems/client/RenderSystem.cpp
+        include/rtype/systems/client/RenderSystem.hpp
         include/rtype/systems/client/ServerConnectionSystem.hpp
         include/rtype/systems/client/ClientInputSenderSystem.hpp
         src/rtype/systems/client/ClientServerDataHandlerSystem.cpp
         include/rtype/systems/client/ClientPingSystem.hpp
-        include/shared/PacketBuilder.hpp
-        src/shared/PacketBuilder.cpp
-        src/rtype/components/DamageCollisionComponent.cpp
-        src/rtype/components/HPComponent.cpp
-        src/rtype/components/MonsterComponent.cpp
-        src/rtype/components/PlayerComponent.cpp
-        src/rtype/components/PositionComponent.cpp
-        src/rtype/components/VelocityComponent.cpp
-        include/aecs/StaticPacketBuilder.hpp
         src/rtype/systems/client/ClientInputSenderSystem.cpp
         src/rtype/systems/client/ClientPingSystem.cpp
         src/rtype/systems/client/ServerConnectionSystem.cpp
+        include/rtype/systems/client/DamageSoundSystem.hpp
+        include/rtype/components/MusicComponent.hpp
+        src/rtype/components/MusicComponent.cpp
+        src/rtype/systems/client/DamageSoundSystem.cpp
 )
 
 include(FetchContent)
@@ -114,15 +121,16 @@ FetchContent_Declare(SFML
         GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(r-type_client ${CLIENT_SRC} ${SHARED_SRC})
-add_executable(r-type_server ${SERVER_SRC} ${SHARED_SRC})
+include_directories(${SFML_SOURCE_DIR}/include)
 
-target_link_libraries(r-type_client PRIVATE sfml-graphics sfml-network)
-target_link_libraries(r-type_server
-        PRIVATE
-        sfml-graphics
-        sfml-network
-)
+add_library(r-type_shared SHARED ${SHARED_SRC})
+target_link_libraries(r-type_shared PUBLIC sfml-graphics sfml-network)
+
+add_executable(r-type_client ${CLIENT_SRC})
+add_executable(r-type_server ${SERVER_SRC})
+
+target_link_libraries(r-type_client PRIVATE r-type_shared sfml-audio)
+target_link_libraries(r-type_server PRIVATE r-type_shared)
 
 if (WIN32 AND BUILD_SHARED_LIBS)
     target_link_libraries(r-type_client PRIVATE ws2_32.lib)

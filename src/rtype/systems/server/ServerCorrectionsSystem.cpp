@@ -27,6 +27,7 @@ namespace rtype
 
         if (editedEntityIds.empty() && deletedEntityIds.empty())
             return {};
+        state.tick = _world.getTick();
         // Push edited entities in the game state
         for (auto &editedEntityId : editedEntityIds) {
             const auto &entity = _world.getEntity(editedEntityId);
@@ -40,7 +41,10 @@ namespace rtype
             const auto &entity = _world.getEntity(deletedEntityId);
             if (!entity)
                 continue;
-            state.encodedEntities[deletedEntityId] = {}; // Empty encoded entity means it's deleted
+            PacketBuilder pb;
+            pb << static_cast<uint>(deletedEntityId);
+            pb << static_cast<ushort>(0);
+            state.encodedEntities[deletedEntityId] = pb.getData(); // Empty encoded entity means it's deleted
         }
 
         // Notify clients
