@@ -20,6 +20,7 @@ aecs::World *rtype::EntityFactory::_world = nullptr;
 
 aecs::Entity &rtype::EntityFactory::toPlayer(aecs::Entity &entity)
 {
+    auto &component = entity.getComponent<PlayerComponent>();
     entity.addComponent<SpriteComponent>("assets/sprites/PlayerNew.png", sf::Vector2f{96, 96},
                                          sf::IntRect(0, 0, 32, 32));
     entity.addComponent<PositionComponent>(0, 0);
@@ -30,8 +31,9 @@ aecs::Entity &rtype::EntityFactory::toPlayer(aecs::Entity &entity)
         std::shared_ptr<sf::Shader> shader = std::make_shared<sf::Shader>();
         entity.addComponent<AnimComponent>(1);
         shader->loadFromFile("src/client/Shaders/PlayerColor.frag", sf::Shader::Fragment);
-        shader->setUniform("hue", 0);
-        shader->setUniform("saturation", 1.f);
+        float colors[4] = {0, 0, 144, 216};
+        shader->setUniform("hue", colors[component.playerId]);
+        shader->setUniform("saturation", component.playerId == 0 ? 0.f : 1.f);
         entity.addComponent<ShaderComponent>(shader);
     }
     return entity;
