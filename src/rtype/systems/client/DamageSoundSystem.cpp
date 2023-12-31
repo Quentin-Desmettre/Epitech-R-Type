@@ -4,21 +4,21 @@
 
 #include "rtype/systems/client/DamageSoundSystem.hpp"
 #include "aecs/SystemBase.hpp"
-//#include "rtype/components/PlayerComponent.hpp"
-#include "rtype/components/MonsterComponent.hpp"
+// #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/DamageCollisionComponent.hpp"
+#include "rtype/components/MonsterComponent.hpp"
 
-rtype::DamageSoundSystem::DamageSoundSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities)
-    : ALogicSystem(
-            world, entities,
-            {typeid(DamageCollisionComponent)})
+rtype::DamageSoundSystem::DamageSoundSystem(aecs::World &world,
+                                            const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+    ALogicSystem(world, entities, {typeid(DamageCollisionComponent)})
 {
     _soundBuffer.loadFromFile("assets/sounds/damage.ogg");
     _sound.setBuffer(_soundBuffer);
 }
 
-aecs::EntityChanges rtype::DamageSoundSystem::update(__attribute__((unused)) aecs::UpdateParams &updateParams)
+aecs::EntityChanges rtype::DamageSoundSystem::update(aecs::UpdateParams &updateParams)
 {
+    (void)updateParams;
     for (auto &[_id, entity] : _entitiesMap) {
         auto &damage = entity->getComponent<DamageCollisionComponent>();
 
@@ -33,7 +33,6 @@ aecs::EntityChanges rtype::DamageSoundSystem::update(__attribute__((unused)) aec
             _sound.play();
             damage.damaged = false;
         }
-
     }
     return {};
 }

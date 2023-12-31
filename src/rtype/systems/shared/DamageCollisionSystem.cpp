@@ -42,8 +42,9 @@ namespace rtype
         return false;
     }
 
-    aecs::EntityChanges DamageCollisionSystem::update(__attribute__((unused)) aecs::UpdateParams &updateParams)
+    aecs::EntityChanges DamageCollisionSystem::update(aecs::UpdateParams &updateParams)
     {
+        (void)updateParams;
         std::vector<std::shared_ptr<aecs::Entity>> entities;
         aecs::EntityChanges changes;
 
@@ -58,7 +59,7 @@ namespace rtype
             auto &damage = entity->getComponent<DamageCollisionComponent>();
             auto &hp = entity->getComponent<HPComponent>();
             sf::Rect rect = getRect(entity);
-//            bool kll = false;
+            //            bool kll = false;
             for (size_t j = i + 1; j < entities.size(); j++) {
                 auto &entity2 = entities[j];
                 auto &damage2 = entity2->getComponent<DamageCollisionComponent>();
@@ -75,9 +76,9 @@ namespace rtype
                         damage.invulnerability = 5;
                         damage.damaged = true;
                     }
-//                    bool kill = killed(entity, entity2);
-//                    if (kill)
-//                        kll = true;
+                    //                    bool kill = killed(entity, entity2);
+                    //                    if (kill)
+                    //                        kll = true;
                     if (hp2.hp <= 0) {
                         if (_world.getIsServer())
                             changes.deletedEntities.push_back(entity2->getId());
