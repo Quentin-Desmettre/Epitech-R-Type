@@ -1,11 +1,8 @@
-name: DEV
+name: Build checker
 
 on:
   push:
     branches: [ dev ]
-  pull_request:
-    branches: [ dev ]
-  workflow_dispatch:
 
 env:
   BUILD_TYPE: Debug
