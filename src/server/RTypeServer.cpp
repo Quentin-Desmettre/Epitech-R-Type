@@ -22,8 +22,8 @@
 #include <chrono>
 #include <thread>
 
-rtype::RTypeServer::RTypeServer(int logicRefreshRate) :
-    _world(true),
+rtype::RTypeServer::RTypeServer(int logicRefreshRate, int ac, char **av) :
+    _world(true, ac, av),
     _logicRefreshRate(logicRefreshRate)
 {
     EntityFactory::setWorld(&_world);

@@ -9,10 +9,12 @@
 #include <algorithm>
 #include <iostream>
 
+
 namespace aecs
 {
-    World::World(bool isServer) :
-        _isServer(isServer)
+    World::World(bool isServer, int ac, char **av) :
+        _isServer(isServer),
+        _argParser(ac, av)
     {
     }
 
@@ -267,6 +269,14 @@ namespace aecs
 
         // Set tick
         _tick = entities.tick;
+    }
+
+    std::string World::getIp() {
+        return _argParser.getIp();
+    }
+
+    unsigned short World::getPort() {
+        return _argParser.getPort();
     }
 
 } // namespace aecs

@@ -19,6 +19,7 @@
 #include <mutex>
 #include <typeindex>
 #include <vector>
+#include "shared/ArgParser.hpp"
 
 namespace aecs
 {
@@ -34,7 +35,7 @@ namespace aecs
 
         // Ctor / dtor
         friend class Entity;
-        explicit World(bool isServer = false);
+        explicit World(bool isServer = false, int ac = 0, char **av = nullptr);
         ~World() = default;
 
         // Methods
@@ -125,6 +126,9 @@ namespace aecs
 
         [[nodiscard]] bool getIsServer() const;
 
+        [[nodiscard]] std::string getIp();
+        [[nodiscard]] unsigned short getPort();
+
       private:
         void sortSystems();
 
@@ -145,6 +149,7 @@ namespace aecs
         sf::Clock clock;
         std::map<unsigned, ServerInputs> _renderInputs;
         std::mutex _renderInputsMutex;
+        ArgParser _argParser;
     };
 } // namespace aecs
 

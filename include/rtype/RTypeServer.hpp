@@ -15,7 +15,7 @@ namespace rtype
     class RTypeServer
     {
       public:
-        RTypeServer(int logicRefreshRate);
+        RTypeServer(int logicRefreshRate, int ac, char **av);
         ~RTypeServer() = default;
 
         void run();
