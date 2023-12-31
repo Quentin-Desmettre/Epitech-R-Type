@@ -25,8 +25,7 @@ ArgParser::ArgParser(int ac, char **av) {
     return _help;
 }
 
-[[nodiscard]] std::string ArgParser::formatIpArg()
-{
+[[nodiscard]] std::string ArgParser::getIp() const {
     if (_ip.empty())
         return _default_ip;
     if (!Utils::isIp(_ip))
@@ -36,19 +35,12 @@ ArgParser::ArgParser(int ac, char **av) {
     return _ip;
 }
 
-[[nodiscard]] std::string ArgParser::formatPortArg() const
-{
+[[nodiscard]] std::string ArgParser::formatPortArg() const {
     if (_port.empty())
         return "4242";
     if (!Utils::isValidPort(_port))
         return "4242";
     return _port;
-}
-
-
-[[nodiscard]] sf::IpAddress ArgParser::getIp()
-{
-    return formatIpArg();
 }
 
 [[nodiscard]] unsigned short ArgParser::getPort() const {

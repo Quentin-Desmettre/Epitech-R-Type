@@ -16,7 +16,7 @@ namespace rtype
     class RTypeClient
     {
       public:
-        RTypeClient(int renderRefreshRate, int logicRefreshRate);
+        RTypeClient(int renderRefreshRate, int logicRefreshRate, int ac, char **av);
         ~RTypeClient() = default;
 
         void run();

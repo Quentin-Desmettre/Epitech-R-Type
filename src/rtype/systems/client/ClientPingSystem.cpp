@@ -23,7 +23,7 @@ namespace rtype
                 continue;
 
             sf::Packet packet = aecs::StaticPacketBuilder::buildPingPacket();
-            _socket.send(packet, "127.0.0.1", SERVER_INPUTS_PORT); // TODO: get from ac/av
+            _socket.send(packet, _world.getIp(), SERVER_INPUTS_PORT); // TODO: get from ac/av
 
             component.clock.restart();
         }

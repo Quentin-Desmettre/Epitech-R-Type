@@ -36,6 +36,7 @@ vgcore.*
 
 build
 cmake-build-debug
+cmake-build-release
 r-type_client
 r-type_server
 

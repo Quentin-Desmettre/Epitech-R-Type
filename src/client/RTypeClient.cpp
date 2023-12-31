@@ -47,8 +47,8 @@ void rtype::RTypeClient::setDecodeMap()
     });
 }
 
-rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate) :
-    _world(),
+rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int ac, char **av) :
+    _world(false, ac, av),
     _renderRefreshRate(renderRefreshRate),
     _logicRefreshRate(logicRefreshRate),
     _renderSystem(_world.registerRenderSystem<RenderSystem>())

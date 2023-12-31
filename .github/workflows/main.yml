@@ -1,14 +1,16 @@
-name: NOA
+name: Create Release for each version and mirror
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
-  workflow_dispatch:
 
 env:
   BUILD_TYPE: Release
+  TARGET_REPO_URL: "git@github.com:EpitechPromo2026/B-CPP-500-LIL-5-2-rtype-quentin.desmettre.git"
+  DIST_SSH_KEY: ${{ secrets.DIST_SSH_PRIVATE_KEY }}
+  LOCAL_SSH_KEY: ${{ secrets.LOCAL_SSH_PRIVATE_KEY }}
+  SSH_HOST: ${{ secrets.SSH_HOST }}
+  SSH_USER: ${{ secrets.SSH_USER }}
 
 jobs:
   create-release:
@@ -88,3 +90,20 @@ jobs:
           asset_path: ${{ github.workspace }}/build/${{ matrix.vars.zip }}
           asset_name: ${{ matrix.vars.version }}.tar.gz
           asset_content_type: application/gzip
+
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Push to remote"
+        uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url:
+            ${{ env.TARGET_REPO_URL }}
+          ssh_private_key:
+            ${{ env.LOCAL_SSH_KEY }}
+
