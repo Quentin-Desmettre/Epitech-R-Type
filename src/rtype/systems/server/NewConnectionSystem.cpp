@@ -48,8 +48,15 @@ namespace rtype
 
     sockaddr_in RTypeListener::createAddress(unsigned int address, unsigned short port)
     {
+#if defined(WIN64) || defined(WIN32) || defined(WINNT)
+        sockaddr_in addr{.sin_family = AF_INET,
+                         .sin_port = htons(port),
+                         .sin_addr = {.S_un = {.S_addr = htonl(address)}},
+                         .sin_zero = {0}};
+#else
         sockaddr_in addr{
-            .sin_family = AF_INET, .sin_port = htons(port), .sin_addr = {.S_un = {.S_addr = htonl(address)}}, .sin_zero = {0}};
+            .sin_family = AF_INET, .sin_port = htons(port), .sin_addr = {.s_addr = htonl(address)}, .sin_zero = {0}};
+#endif
 
 #if defined(SFML_SYSTEM_MACOS)
         addr.sin_len = sizeof(addr);
