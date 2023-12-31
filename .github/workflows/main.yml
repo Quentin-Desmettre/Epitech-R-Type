@@ -92,6 +92,7 @@ jobs:
           asset_content_type: application/gzip
 
   push:
+    needs: build_all
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
