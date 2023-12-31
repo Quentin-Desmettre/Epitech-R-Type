@@ -18,7 +18,7 @@ namespace rtype
      * 2. Wait for message, containing game state
      * 3. set game state
      */
-    aecs::EntityChanges ServerConnectionSystem::update(unused aecs::UpdateParams &updateParams)
+    aecs::EntityChanges ServerConnectionSystem::update(__attribute__((unused)) aecs::UpdateParams &updateParams)
     {
         if (_connected)
             return {};

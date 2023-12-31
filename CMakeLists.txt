@@ -115,6 +115,8 @@ set(CLIENT_SRC src/client/main.cpp
         src/rtype/systems/client/DamageSoundSystem.cpp
 )
 
+option(BUILD_SHARED_LIBS OFF)
+
 include(FetchContent)
 FetchContent_Declare(SFML
         GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -123,14 +125,14 @@ FetchContent_MakeAvailable(SFML)
 
 include_directories(${SFML_SOURCE_DIR}/include)
 
-add_library(r-type_shared SHARED ${SHARED_SRC})
-target_link_libraries(r-type_shared PUBLIC sfml-graphics sfml-network)
+link_directories(${SFML_BINARY_DIR}/lib)
 
-add_executable(r-type_client ${CLIENT_SRC})
-add_executable(r-type_server ${SERVER_SRC})
+add_executable(r-type_client ${CLIENT_SRC} ${SHARED_SRC})
+add_executable(r-type_server ${SERVER_SRC} ${SHARED_SRC})
 
-target_link_libraries(r-type_client PRIVATE r-type_shared sfml-audio)
-target_link_libraries(r-type_server PRIVATE r-type_shared)
+target_link_libraries(r-type_client PRIVATE sfml-graphics sfml-network sfml-audio)
+target_link_libraries(r-type_server PRIVATE sfml-graphics sfml-network)
+# target_compile_definitions(r-type_client PRIVATE SFML_STATIC)
 
 if (WIN32 AND BUILD_SHARED_LIBS)
     target_link_libraries(r-type_client PRIVATE ws2_32.lib)

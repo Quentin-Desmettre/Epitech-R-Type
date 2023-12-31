@@ -14,7 +14,7 @@ namespace rtype
         _socket.setBlocking(false);
     }
 
-    aecs::EntityChanges ClientPingSystem::update(unused aecs::UpdateParams &updateParams)
+    aecs::EntityChanges ClientPingSystem::update(__attribute__((unused)) aecs::UpdateParams &updateParams)
     {
         for (auto &[_, entity] : _entitiesMap) {
             auto &component = entity->getComponent<ClientPingComponent>();

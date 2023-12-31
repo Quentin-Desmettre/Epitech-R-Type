@@ -11,8 +11,6 @@
 #include <typeindex>
 #include <vector>
 
-#define unused __attribute__((unused))
-
 namespace aecs
 {
 

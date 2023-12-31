@@ -13,7 +13,7 @@ namespace rtype
     {
     }
 
-    aecs::EntityChanges AnimPlayerSystem::update(unused aecs::UpdateParams &updateParams)
+    aecs::EntityChanges AnimPlayerSystem::update(__attribute__((unused)) aecs::UpdateParams &updateParams)
     {
         for (auto &[_id, entity] : _entitiesMap) {
             auto &velocity = entity->getComponent<VelocityComponent>();

@@ -17,7 +17,7 @@ rtype::DamageSoundSystem::DamageSoundSystem(aecs::World &world, const std::map<s
     _sound.setBuffer(_soundBuffer);
 }
 
-aecs::EntityChanges rtype::DamageSoundSystem::update(unused aecs::UpdateParams &updateParams)
+aecs::EntityChanges rtype::DamageSoundSystem::update(__attribute__((unused)) aecs::UpdateParams &updateParams)
 {
     for (auto &[_id, entity] : _entitiesMap) {
         auto &damage = entity->getComponent<DamageCollisionComponent>();

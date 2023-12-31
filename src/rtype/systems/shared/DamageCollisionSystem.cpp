@@ -42,7 +42,7 @@ namespace rtype
         return false;
     }
 
-    aecs::EntityChanges DamageCollisionSystem::update(unused aecs::UpdateParams &updateParams)
+    aecs::EntityChanges DamageCollisionSystem::update(__attribute__((unused)) aecs::UpdateParams &updateParams)
     {
         std::vector<std::shared_ptr<aecs::Entity>> entities;
         aecs::EntityChanges changes;
