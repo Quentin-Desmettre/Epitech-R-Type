@@ -1,20 +1,19 @@
-#include <SFML/Graphics.hpp>
+#include "rtype/RTypeClient.hpp"
+#include "shared/ArgParser.hpp"
 
-int main()
+int main(int ac, char **av)
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "SFML window");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
-    sf::Event event{};
-
-    while (window.isOpen()) {
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-
-        window.clear();
-        window.draw(shape);
-        window.display();
+    ArgParser parser(ac, av);
+    std::cout << "ip: " << parser.getIp() << std::endl;
+    std::cout << "port: " << parser.getPort() << std::endl;
+    if (parser.getHelp()) {
+        std::cout << "USAGE: ./rtype_client [-h | --help] [--ip ip] [--port port]" << std::endl;
+        return 0;
     }
+
+    rtype::RTypeClient client(60, 60);
+
+    client.run();
+
+    return 0;
 }
