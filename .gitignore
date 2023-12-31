@@ -8,6 +8,7 @@
 *.lo
 *.o
 *.obj
+vgcore.*
 
 # Precompiled Headers
 *.gch

@@ -21,6 +21,8 @@ namespace rtype
 
         // Receive a packet
         while (_socket.receive(packet, _sender, _port) == sf::Socket::Done) {
+            if (_entitiesMap.empty())
+                continue;
             // Get player from it
             std::size_t clientId = -1;
             aecs::EntityPtr client = findClient(clientId);
