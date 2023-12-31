@@ -1,1 +1,1 @@
-.\bin\r-type_serveur.exe
+.\bin\r-type_server.exe
