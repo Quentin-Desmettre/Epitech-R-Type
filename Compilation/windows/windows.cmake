@@ -1,0 +1,2 @@
+file(COPY "${CPACK_PACKAGE_DIRECTORY}/../Compilation/windows/run_client.bat" DESTINATION "${CPACK_TEMPORARY_INSTALL_DIRECTORY}/.")
+file(COPY "${CPACK_PACKAGE_DIRECTORY}/../Compilation/windows/run_server.bat" DESTINATION "${CPACK_TEMPORARY_INSTALL_DIRECTORY}/.")

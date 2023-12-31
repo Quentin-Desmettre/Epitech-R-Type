@@ -1,0 +1,90 @@
+name: NOA
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  BUILD_TYPE: Release
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+  build_all:
+    needs: create-release
+    name: Generate Build Artifacts
+    strategy:
+      matrix:
+        vars:
+          - { os: 'ubuntu-latest', version: 'Linux', zip: 'r-type--Linux.tar.gz' }
+          - { os: 'macos-latest', version: 'Mac', zip: 'r-type--Darwin.tar.gz' }
+          - { os: 'windows-latest', version: 'Windows', zip: 'r-type--win64.tar.gz' }
+
+    runs-on: ${{ matrix.vars.os }}
+    steps:
+      - name: Dependencies
+        if: ${{ matrix.vars.os == 'ubuntu-latest' }}
+        run: |
+          sudo apt-get update -y
+          sudo apt-get upgrade -y
+          sudo apt-get install libxrandr-dev libxcursor-dev libudev-dev libopenal-dev libflac-dev libvorbis-dev libgl1-mesa-dev libegl1-mesa-dev libdrm-dev libgbm-dev
+
+      - name: Get latest CMake and Ninja
+        uses: lukka/get-cmake@latest
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Build
+        run: |
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --config Release
+
+      - name: Package code for ${{ matrix.vars.version }}
+        if: ${{ matrix.vars.os == 'ubuntu-latest' }}
+        run: |
+          cd build/
+          sudo cpack -G TGZ
+
+      - name: Package code for ${{ matrix.vars.version }}
+        if: ${{ matrix.vars.os != 'ubuntu-latest' }}
+        run: |
+          cd build/
+          cpack -G TGZ
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.vars.version }}
+          path: |
+            ${{ github.workspace }}/build/${{ matrix.vars.zip }}
+
+      - name: Upload ${{ matrix.vars.version }} to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/build/${{ matrix.vars.zip }}
+          asset_name: ${{ matrix.vars.version }}.tar.gz
+          asset_content_type: application/gzip

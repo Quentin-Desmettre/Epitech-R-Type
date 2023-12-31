@@ -6,97 +6,146 @@
 #define EPITECH_R_TYPE_WORLD_HPP
 
 #include "Entity.hpp"
+#include "SFML/Network/Packet.hpp"
 #include "SystemBase.hpp"
+#include "rtype/EntityFactory.hpp"
+#include "rtype/components/ClientAdressComponent.hpp"
+#include "shared/PacketBuilder.hpp"
+#include <SFML/Graphics.hpp>
 #include <cstddef>
+#include <functional>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <typeindex>
 #include <vector>
-#include <mutex>
 
 namespace aecs
 {
-
-class World
-{
-  public:
-    friend class Entity;
-    World() = default;
-    ~World() = default;
-
-    Entity &createEntity();
-
-    template <typename T, typename... Args>
-    T &addComponent(Entity &entity, Args &&...args)
+    class World
     {
-        return entity.addComponent<T>(std::forward<Args>(args)...);
-    }
+      public:
+        // Typedefs & structs
+        typedef std::map<unsigned, std::vector<std::byte>> EncodedEntities;
+        struct EncodedGameState {
+            EncodedEntities encodedEntities;
+            unsigned tick;
+        };
 
-    template <typename T>
-    void removeComponent(Entity &entity)
-    {
-        entity.removeComponent<T>();
-    }
+        // Ctor / dtor
+        friend class Entity;
+        explicit World(bool isServer = false);
+        ~World() = default;
 
-    void destroyEntity(Entity &entity);
+        // Methods
+        Entity &createEntity(size_t id = -1);
 
-    void update();
-    void render();
+        void addDecodeMap(const std::type_info &type,
+                          const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map);
 
-    template <typename T, typename... Args>
-    void registerRenderSystem(Args &&...args)
-    {
-        static_assert(std::is_base_of_v<IRenderSystem, T>, "T must inherit from IRenderSystem");
+        void decodeNewEntity(Entity &entity, const std::vector<std::byte> &data);
 
-        // To avoid changes in the entities vector while building the system
-        const auto &constRefEntities = _entities;
-        _renderSystem = std::make_unique<T>(constRefEntities, std::forward<Args>(args)...);
-    }
+        template <typename T, typename... Args>
+        T &addComponent(Entity &entity, Args &&...args)
+        {
+            return entity.addComponent<T>(std::forward<Args>(args)...);
+        }
 
-    template <typename T, typename... Args>
-    void registerSystem(int priority, Args &&...args)
-    {
-        static_assert(std::is_base_of_v<ILogicSystem, T>, "T must inherit from ILogicSystem");
+        template <typename T>
+        void removeComponent(Entity &entity)
+        {
+            entity.removeComponent<T>();
+        }
 
-        // To avoid changes in the entities vector while building the system
-        const auto &constRefEntities = _entities;
-        _systems[typeid(T)] = {std::make_unique<T>(constRefEntities, std::forward<Args>(args)...), priority};
-        sortSystems();
-    }
+        void destroyEntity(Entity &entity);
 
-    template <typename T>
-    void setSystemPriority(int priority)
-    {
-        static_assert(std::is_base_of_v<ILogicSystem, T>, "T must inherit from ILogicSystem");
+        void update();
+        void render();
 
-        _systems[typeid(T)].second = priority;
-        sortSystems();
-    }
+        [[nodiscard]] std::vector<std::byte> serialize() const;
 
-    template <typename T>
-    void removeSystem()
-    {
-        static_assert(std::is_base_of_v<ILogicSystem, T>, "T must inherit from ILogicSystem");
+        void load(const EncodedGameState &entities);
 
-        _systems.erase(typeid(T));
-        sortSystems();
-    }
+        void setTick(unsigned tick);
+        [[nodiscard]] unsigned getTick() const;
 
-  private:
-    void sortSystems();
+        [[nodiscard]] ServerInputs popInputs();
 
-    void onEntityAdded(Entity &entity);
-    void onEntityRemoved(Entity &entity);
-    void onEntityChanged(Entity &entity);
+        [[nodiscard]] ServerInputs getInputs(unsigned tick = -1) const;
 
-    std::vector<std::shared_ptr<Entity>> _entities;
-    std::map<std::type_index, std::pair<std::unique_ptr<ILogicSystem>, int>> _systems;
-    std::vector<std::pair<ILogicSystem *, int>> _sortedSystems;
+        void setClientInputs(unsigned clientId, const ClientInputs &inputs);
 
-    std::unique_ptr<IRenderSystem> _renderSystem;
-    std::vector<IRenderSystem::RenderInput> _renderInputs;
-    std::mutex _renderInputsMutex;
-};
+        [[nodiscard]] EntityPtr getEntity(std::size_t id) const;
+
+        void setClientId(unsigned clientId);
+        [[nodiscard]] unsigned getClientId() const;
+
+        template <typename T, typename... Args>
+        T &registerRenderSystem(Args &&...args)
+        {
+            static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
+
+            // To avoid changes in the entities vector while building the system
+            const auto &constRefEntities = _entities;
+            const auto &built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
+            _renderSystem = built;
+            return *built;
+        }
+
+        template <typename T, typename... Args>
+        T &registerSystem(int priority, Args &&...args)
+        {
+            static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
+
+            // To avoid changes in the entities vector while building the system
+            const auto &constRefEntities = _entities;
+            const auto &built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
+            _systems[typeid(T)] = {built, priority};
+            sortSystems();
+            return *built;
+        }
+
+        template <typename T>
+        void setSystemPriority(int priority)
+        {
+            static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
+
+            _systems[typeid(T)].second = priority;
+            sortSystems();
+        }
+
+        template <typename T>
+        void removeSystem()
+        {
+            static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
+
+            _systems.erase(typeid(T));
+            sortSystems();
+        }
+
+        [[nodiscard]] bool getIsServer() const;
+
+      private:
+        void sortSystems();
+
+        void onEntityAdded(const EntityPtr &entity);
+        void onEntityRemoved(const EntityPtr &entity);
+        void onEntityChanged(const EntityPtr &entity);
+        void onEntityChanged(const Entity &entity);
+
+        unsigned _tick = 0;
+        std::map<std::size_t, EntityPtr> _entities;
+        unsigned _clientId = 0;
+        std::map<std::type_index, std::pair<std::shared_ptr<ISystem>, int>> _systems;
+        std::vector<std::pair<ISystem *, int>> _sortedSystems;
+        std::map<uint, std::function<void(aecs::Entity &, std::vector<std::byte>)>> decodeMap;
+
+        bool _isServer;
+        std::shared_ptr<ISystem> _renderSystem;
+        sf::Clock clock;
+        std::map<unsigned, ServerInputs> _renderInputs;
+        std::mutex _renderInputsMutex;
+    };
 } // namespace aecs
 
 #endif // EPITECH_R_TYPE_WORLD_HPP
