@@ -17,6 +17,10 @@ namespace rtype
         ~BulletComponent() override = default;
         bool big = false;
 
+        const char *getName() const override {
+            return "BulletComponent";
+        };
+
 
         [[nodiscard]] std::vector<std::byte> encode() const override;
         void decode(const std::vector<std::byte> &encoded) override;

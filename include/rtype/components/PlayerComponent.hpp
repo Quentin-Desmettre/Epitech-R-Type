@@ -24,6 +24,10 @@ namespace rtype
         float timeInShift = 0;
         std::uint8_t playerId = 0;
 
+        const char *getName() const override {
+            return "PlayerComponent";
+        };
+
       private:
         static std::uint8_t _playerIds[255];
         static bool _playerIdsUsed[255];

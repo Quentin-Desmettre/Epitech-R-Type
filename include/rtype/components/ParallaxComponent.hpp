@@ -18,6 +18,10 @@ namespace rtype
         ~ParallaxComponent() override = default;
 
         sf::Vector2f _speed;
+
+        const char *getName() const override {
+            return "ParallaxComponent";
+        };
     };
 } // namespace rtype
 

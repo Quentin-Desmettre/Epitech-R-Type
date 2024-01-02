@@ -19,6 +19,10 @@ namespace rtype
         ~ShaderComponent() override = default;
 
         std::shared_ptr<sf::Shader> shader;
+
+        const char *getName() const override {
+            return "ShaderComponent";
+        };
     };
 } // namespace rtype
 
