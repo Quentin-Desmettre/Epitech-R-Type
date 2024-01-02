@@ -159,10 +159,10 @@ namespace aecs
         entity.decode(data);
     }
 
-    void World::addDecodeMap(const std::type_info &type,
+    void World::addDecodeMap(const char *name,
                              const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map)
     {
-        decodeMap[aecs::Entity::hashString(type.name())] = map;
+        decodeMap[aecs::Entity::hashString(name)] = map;
     }
 
     bool World::getIsServer() const
