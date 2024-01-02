@@ -51,7 +51,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
 
-    needs: test
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
