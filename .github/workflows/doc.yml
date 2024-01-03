@@ -15,7 +15,7 @@ env:
   INSTANCE: docs/r
   ARTIFACT: webHelpR2-all.zip
   DOCKER_VERSION: 232.10275
-  ALGOLIA_ARTIFACT: algolia-indexes-R2.zip
+  ALGOLIA_ARTIFACT: algolia-indexes-R.zip
 
 jobs:
   build:
