@@ -159,10 +159,10 @@ namespace aecs
         entity.decode(data);
     }
 
-    void World::addDecodeMap(const std::type_info &type,
+    void World::addDecodeMap(const char *name,
                              const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map)
     {
-        decodeMap[aecs::Entity::hashString(type.name())] = map;
+        decodeMap[aecs::Entity::hashString(name)] = map;
     }
 
     bool World::getIsServer() const
@@ -275,8 +275,16 @@ namespace aecs
         return _argParser.getIp();
     }
 
-    unsigned short World::getPort() {
-        return _argParser.getPort();
+    unsigned short World::getServerPort() {
+        return _argParser.getServerPort();
+    }
+
+    unsigned short World::getClientPort() {
+        return _argParser.getClientPort();
+    }
+
+    unsigned short World::getTcpPort() {
+        return _argParser.getTcpPort();
     }
 
 } // namespace aecs
