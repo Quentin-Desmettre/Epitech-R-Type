@@ -44,15 +44,17 @@ namespace rtype
 
     void DamageCollisionSystem::addPowerUp(const aecs::EntityChanges &changes)
     {
+        if (!_world.getIsServer())
+            return;
         for (auto &id : changes.deletedEntities) {
             auto entity = _entitiesMap.find(id);
             if (entity == _entitiesMap.end() || !entity->second->hasComponent<MonsterComponent>())
                 continue;
             int random = rand() % 100;
-            int dropChance = entity->second->getComponent<MonsterComponent>()._lil ? 10 : 20;
+            int dropChance = entity->second->getComponent<MonsterComponent>()._lil ? 15 : 30;
             if (random < dropChance) {
                 PositionComponent &position = entity->second->getComponent<PositionComponent>();
-                EntityFactory::createPowerUp(sf::Vector2f(position.x, position.y));
+                EntityFactory::createPower(sf::Vector2f(position.x, position.y), rand() % 2);
             }
         }
     }

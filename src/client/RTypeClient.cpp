@@ -51,7 +51,7 @@ void rtype::RTypeClient::setDecodeMap()
         entity.addComponent<PowerComponent>();
         auto &component = entity.getComponent<PowerComponent>();
         component.decode(data);
-        EntityFactory::toPowerUp(entity);
+        EntityFactory::toPower(entity, component.isPowerUp);
     });
 }
 

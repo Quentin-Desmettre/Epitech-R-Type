@@ -11,17 +11,10 @@ namespace rtype
     class PowerComponent : public aecs::AbstractComponent
     {
       public:
-        enum Type {
-            SHOOT,
-            NONE,
-        };
-
-        explicit PowerComponent(bool isPowerUp = true, Type type = Type::SHOOT) :
-            isPowerUp(isPowerUp),
-            type(type){};
+        explicit PowerComponent(bool isPowerUp = true) :
+            isPowerUp(isPowerUp){};
         ~PowerComponent() override = default;
         bool isPowerUp = true;
-        Type type = Type::SHOOT;
 
         const char *getName() const override
         {

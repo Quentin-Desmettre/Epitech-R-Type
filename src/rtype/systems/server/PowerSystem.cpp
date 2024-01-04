@@ -58,10 +58,11 @@ namespace rtype
 
             if (playerRect.intersects(rect)) {
                 changes.deletedEntities.push_back(entity->getId());
-                if (power.type == PowerComponent::Type::SHOOT) {
-                    auto &playerComponent = player->getComponent<PlayerComponent>();
+                auto &playerComponent = player->getComponent<PlayerComponent>();
+                if (power.isPowerUp)
                     playerComponent.timeLeftShootPowerUp = 10;
-                }
+                else
+                    playerComponent.timeLeftMovePowerDown = 10;
             }
         }
 

@@ -136,19 +136,21 @@ aecs::Entity &rtype::EntityFactory::createBackground(int id, sf::Vector2f speed)
     return back;
 }
 
-aecs::Entity &rtype::EntityFactory::createPowerUp(sf::Vector2f position)
+aecs::Entity &rtype::EntityFactory::createPower(sf::Vector2f position, bool isPowerUp)
 {
     auto &power = _world->createEntity();
-    power.addComponent<PowerComponent>();
-    toPowerUp(power);
+    power.addComponent<PowerComponent>(isPowerUp);
+    toPower(power, isPowerUp);
     power.addComponent<PositionComponent>(position.x, position.y);
     power.addComponent<VelocityComponent>(-20, 4);
     return power;
 }
 
-aecs::Entity &rtype::EntityFactory::toPowerUp(aecs::Entity &entity)
+aecs::Entity &rtype::EntityFactory::toPower(aecs::Entity &entity, bool isPowerUp)
 {
-    entity.addComponent<SpriteComponent>("assets/sprites/PowerUp.png", sf::Vector2f{57, 42}, sf::IntRect{0, 0, 19, 14});
+    std::string path = isPowerUp ? "assets/sprites/PowerUp.png" : "assets/sprites/PowerDown.png";
+
+    entity.addComponent<SpriteComponent>(path, sf::Vector2f{57, 42}, sf::IntRect{0, 0, 19, 14});
     if (!_world->getIsServer()) {
         entity.addComponent<PositionComponent>();
         entity.addComponent<VelocityComponent>();
