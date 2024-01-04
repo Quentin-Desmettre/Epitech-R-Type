@@ -13,7 +13,6 @@ namespace rtype
         aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
         ALogicSystem(world, entities, {typeid(ClientAdressComponent)})
     {
-        _socket.bind(SERVER_CORRECTIONS_PORT);
         _socket.setBlocking(false);
     }
 
@@ -58,7 +57,7 @@ namespace rtype
     {
         for (auto &[_, client] : _entitiesMap) {
             auto &address = client->getComponent<ClientAdressComponent>().adress;
-            sf::Socket::Status status = _socket.send(data, sf::IpAddress(address), CLIENT_CORRECTIONS_PORT);
+            sf::Socket::Status status = _socket.send(data, sf::IpAddress(address), _world.getClientPort());
 
             if (status != sf::Socket::Done)
                 std::cerr << "Error while sending data to client" << std::endl;

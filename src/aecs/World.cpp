@@ -275,8 +275,16 @@ namespace aecs
         return _argParser.getIp();
     }
 
-    unsigned short World::getPort() {
-        return _argParser.getPort();
+    unsigned short World::getServerPort() {
+        return _argParser.getServerPort();
+    }
+
+    unsigned short World::getClientPort() {
+        return _argParser.getClientPort();
+    }
+
+    unsigned short World::getTcpPort() {
+        return _argParser.getTcpPort();
     }
 
 } // namespace aecs

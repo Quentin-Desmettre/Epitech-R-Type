@@ -127,7 +127,9 @@ namespace aecs
         [[nodiscard]] bool getIsServer() const;
 
         [[nodiscard]] std::string getIp();
-        [[nodiscard]] unsigned short getPort();
+        [[nodiscard]] unsigned short getServerPort();
+        [[nodiscard]] unsigned short getClientPort();
+        [[nodiscard]] unsigned short getTcpPort();
 
       private:
         void sortSystems();
