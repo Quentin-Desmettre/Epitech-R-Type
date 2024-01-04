@@ -42,6 +42,21 @@ namespace rtype
         return false;
     }
 
+    void DamageCollisionSystem::addPowerUp(const aecs::EntityChanges &changes)
+    {
+        for (auto &id : changes.deletedEntities) {
+            auto entity = _entitiesMap.find(id);
+            if (entity == _entitiesMap.end() || !entity->second->hasComponent<MonsterComponent>())
+                continue;
+            int random = rand() % 100;
+            int dropChance = entity->second->getComponent<MonsterComponent>()._lil ? 10 : 20;
+            if (random < dropChance) {
+                PositionComponent &position = entity->second->getComponent<PositionComponent>();
+                EntityFactory::createPowerUp(sf::Vector2f(position.x, position.y));
+            }
+        }
+    }
+
     aecs::EntityChanges DamageCollisionSystem::update(aecs::UpdateParams &updateParams)
     {
         (void)updateParams;
@@ -59,7 +74,6 @@ namespace rtype
             auto &damage = entity->getComponent<DamageCollisionComponent>();
             auto &hp = entity->getComponent<HPComponent>();
             sf::Rect rect = getRect(entity);
-            //            bool kll = false;
             for (size_t j = i + 1; j < entities.size(); j++) {
                 auto &entity2 = entities[j];
                 auto &damage2 = entity2->getComponent<DamageCollisionComponent>();
@@ -76,9 +90,6 @@ namespace rtype
                         damage.invulnerability = 5;
                         damage.damaged = true;
                     }
-                    //                    bool kill = killed(entity, entity2);
-                    //                    if (kill)
-                    //                        kll = true;
                     if (hp2.hp <= 0) {
                         if (_world.getIsServer())
                             changes.deletedEntities.push_back(entity2->getId());
@@ -95,6 +106,7 @@ namespace rtype
                 }
             }
         }
+        addPowerUp(changes);
         return changes;
     }
 

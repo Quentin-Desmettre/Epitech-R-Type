@@ -23,6 +23,7 @@ namespace rtype
             auto &sprite = entity->getComponent<SpriteComponent>();
             auto &my = entity->getComponent<PlayerComponent>();
             my.timeSinceLastShoot += updateParams.deltaTime;
+            my.timeLeftShootPowerUp -= updateParams.deltaTime * 0.1;
             changes.editedEntities.push_back(entity->getId());
 
             velocity.x = 0;
@@ -56,8 +57,12 @@ namespace rtype
                 }
             }
             if (space && !shift && my.timeSinceLastShoot > 3) {
-                if (_world.getIsServer())
+                if (_world.getIsServer()) {
                     EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 32), sf::Vector2f(100, 0), 0);
+                    if (my.timeLeftShootPowerUp > 0) {
+                        EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 64), sf::Vector2f(100, 0), 0);
+                    }
+                }
                 my.timeSinceLastShoot = 0;
             }
             if (shift && my.timeSinceLastShoot > 6) {
