@@ -24,7 +24,8 @@ namespace rtype
         float x;
         float y;
 
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "VelocityComponent";
         };
     };

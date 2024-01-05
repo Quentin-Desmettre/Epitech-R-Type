@@ -24,7 +24,8 @@ namespace rtype
         sf::Vector2f _size;
         int zIndex;
 
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "SpriteComponent";
         };
 

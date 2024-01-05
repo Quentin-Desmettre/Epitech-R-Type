@@ -12,12 +12,13 @@ namespace rtype
     class MusicComponent : public aecs::AbstractComponent
     {
       public:
-        explicit MusicComponent(const std::string& path, float volume = 100, bool loop = true);
+        explicit MusicComponent(const std::string &path, float volume = 100, bool loop = true);
         ~MusicComponent() override = default;
 
         sf::Music music;
 
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "MusicComponent";
         };
     };

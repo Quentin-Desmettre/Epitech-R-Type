@@ -92,7 +92,7 @@ namespace aecs
             return *dynamic_cast<T *>(_components.at(typeid(T)).get());
         }
 
-        template<typename T>
+        template <typename T>
         [[nodiscard]] T *safeGetComponent() const
         {
             static_assert(std::is_base_of<AbstractComponent, T>::value, "T must inherit from AbstractComponent");

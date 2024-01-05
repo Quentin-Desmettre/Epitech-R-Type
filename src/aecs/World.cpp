@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <iostream>
 
-
 namespace aecs
 {
     World::World(bool isServer, int ac, char **av) :
@@ -159,8 +158,7 @@ namespace aecs
         entity.decode(data);
     }
 
-    void World::addDecodeMap(const char *name,
-                             const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map)
+    void World::addDecodeMap(const char *name, const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map)
     {
         decodeMap[aecs::Entity::hashString(name)] = map;
     }
@@ -271,19 +269,23 @@ namespace aecs
         _tick = entities.tick;
     }
 
-    std::string World::getIp() {
+    std::string World::getIp()
+    {
         return _argParser.getIp();
     }
 
-    unsigned short World::getServerPort() {
+    unsigned short World::getServerPort()
+    {
         return _argParser.getServerPort();
     }
 
-    unsigned short World::getClientPort() {
+    unsigned short World::getClientPort()
+    {
         return _argParser.getClientPort();
     }
 
-    unsigned short World::getTcpPort() {
+    unsigned short World::getTcpPort()
+    {
         return _argParser.getTcpPort();
     }
 

@@ -55,9 +55,11 @@ void rtype::RenderSystem::_sortEntities()
     _sortedEntities.clear();
     for (auto &entity : _entitiesMap)
         _sortedEntities.push_back(entity.second);
-    std::sort(_sortedEntities.begin(), _sortedEntities.end(), [](const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) {
-        return lhs->getComponent<rtype::SpriteComponent>().zIndex < rhs->getComponent<rtype::SpriteComponent>().zIndex;
-    });
+    std::sort(_sortedEntities.begin(), _sortedEntities.end(),
+              [](const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) {
+                  return lhs->getComponent<rtype::SpriteComponent>().zIndex <
+                         rhs->getComponent<rtype::SpriteComponent>().zIndex;
+              });
 }
 
 aecs::ClientInputs rtype::RenderSystem::render()

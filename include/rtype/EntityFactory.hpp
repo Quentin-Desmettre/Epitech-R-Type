@@ -6,6 +6,7 @@
 #define R_TYPE_ENTITYFACTORY_HPP
 #include "aecs/Entity.hpp"
 #include <SFML/Graphics.hpp>
+#define FLOAT_MAX 3.402823466e+38F
 
 namespace aecs
 {
@@ -26,6 +27,8 @@ namespace rtype
         static aecs::Entity &toEnemy(aecs::Entity &entity);
         static aecs::Entity &createBackground(int id, sf::Vector2f speed);
         static void setWorld(aecs::World *world);
+        static aecs::Entity &createBlock(sf::Vector2f position, sf::Vector2f size, const std::string &texture,
+                                         sf::Vector2f speed = {0, 0}, bool breakable = false, float hp = FLOAT_MAX);
 
       private:
         static aecs::World *_world;

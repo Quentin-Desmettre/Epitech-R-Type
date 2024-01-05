@@ -82,6 +82,10 @@ set(SHARED_SRC
         src/shared/ArgParser.cpp
         include/shared/ArgParser.hpp
         include/shared/Utils.hpp
+        include/rtype/systems/shared/MapSystem.cpp
+        include/rtype/systems/shared/MapSystem.hpp
+        include/rtype/components/CollidableComponent.hpp
+        src/rtype/components/CollidableComponent.cpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp

@@ -10,6 +10,7 @@
 #include "SystemBase.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
+#include "shared/ArgParser.hpp"
 #include "shared/PacketBuilder.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
@@ -19,7 +20,6 @@
 #include <mutex>
 #include <typeindex>
 #include <vector>
-#include "shared/ArgParser.hpp"
 
 namespace aecs
 {
@@ -41,8 +41,7 @@ namespace aecs
         // Methods
         Entity &createEntity(size_t id = -1);
 
-        void addDecodeMap(const char *name,
-                          const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map);
+        void addDecodeMap(const char *name, const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map);
 
         void decodeNewEntity(Entity &entity, const std::vector<std::byte> &data);
 

@@ -19,7 +19,8 @@ namespace rtype
 
         sf::Vector2f _speed;
 
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "ParallaxComponent";
         };
     };

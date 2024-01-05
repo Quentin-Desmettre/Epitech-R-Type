@@ -15,7 +15,8 @@ namespace rtype
         explicit AnimComponent(float time = 1) :
             timeToWait(time){};
         ~AnimComponent() override = default;
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "AnimComponent";
         };
         float timeSinceLastFrame = 0;

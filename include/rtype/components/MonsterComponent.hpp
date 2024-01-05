@@ -17,7 +17,8 @@ namespace rtype
         float timeSinceLastShoot = 0;
         bool _lil = false;
 
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "MonsterComponent";
         };
         [[nodiscard]] std::vector<std::byte> encode() const override;

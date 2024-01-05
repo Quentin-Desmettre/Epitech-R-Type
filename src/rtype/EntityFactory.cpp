@@ -5,6 +5,7 @@
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/AnimComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
+#include "rtype/components/CollidableComponent.hpp"
 #include "rtype/components/DamageCollisionComponent.hpp"
 #include "rtype/components/HPComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
@@ -23,8 +24,9 @@ aecs::Entity &rtype::EntityFactory::toPlayer(aecs::Entity &entity)
     auto &component = entity.getComponent<PlayerComponent>();
     entity.addComponent<SpriteComponent>("assets/sprites/PlayerNew.png", sf::Vector2f{96, 96},
                                          sf::IntRect(0, 0, 32, 32));
-    entity.addComponent<PositionComponent>(0, 0);
+    entity.addComponent<PositionComponent>(0, 500);
     entity.addComponent<VelocityComponent>(0, 0);
+    entity.addComponent<CollidableComponent>(0);
     entity.addComponent<DamageCollisionComponent>(0, 0);
     entity.addComponent<HPComponent>(50);
     if (!_world->getIsServer()) {
@@ -138,4 +140,18 @@ aecs::Entity &rtype::EntityFactory::createBackground(int id, sf::Vector2f speed)
 void rtype::EntityFactory::setWorld(aecs::World *world)
 {
     _world = world;
+}
+
+aecs::Entity &rtype::EntityFactory::createBlock(sf::Vector2f position, sf::Vector2f size, const std::string &texture,
+                                                sf::Vector2f speed, bool breakable, float hp)
+{
+    auto &block = _world->createEntity();
+
+    block.addComponent<PositionComponent>(position.x, position.y, true);
+    block.addComponent<SpriteComponent>(texture, size);
+    block.addComponent<VelocityComponent>(speed.x, speed.y);
+    block.addComponent<CollidableComponent>(1000000);
+    if (breakable)
+        block.addComponent<HPComponent>(hp);
+    return block;
 }
