@@ -10,6 +10,7 @@
 #include "aecs/World.hpp"
 #include "rtype/components/DamageCollisionComponent.hpp"
 #include "rtype/components/HPComponent.hpp"
+#include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include <iostream>
@@ -21,11 +22,12 @@ namespace rtype
         DamageCollisionSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
         ~DamageCollisionSystem() override = default;
 
-        static sf::Rect<float> getRect(const std::shared_ptr<aecs::Entity> &entity);
-
-        static bool killed(const std::shared_ptr<aecs::Entity> &entity, const std::shared_ptr<aecs::Entity> &entity2);
-
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
+
+      private:
+        sf::Rect<float> getRect(const std::shared_ptr<aecs::Entity> &entity);
+        bool killed(const std::shared_ptr<aecs::Entity> &entity, const std::shared_ptr<aecs::Entity> &entity2);
+        void addPowerUp(const aecs::EntityChanges &changes);
     };
 
 } // namespace rtype

@@ -11,6 +11,7 @@
 #include "rtype/components/ParallaxComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/PowerComponent.hpp"
 #include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
@@ -133,6 +134,28 @@ aecs::Entity &rtype::EntityFactory::createBackground(int id, sf::Vector2f speed)
     back.addComponent<PositionComponent>(0, 0);
     back.addComponent<ParallaxComponent>(speed);
     return back;
+}
+
+aecs::Entity &rtype::EntityFactory::createPower(sf::Vector2f position, bool isPowerUp)
+{
+    auto &power = _world->createEntity();
+    power.addComponent<PowerComponent>(isPowerUp);
+    toPower(power, isPowerUp);
+    power.addComponent<PositionComponent>(position.x, position.y);
+    power.addComponent<VelocityComponent>(-20, 4);
+    return power;
+}
+
+aecs::Entity &rtype::EntityFactory::toPower(aecs::Entity &entity, bool isPowerUp)
+{
+    std::string path = isPowerUp ? "assets/sprites/PowerUp.png" : "assets/sprites/PowerDown.png";
+
+    entity.addComponent<SpriteComponent>(path, sf::Vector2f{57, 42}, sf::IntRect{0, 0, 19, 14});
+    if (!_world->getIsServer()) {
+        entity.addComponent<PositionComponent>();
+        entity.addComponent<VelocityComponent>();
+    }
+    return entity;
 }
 
 void rtype::EntityFactory::setWorld(aecs::World *world)

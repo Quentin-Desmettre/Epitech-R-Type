@@ -23,6 +23,8 @@ namespace rtype
         float timeSinceLastShoot = 0;
         float timeInShift = 0;
         std::uint8_t playerId = 0;
+        float timeLeftShootPowerUp = 0;
+        float timeLeftMovePowerDown = 0;
 
         const char *getName() const override {
             return "PlayerComponent";

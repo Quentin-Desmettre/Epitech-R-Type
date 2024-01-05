@@ -7,6 +7,7 @@
 #include "rtype/systems/server/DeleteClientSystem.hpp"
 #include "rtype/systems/server/NewConnectionSystem.hpp"
 #include "rtype/systems/server/PlayerOnConnectionSystem.hpp"
+#include "rtype/systems/server/PowerSystem.hpp"
 #include "rtype/systems/server/ServerCorrectionsSystem.hpp"
 #include "rtype/systems/server/ServerInputsSystem.hpp"
 #include "rtype/systems/shared/AnimPlayerSystem.hpp"
@@ -44,6 +45,7 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate, int ac, char **av) :
     _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
     _world.registerSystem<MonsterBullet>(1);
+    _world.registerSystem<PowerSystem>(2);
 
     // Network systems
     _world.registerSystem<ServerCorrectionsSystem>(1000);

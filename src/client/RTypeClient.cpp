@@ -5,9 +5,9 @@
 #include "rtype/RTypeClient.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/systems/client/ClientInputSenderSystem.hpp"
-#include "rtype/systems/client/DamageSoundSystem.hpp"
 #include "rtype/systems/client/ClientPingSystem.hpp"
 #include "rtype/systems/client/ClientServerDataHandlerSystem.hpp"
+#include "rtype/systems/client/DamageSoundSystem.hpp"
 #include "rtype/systems/shared/AnimPlayerSystem.hpp"
 #include "rtype/systems/shared/AnimSystem.hpp"
 #include "rtype/systems/shared/BulletSystem.hpp"
@@ -23,8 +23,10 @@
 
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
-#include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/MusicComponent.hpp"
+#include "rtype/components/PlayerComponent.hpp"
+#include "rtype/components/PowerComponent.hpp"
+
 void rtype::RTypeClient::setDecodeMap()
 {
     _world.addDecodeMap("PlayerComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
@@ -44,6 +46,12 @@ void rtype::RTypeClient::setDecodeMap()
         auto &component = entity.getComponent<MonsterComponent>();
         component.decode(data);
         EntityFactory::toEnemy(entity);
+    });
+    _world.addDecodeMap("PowerComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<PowerComponent>();
+        auto &component = entity.getComponent<PowerComponent>();
+        component.decode(data);
+        EntityFactory::toPower(entity, component.isPowerUp);
     });
 }
 
@@ -73,7 +81,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     _world.registerSystem<AnimSystem>(1);
     _world.registerSystem<PhysicsSystem>(1);
     _world.registerSystem<ParallaxSystem>(1);
-//    _world.registerSystem<BulletSystem>(1);
+    //    _world.registerSystem<BulletSystem>(1);
     _world.registerSystem<DamageCollisionSystem>(1);
     _world.registerSystem<DamageSoundSystem>(1);
     // _world.registerSystem<MonsterGenSystem>(1);
