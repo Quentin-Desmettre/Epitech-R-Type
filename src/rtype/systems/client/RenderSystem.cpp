@@ -70,9 +70,9 @@ aecs::RenderInputs rtype::RenderSystem::render()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             _window.close();
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            mouseInputs.emplace_back(1, sf::Vector2f(sf::Mouse::getPosition(_window)));
+            mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_LEFT_CLICK, sf::Vector2f(sf::Mouse::getPosition(_window)));
         if (event.type == sf::Event::MouseMoved)
-            mouseInputs.emplace_back(0, sf::Vector2f(sf::Mouse::getPosition(_window)));
+            mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_MOVE, sf::Vector2f(sf::Mouse::getPosition(_window)));
     }
     for (int i = 0; i < sf::Keyboard::KeyCount; i++) {
         if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(i)))

@@ -15,12 +15,18 @@
 namespace aecs
 {
 
+    enum MouseInputType {
+        MOUSE_MOVE = 0,
+        MOUSE_LEFT_CLICK,
+        MOUSE_RIGHT_CLICK,
+    };
+
     class Entity;
     class World;
 
     typedef std::shared_ptr<Entity> EntityPtr;
     typedef int RenderInput;
-    typedef std::vector<std::pair<int, sf::Vector2f>> MouseInputs;
+    typedef std::vector<std::pair<MouseInputType, sf::Vector2f>> MouseInputs;
     typedef std::vector<RenderInput> ClientInputs;
     typedef std::map<unsigned, ClientInputs> ServerInputs;
     typedef std::pair<ClientInputs, MouseInputs> RenderInputs;
