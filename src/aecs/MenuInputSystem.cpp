@@ -22,8 +22,10 @@ namespace aecs
 
             for (auto &[_, clientInputs] : updateParams.inputs) {
                 for (auto &input : clientInputs) {
-                    if (input == inputPressed.input)
+                    if (input == inputPressed.input) {
                         inputPressed.onInput();
+                        return changes;
+                    }
                 }
             }
         }

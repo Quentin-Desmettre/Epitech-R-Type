@@ -309,12 +309,19 @@ namespace aecs
         if (_menus.find(id) == _menus.end())
             return;
         _currentMenu = id;
+        this->_renderInputsMutex.unlock();
+        this->_entities.clear();
         this->_systems.clear();
         this->_sortedSystems.clear();
-        this->_entities.clear();
+        this->_mouseInputs.clear();
         this->_renderInputs.clear();
 
+        std::cout << "Switch to menu => " << id << std::endl;
         _menus.at(id)._setup();
+        std::cout << this->_entities.empty() << std::endl;
+        std::cout << this->_systems.empty() << std::endl;
+        std::cout << this->_sortedSystems.empty() << std::endl;
+        std::cout << this->_renderInputs.empty() << std::endl;
 
         this->registerSystem<MenuInputSystem>(0);
 

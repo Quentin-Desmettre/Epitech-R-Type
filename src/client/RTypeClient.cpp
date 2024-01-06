@@ -69,31 +69,43 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     std::vector<SystemPriority> systems;
     Menu menu(buttons, handlers, systems, [] () {});
     _world.addMenu(menu, 0);
-    systems = {_world.makeSystem<ClientServerDataHandlerSystem>(-2),
-               _world.makeSystem<ClientInputSenderSystem>(-1),
-               _world.makeSystem<ClientPingSystem>(0),
-               // commented to show that movement comes from server
-               _world.makeSystem<ControlPlayerSystem>(0),
-               _world.makeSystem<AnimPlayerSystem>(1),
-               _world.makeSystem<AnimSystem>(1),
-               _world.makeSystem<PhysicsSystem>(1),
-               _world.makeSystem<ParallaxSystem>(1),
-               //    _world.registerSystem<BulletSystem>(1);
-               _world.makeSystem<DamageCollisionSystem>(1),
-               _world.makeSystem<DamageSoundSystem>(1),
-               // _world.registerSystem<MonsterGenSystem>(1);
-               _world.makeSystem<InvulSystem>(1)};
-    std::function<void()> setup = [] () {
-        auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
-        bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
-        EntityFactory::createBackground(2, sf::Vector2f(5, 0));
-        EntityFactory::createBackground(3, sf::Vector2f(3, 0));
-        EntityFactory::createBackground(4, sf::Vector2f(12, 0));
-        EntityFactory::createBackground(5, sf::Vector2f(15, 0));
+    std::vector<SystemPriority> systems2 = {
+        _world.makeSystem<ClientServerDataHandlerSystem>(-2),
+        _world.makeSystem<ClientInputSenderSystem>(-1),
+        _world.makeSystem<ClientPingSystem>(0),
+        // commented to show that movement comes from server
+        _world.makeSystem<ControlPlayerSystem>(0),
+        _world.makeSystem<AnimPlayerSystem>(1),
+        _world.makeSystem<AnimSystem>(1),
+        _world.makeSystem<PhysicsSystem>(1),
+        _world.makeSystem<ParallaxSystem>(1),
+        //    _world.registerSystem<BulletSystem>(1);
+        _world.makeSystem<DamageCollisionSystem>(1),
+        _world.makeSystem<DamageSoundSystem>(1),
+        // _world.registerSystem<MonsterGenSystem>(1);
+        _world.makeSystem<InvulSystem>(1)
     };
-    handlers[sf::Keyboard::Enter] = [this]() { _world.goToMenu(0); };
-    Menu game(buttons, handlers, systems, std::move(setup));
+    std::function<void()> setup = [] () {
+        std::cout << "Setup" << std::endl;
+        auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
+        std::cout << "Background" << std::endl;
+        bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
+        std::cout << "Music" << std::endl;
+        EntityFactory::createBackground(2, sf::Vector2f(5, 0));
+        std::cout << "Create Background 1" << std::endl;
+        EntityFactory::createBackground(3, sf::Vector2f(3, 0));
+        std::cout << "Create Background 2" << std::endl;
+        EntityFactory::createBackground(4, sf::Vector2f(12, 0));
+        std::cout << "Create Background 3" << std::endl;
+        EntityFactory::createBackground(5, sf::Vector2f(15, 0));
+        std::cout << "Create Background 4" << std::endl;
+    };
+
+    std::map<Input, std::function<void()>> handlers2;
+    handlers2[sf::Keyboard::Enter] = [this]() { _world.goToMenu(0); };
+    Menu game(buttons, handlers2, systems2, std::move(setup));
     _world.addMenu(game, 1);
+
     _world.goToMenu(0);
 }
 
