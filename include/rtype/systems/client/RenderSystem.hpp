@@ -31,18 +31,13 @@ namespace rtype
         [[nodiscard]] bool isOpen() const override;
 
       private:
-        struct EntityCompare
-        {
-            bool operator()(const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) const
-            {
-                return lhs->getComponent<SpriteComponent>().zIndex < rhs->getComponent<SpriteComponent>().zIndex;
-            }
-        };
         void _sortEntities();
 
         void _flushBuffers();
         void addEntity(const aecs::EntityPtr &entity);
         void deleteEntity(std::size_t entityId);
+        void drawSprite(const aecs::EntityPtr &entity);
+        void drawText(const aecs::EntityPtr &entity);
 
         std::vector<aecs::EntityPtr> _sortedEntities;
         std::vector<std::size_t> _entitiesToDelete;

@@ -29,7 +29,6 @@ class ButtonData
   private:
     std::function<void()> _handler;
     sf::Text _text;
-    sf::Texture _texture;
     sf::Sprite _sprite;
     sf::Vector2f _pos;
     sf::Font _font;
