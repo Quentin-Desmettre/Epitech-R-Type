@@ -70,7 +70,7 @@ namespace rtype
         ALogicSystem(world, entities, {typeid(ClientAdressComponent), typeid(PlayerComponent)}),
         _listener()
     {
-        _listener.listen(SERVER_TCP_PORT);
+        _listener.listen(_world.getTcpPort());
         _listener.setBlocking(false);
     }
 

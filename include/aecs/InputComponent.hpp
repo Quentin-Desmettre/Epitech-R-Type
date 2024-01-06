@@ -18,6 +18,8 @@ namespace aecs
 
         int input;
         std::function<void()> &&onInput;
+
+        [[nodiscard]] const char *getName() const override { return "InputComponent"; }
     };
 }
 

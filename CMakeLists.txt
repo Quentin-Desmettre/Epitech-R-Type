@@ -53,6 +53,7 @@ set(SHARED_SRC
         include/rtype/components/PositionComponent.hpp
         include/rtype/components/SpriteComponent.hpp
         include/rtype/components/VelocityComponent.hpp
+        include/rtype/components/PowerComponent.hpp
         src/rtype/components/BulletComponent.cpp
         src/rtype/components/DamageCollisionComponent.cpp
         src/rtype/components/HPComponent.cpp
@@ -61,6 +62,7 @@ set(SHARED_SRC
         src/rtype/components/PositionComponent.cpp
         src/rtype/components/SpriteComponent.cpp
         src/rtype/components/VelocityComponent.cpp
+        src/rtype/components/PowerComponent.cpp
 
         # Systems
         include/rtype/systems/shared/AnimPlayerSystem.hpp
@@ -97,11 +99,13 @@ set(SERVER_SRC src/server/main.cpp
         include/rtype/systems/server/ServerCorrectionsSystem.hpp
         include/rtype/systems/server/DeleteClientSystem.hpp
         include/rtype/systems/server/PlayerOnConnectionSystem.hpp
+        include/rtype/systems/server/PowerSystem.hpp
         src/rtype/systems/server/DeleteClientSystem.cpp
         src/rtype/systems/server/NewConnectionSystem.cpp
         src/rtype/systems/server/PlayerOnConnectionSystem.cpp
         src/rtype/systems/server/ServerCorrectionsSystem.cpp
         src/rtype/systems/server/ServerInputsSystem.cpp
+        src/rtype/systems/server/PowerSystem.cpp
 )
 set(CLIENT_SRC src/client/main.cpp
         src/client/RTypeClient.cpp
@@ -168,6 +172,7 @@ endif()
 
 install(TARGETS r-type_client r-type_server DESTINATION bin)
 install(DIRECTORY assets DESTINATION .)
+install(DIRECTORY shaders DESTINATION .)
 
 set(CPACK_PACKAGE_VERSION_MAJOR "${RTYPE_MAJOR_VERSION}")
 set(CPACK_PACKAGE_VERSION_MINOR "${RTYPE_MINOR_VERSION}")

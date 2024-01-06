@@ -11,7 +11,7 @@ namespace rtype
         ALogicSystem(world, entities,
                      {typeid(ClientAdressComponent), typeid(PlayerComponent), typeid(ClientPingComponent)})
     {
-        _socket.bind(SERVER_INPUTS_PORT);
+        _socket.bind(_world.getServerPort());
         _socket.setBlocking(false);
     }
 
@@ -76,7 +76,7 @@ namespace rtype
     void ServerInputsSystem::sendPong(sf::IpAddress &sender)
     {
         sf::Packet packet = aecs::StaticPacketBuilder::buildServerPongPacket();
-        sf::Socket::Status status = _socket.send(packet, sender, CLIENT_CORRECTIONS_PORT);
+        sf::Socket::Status status = _socket.send(packet, sender, _world.getClientPort());
 
         if (status != sf::Socket::Done)
             std::cerr << "Error sending packet" << std::endl;

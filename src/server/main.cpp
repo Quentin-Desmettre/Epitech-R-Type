@@ -3,6 +3,7 @@
 
 int main(int ac, char **av)
 {
+    srand(time(NULL));
     rtype::RTypeServer server(60, ac, av);
 
     server.run();

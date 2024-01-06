@@ -11,6 +11,7 @@
 #include "rtype/components/ParallaxComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/PowerComponent.hpp"
 #include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
@@ -31,7 +32,7 @@ aecs::Entity &rtype::EntityFactory::toPlayer(aecs::Entity &entity)
     if (!_world->getIsServer()) {
         std::shared_ptr<sf::Shader> shader = std::make_shared<sf::Shader>();
         entity.addComponent<AnimComponent>(1);
-        shader->loadFromFile("src/client/Shaders/PlayerColor.frag", sf::Shader::Fragment);
+        shader->loadFromFile("shaders/PlayerColor.frag", sf::Shader::Fragment);
         float colors[4] = {0, 0, 144, 216};
         shader->setUniform("hue", colors[component.playerId]);
         shader->setUniform("saturation", component.playerId == 0 ? 0.f : 1.f);

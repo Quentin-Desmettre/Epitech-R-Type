@@ -24,6 +24,10 @@ namespace rtype
         sf::Vector2f _size;
         int zIndex;
 
+        const char *getName() const override {
+            return "SpriteComponent";
+        };
+
       private:
         sf::Texture _texture;
     };

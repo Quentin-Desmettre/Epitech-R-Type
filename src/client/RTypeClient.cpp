@@ -5,9 +5,9 @@
 #include "rtype/RTypeClient.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/systems/client/ClientInputSenderSystem.hpp"
-#include "rtype/systems/client/DamageSoundSystem.hpp"
 #include "rtype/systems/client/ClientPingSystem.hpp"
 #include "rtype/systems/client/ClientServerDataHandlerSystem.hpp"
+#include "rtype/systems/client/DamageSoundSystem.hpp"
 #include "rtype/systems/shared/AnimPlayerSystem.hpp"
 #include "rtype/systems/shared/AnimSystem.hpp"
 #include "rtype/systems/shared/BulletSystem.hpp"
@@ -23,27 +23,35 @@
 
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
-#include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/MusicComponent.hpp"
+#include "rtype/components/PlayerComponent.hpp"
+#include "rtype/components/PowerComponent.hpp"
+
 void rtype::RTypeClient::setDecodeMap()
 {
-    _world.addDecodeMap(typeid(PlayerComponent), [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+    _world.addDecodeMap("PlayerComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
         entity.addComponent<PlayerComponent>();
         auto &component = entity.getComponent<PlayerComponent>();
         component.decode(data);
         EntityFactory::toPlayer(entity);
     });
-    _world.addDecodeMap(typeid(BulletComponent), [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+    _world.addDecodeMap("BulletComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
         entity.addComponent<BulletComponent>();
         auto &component = entity.getComponent<BulletComponent>();
         component.decode(data);
         EntityFactory::toBullet(entity);
     });
-    _world.addDecodeMap(typeid(MonsterComponent), [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+    _world.addDecodeMap("MonsterComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
         entity.addComponent<MonsterComponent>();
         auto &component = entity.getComponent<MonsterComponent>();
         component.decode(data);
         EntityFactory::toEnemy(entity);
+    });
+    _world.addDecodeMap("PowerComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<PowerComponent>();
+        auto &component = entity.getComponent<PowerComponent>();
+        component.decode(data);
+        EntityFactory::toPower(entity, component.isPowerUp);
     });
 }
 

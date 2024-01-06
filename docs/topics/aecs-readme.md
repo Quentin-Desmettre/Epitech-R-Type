@@ -19,7 +19,7 @@ A system is a class that contains logic, and can be applied to entities that hav
 
 For example, if we have this game:
 
-![Example game](./example_game.png)
+![Example game](../images/example_game.png)
 
 We could have an entity for the player, for the background, for the enemies, and for each bullet.
 

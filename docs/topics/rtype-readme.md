@@ -65,4 +65,4 @@ In addition, a `PlayerOnConnectionSystem` checks when a new player connects, and
 
 # Diagram
 
-![Diagram](./systems.png)
+![Diagram](../images/systems.png)

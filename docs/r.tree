@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="r"
+                 name="RTypeDoc"
+                 start-page="starter-topic.md">
+
+    <toc-element topic="starter-topic.md"/>
+    <toc-element topic="index.md"/>
+    <toc-element topic="aecs-readme.md"/>
+    <toc-element topic="network-readme.md"/>
+    <toc-element topic="rtype-readme.md"/>
+    <toc-element topic="CONTRIBUTING.md"/>
+
+</instance-profile>

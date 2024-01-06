@@ -16,6 +16,10 @@ namespace rtype
         ~MusicComponent() override = default;
 
         sf::Music music;
+
+        const char *getName() const override {
+            return "MusicComponent";
+        };
     };
 } // namespace rtype
 
