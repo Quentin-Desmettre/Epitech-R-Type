@@ -28,7 +28,7 @@ namespace rtype
         static aecs::Entity &createBackground(int id, sf::Vector2f speed);
         static void setWorld(aecs::World *world);
         static aecs::Entity &createBlock(sf::Vector2f position, sf::Vector2f size, const std::string &texture,
-                                         sf::Vector2f speed = {0, 0}, bool breakable = false, float hp = FLOAT_MAX);
+                                         float speed = 0, bool breakable = false, float hp = FLOAT_MAX);
 
       private:
         static aecs::World *_world;

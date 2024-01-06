@@ -35,7 +35,8 @@ namespace rtype
             LEFT = 4,
             RIGHT = 8,
         };
-        std::vector<std::pair<aecs::EntityPtr, PhysicsSystem::CollisionDirection>> getCollisions(const aecs::EntityPtr &entity);
+        std::vector<std::pair<aecs::EntityPtr, PhysicsSystem::CollisionDirection>>
+        getCollisions(const aecs::EntityPtr &entity);
         static CollisionDirection getCollisionDirection(const aecs::EntityPtr &entity1, const aecs::EntityPtr &entity2);
         static bool isOutOfScreen(const PositionComponent &position, const sf::Vector2f &size);
 

@@ -18,7 +18,8 @@ namespace rtype
         [[nodiscard]] const char *getName() const override;
 
         [[nodiscard]] int getPriority() const;
-    private:
+
+      private:
         int _priority;
     };
 } // namespace rtype

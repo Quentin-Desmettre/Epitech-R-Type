@@ -24,7 +24,7 @@ aecs::Entity &rtype::EntityFactory::toPlayer(aecs::Entity &entity)
     auto &component = entity.getComponent<PlayerComponent>();
     entity.addComponent<SpriteComponent>("assets/sprites/PlayerNew.png", sf::Vector2f{96, 96},
                                          sf::IntRect(0, 0, 32, 32));
-    entity.addComponent<PositionComponent>(0, 500);
+    entity.addComponent<PositionComponent>(0, 322);
     entity.addComponent<VelocityComponent>(0, 0);
     entity.addComponent<CollidableComponent>(0);
     entity.addComponent<DamageCollisionComponent>(0, 0);
@@ -143,13 +143,13 @@ void rtype::EntityFactory::setWorld(aecs::World *world)
 }
 
 aecs::Entity &rtype::EntityFactory::createBlock(sf::Vector2f position, sf::Vector2f size, const std::string &texture,
-                                                sf::Vector2f speed, bool breakable, float hp)
+                                                float speed, bool breakable, float hp)
 {
     auto &block = _world->createEntity();
 
     block.addComponent<PositionComponent>(position.x, position.y, true);
     block.addComponent<SpriteComponent>(texture, size);
-    block.addComponent<VelocityComponent>(speed.x, speed.y);
+    block.addComponent<VelocityComponent>(speed, 0);
     block.addComponent<CollidableComponent>(1000000);
     if (breakable)
         block.addComponent<HPComponent>(hp);

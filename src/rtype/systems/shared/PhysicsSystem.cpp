@@ -49,15 +49,24 @@ namespace rtype
             //      don't move current entity
             // if current entity has a higher priority than the other
             //      move the other entity in the same direction
-            if (!entity->hasComponent<CollidableComponent>())
+            if (!entity->hasComponent<CollidableComponent>() || isOutOfScreen(position, size))
                 continue;
             int priority = entity->getComponent<CollidableComponent>().getPriority();
             auto collisions = getCollisions(entity);
-            for (auto &[entityOther, direction]: collisions) {
+            for (auto &[entityOther, direction] : collisions) {
                 int priorityOther = entityOther->getComponent<CollidableComponent>().getPriority();
                 if (priority <= priorityOther) {
+                    // If after cancel dx, no more collision, do not cancel dy
                     position.x = oldPosition.x;
+                    if (getCollisions(entity).empty())
+                        break;
+                    // Still collisions. Redo dx, cancel dy, and perform same check
+                    position.x += dx;
                     position.y = oldPosition.y;
+                    if (getCollisions(entity).empty())
+                        break;
+                    // Else, cancel dx and dy
+                    position.x = oldPosition.x;
                     break;
                 } else if (priority > priorityOther) {
                     auto &positionOther = entityOther->getComponent<PositionComponent>();
@@ -73,7 +82,8 @@ namespace rtype
         return changes;
     }
 
-    PhysicsSystem::CollisionDirection PhysicsSystem::getCollisionDirection(const aecs::EntityPtr &entity1, const aecs::EntityPtr &entity2)
+    PhysicsSystem::CollisionDirection PhysicsSystem::getCollisionDirection(const aecs::EntityPtr &entity1,
+                                                                           const aecs::EntityPtr &entity2)
     {
         if (!entity1->hasComponents({typeid(CollidableComponent)}) ||
             !entity2->hasComponents({typeid(CollidableComponent)}))
@@ -100,7 +110,8 @@ namespace rtype
         return static_cast<CollisionDirection>(direction);
     }
 
-    std::vector<std::pair<aecs::EntityPtr, PhysicsSystem::CollisionDirection>> PhysicsSystem::getCollisions(const aecs::EntityPtr &entity)
+    std::vector<std::pair<aecs::EntityPtr, PhysicsSystem::CollisionDirection>>
+    PhysicsSystem::getCollisions(const aecs::EntityPtr &entity)
     {
         std::vector<std::pair<aecs::EntityPtr, CollisionDirection>> collisions;
         CollisionDirection direction;
@@ -116,9 +127,8 @@ namespace rtype
 
     bool PhysicsSystem::isOutOfScreen(const PositionComponent &position, const sf::Vector2f &size)
     {
-        return position.x + size.x < 0 || position.x > 1088 || position.y + size.y < 0 || position.y > 640;
+        return position.x + size.x < 0 || position.y + size.y < 0;
     }
-
 
     void PhysicsSystem::onEntityAdded(const aecs::EntityPtr &entity)
     {
