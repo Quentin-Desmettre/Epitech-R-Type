@@ -5,6 +5,7 @@
 #ifndef R_TYPE_SYSTEMBASE_HPP
 #define R_TYPE_SYSTEMBASE_HPP
 
+#include "SFML/Graphics.hpp"
 #include <map>
 #include <memory>
 #include <stdexcept>
@@ -19,8 +20,10 @@ namespace aecs
 
     typedef std::shared_ptr<Entity> EntityPtr;
     typedef int RenderInput;
+    typedef std::vector<std::pair<int, sf::Vector2f>> MouseInputs;
     typedef std::vector<RenderInput> ClientInputs;
     typedef std::map<unsigned, ClientInputs> ServerInputs;
+    typedef std::pair<ClientInputs, MouseInputs> RenderInputs;
 
     typedef struct EntityChanges {
         std::vector<unsigned int> deletedEntities;
@@ -29,6 +32,7 @@ namespace aecs
 
     typedef struct UpdateParams {
         ServerInputs inputs;
+        MouseInputs mouseInputs;
         float deltaTime = 0;
         EntityChanges entityChanges;
     } UpdateParams;
@@ -46,7 +50,7 @@ namespace aecs
         virtual EntityChanges update(aecs::UpdateParams &updateParams) = 0;
 
         // For render systems
-        virtual ClientInputs render() = 0;
+        virtual RenderInputs render() = 0;
         [[nodiscard]] virtual bool isOpen() const = 0;
     };
 
@@ -86,7 +90,7 @@ namespace aecs
         ~ALogicSystem() override = default;
 
         // For render systems ONLY
-        ClientInputs render() override;
+        RenderInputs render() override;
         [[nodiscard]] bool isOpen() const override;
     };
 

@@ -3,9 +3,6 @@
 //
 
 #include "rtype/systems/client/RenderSystem.hpp"
-#include "rtype/components/PositionComponent.hpp"
-#include "rtype/components/ShaderComponent.hpp"
-#include "rtype/components/SpriteComponent.hpp"
 
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
@@ -60,9 +57,10 @@ void rtype::RenderSystem::_sortEntities()
     });
 }
 
-aecs::ClientInputs rtype::RenderSystem::render()
+aecs::RenderInputs rtype::RenderSystem::render()
 {
     aecs::ClientInputs inputs;
+    aecs::MouseInputs mouseInputs;
 
     // Poll events
     sf::Event event{};
@@ -71,6 +69,10 @@ aecs::ClientInputs rtype::RenderSystem::render()
             _window.close();
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             _window.close();
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            mouseInputs.emplace_back(1, sf::Vector2f(sf::Mouse::getPosition(_window)));
+        if (event.type == sf::Event::MouseMoved)
+            mouseInputs.emplace_back(0, sf::Vector2f(sf::Mouse::getPosition(_window)));
     }
     for (int i = 0; i < sf::Keyboard::KeyCount; i++) {
         if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(i)))
@@ -92,7 +94,7 @@ aecs::ClientInputs rtype::RenderSystem::render()
     }
     _window.display();
     _flushBuffers();
-    return inputs;
+    return {inputs, mouseInputs};
 }
 
 bool rtype::RenderSystem::isOpen() const

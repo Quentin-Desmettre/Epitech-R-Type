@@ -10,6 +10,9 @@
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
 #include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/ShaderComponent.hpp"
+#include "rtype/components/TextComponent.hpp"
 #include <set>
 
 namespace rtype
@@ -24,7 +27,7 @@ namespace rtype
         void onEntityRemoved(const aecs::EntityPtr &entity) override;
         void onEntityModified(const aecs::EntityPtr &entity) override;
 
-        aecs::ClientInputs render() override;
+        aecs::RenderInputs render() override;
         [[nodiscard]] bool isOpen() const override;
 
       private:

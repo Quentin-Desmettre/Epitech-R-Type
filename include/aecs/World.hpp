@@ -5,11 +5,13 @@
 #ifndef EPITECH_R_TYPE_WORLD_HPP
 #define EPITECH_R_TYPE_WORLD_HPP
 
+#include "shared/Menu.hpp"
 #include "Entity.hpp"
 #include "SFML/Network/Packet.hpp"
 #include "SystemBase.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
+#include "shared/ArgParser.hpp"
 #include "shared/PacketBuilder.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
@@ -19,7 +21,6 @@
 #include <mutex>
 #include <typeindex>
 #include <vector>
-#include "shared/ArgParser.hpp"
 
 namespace aecs
 {
@@ -96,14 +97,23 @@ namespace aecs
         template <typename T, typename... Args>
         T &registerSystem(int priority, Args &&...args)
         {
+            auto sys = makeSystem<T>(priority, std::forward<Args>(args)...);
+            _systems[typeid(T)] = sys;
+            sortSystems();
+            return *sys.first;
+        }
+
+        void registerSystem(const std::shared_ptr<ISystem> &system, int priority);
+
+        template <typename T, typename... Args>
+        std::pair<std::shared_ptr<T>, int> makeSystem(int priority, Args &&...args)
+        {
             static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
 
             // To avoid changes in the entities vector while building the system
             const auto &constRefEntities = _entities;
             const auto &built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
-            _systems[typeid(T)] = {built, priority};
-            sortSystems();
-            return *built;
+            return {built, priority};
         }
 
         template <typename T>
@@ -129,6 +139,9 @@ namespace aecs
         [[nodiscard]] std::string getIp();
         [[nodiscard]] unsigned short getPort();
 
+        int addMenu(const Menu &menu, int id = -1);
+        void goToMenu(int id);
+
       private:
         void sortSystems();
 
@@ -148,8 +161,11 @@ namespace aecs
         std::shared_ptr<ISystem> _renderSystem;
         sf::Clock clock;
         std::map<unsigned, ServerInputs> _renderInputs;
+        MouseInputs _mouseInputs;
         std::mutex _renderInputsMutex;
         ArgParser _argParser;
+        std::map<int, Menu> _menus;
+        int _currentMenu = -1;
     };
 } // namespace aecs
 

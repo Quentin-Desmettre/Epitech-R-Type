@@ -55,7 +55,7 @@ namespace aecs
     {
     }
 
-    ClientInputs ALogicSystem::render()
+    RenderInputs ALogicSystem::render()
     {
         throw std::runtime_error("IRenderSystem::render() should not be called");
     }

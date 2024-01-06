@@ -23,12 +23,16 @@ set(SHARED_SRC
         src/aecs/StaticPacketParser.cpp
         src/aecs/SystemBase.cpp
         src/aecs/World.cpp
+        src/aecs/MenuInputSystem.cpp
+        src/aecs/InputComponent.cpp
         include/aecs/AbstractComponent.hpp
         include/aecs/Entity.hpp
         include/aecs/StaticPacketBuilder.hpp
         include/aecs/StaticPacketParser.hpp
         include/aecs/SystemBase.hpp
         include/aecs/World.hpp
+        include/aecs/MenuInputSystem.hpp
+        include/aecs/InputComponent.hpp
 
         # Other
         include/rtype/EntityFactory.hpp
@@ -82,6 +86,8 @@ set(SHARED_SRC
         src/shared/ArgParser.cpp
         include/shared/ArgParser.hpp
         include/shared/Utils.hpp
+        src/shared/Menu.cpp
+        include/shared/Menu.hpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
@@ -113,6 +119,7 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/components/MusicComponent.hpp
         src/rtype/components/MusicComponent.cpp
         src/rtype/systems/client/DamageSoundSystem.cpp
+        src/rtype/components/TextComponent.cpp
 )
 
 
