@@ -4,6 +4,7 @@
 
 #include "aecs/World.hpp"
 #include "aecs/Entity.hpp"
+#include "aecs/MenuInputSystem.hpp"
 #include "rtype/systems/server/ServerInputsSystem.hpp"
 #include "shared/PacketBuilder.hpp"
 #include <algorithm>
@@ -97,7 +98,7 @@ namespace aecs
         {
             std::lock_guard<std::mutex> lock(_renderInputsMutex);
             updateParams = {
-                .inputs = _isServer ? getInputs() : popInputs(), .deltaTime = deltaTime, .entityChanges = {}};
+                .inputs = _isServer ? getInputs() : popInputs(), .mouseInputs = _mouseInputs, .deltaTime = deltaTime, .entityChanges = {}};
         }
 
         // Update systems
@@ -132,7 +133,8 @@ namespace aecs
             auto tmp = _renderSystem->render();
             {
                 std::lock_guard<std::mutex> lock(_renderInputsMutex);
-                setClientInputs(_clientId, tmp);
+                setClientInputs(_clientId, tmp.first);
+                _mouseInputs = tmp.second;
             }
         }
     }
@@ -289,4 +291,58 @@ namespace aecs
         return _argParser.getTcpPort();
     }
 
+    void World::registerSystem(const std::shared_ptr<ISystem> &system, int priority)
+    {
+        _systems[typeid(*system)] = {system, priority};
+        sortSystems();
+    }
+
+    int World::addMenu(const Menu &menu, int id)
+    {
+        if (id == -1)
+            id = _menus.size();
+        _menus.emplace(id, menu);
+        return id;
+    }
+
+    void World::goToMenu(int id)
+    {
+        if (_currentMenu == id)
+            return;
+        if (_menus.find(id) == _menus.end())
+            return;
+        _currentMenu = id;
+
+        this->_renderInputsMutex.lock();
+        this->_renderInputs.clear();
+        this->_renderInputsMutex.unlock();
+        this->_systems.clear();
+        this->_sortedSystems.clear();
+        this->_mouseInputs.clear();
+
+        for (size_t size = this->_entities.size(); size > 0; size--) {
+            auto &entity = *this->_entities.begin();
+            this->destroyEntity(*entity.second);
+        }
+        this->_entities.clear();
+
+        this->registerSystem<MenuInputSystem>(0);
+
+//        for (auto &button : _menus.at(id)._buttons) {
+//            auto &entity = createEntity();
+//            entity.addComponent<rtype::components::Button>(button._text, button._texture, button._sprite, button._pos, button._rect);
+//            entity.addComponent<rtype::components::Transform>(button._pos);
+//            entity.addComponent<rtype::components::Clickable>(button._handler);
+//        }
+
+        for (auto &system : _menus.at(id)._systems) {
+            this->registerSystem(system.first, system.second);
+        }
+
+        _menus.at(id)._setup();
+
+        for (auto &handler : _menus.at(id)._handlers) {
+            rtype::EntityFactory::createInputs(handler.first, std::move(handler.second));
+        }
+    }
 } // namespace aecs

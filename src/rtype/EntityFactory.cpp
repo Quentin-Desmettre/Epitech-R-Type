@@ -18,6 +18,7 @@
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
+#include "aecs/InputComponent.hpp"
 #include <memory>
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
@@ -160,6 +161,13 @@ aecs::Entity &rtype::EntityFactory::toPower(aecs::Entity &entity, bool isPowerUp
         entity.addComponent<VelocityComponent>();
     }
     return entity;
+}
+
+aecs::Entity &rtype::EntityFactory::createInputs(int input, std::function<void()> &&onInput)
+{
+    auto &inputs = _world->createEntity();
+    inputs.addComponent<aecs::InputComponent>(input, std::move(onInput));
+    return inputs;
 }
 
 void rtype::EntityFactory::setWorld(aecs::World *world)

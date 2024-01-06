@@ -3,21 +3,24 @@
 //
 
 #include "rtype/components/SpriteComponent.hpp"
+#include "shared/SFMLLoader.hpp"
 
 rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size, sf::IntRect rect, int zIndex) :
     _size(size),
     zIndex(zIndex)
 {
-    if (!_texture.loadFromFile(path))
+    sf::Texture *texture = SFMLLoader::loadTexture(path);
+
+    if (!texture)
         throw std::runtime_error("Cannot load texture: " + path);
-    _texture.setRepeated(true);
-    sprite.setTexture(_texture);
+    texture->setRepeated(true);
+    sprite.setTexture(*texture);
     if (rect.width == 0 && rect.height == 0) {
-        rect.width = _texture.getSize().x;
-        rect.height = _texture.getSize().y;
+        rect.width = texture->getSize().x;
+        rect.height = texture->getSize().y;
     }
     // scale sprite
-    sf::Vector2<unsigned int> spSize = _texture.getSize();
+    sf::Vector2<unsigned int> spSize = texture->getSize();
     if ((unsigned)rect.width < spSize.x) {
         spSize.x = rect.width;
     }

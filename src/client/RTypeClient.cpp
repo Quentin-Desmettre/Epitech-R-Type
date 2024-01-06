@@ -63,29 +63,48 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
 {
     setDecodeMap();
     EntityFactory::setWorld(&_world);
-    auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
-    bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
-    EntityFactory::createBackground(2, sf::Vector2f(5, 0));
-    EntityFactory::createBackground(3, sf::Vector2f(3, 0));
-    EntityFactory::createBackground(4, sf::Vector2f(12, 0));
-    EntityFactory::createBackground(5, sf::Vector2f(15, 0));
-    //    EntityFactory::createPlayer();
+    std::vector<ButtonData> buttons;
+    std::map<Input, std::function<void()>> handlers;
+    handlers[sf::Keyboard::Enter] = [this]() { _world.goToMenu(1); };
+    std::vector<SystemPriority> systems;
+    Menu menu(buttons, handlers, systems, [this] () {
+        auto &e = _world.createEntity();
 
-    _world.registerSystem<ClientServerDataHandlerSystem>(-2);
-    _world.registerSystem<ClientInputSenderSystem>(-1);
-    _world.registerSystem<ClientPingSystem>(0);
+        e.addComponent<TextComponent>("R-Type", 100, sf::Color::White, 1);
+        e.addComponent<PositionComponent>(200, 100);
+    });
+    _world.addMenu(menu, 0);
+    std::vector<SystemPriority> systems2 = {
+        _world.makeSystem<ClientServerDataHandlerSystem>(-2),
+        _world.makeSystem<ClientInputSenderSystem>(-1),
+        _world.makeSystem<ClientPingSystem>(0),
+        // commented to show that movement comes from server
+        _world.makeSystem<ControlPlayerSystem>(0),
+        _world.makeSystem<AnimPlayerSystem>(1),
+        _world.makeSystem<AnimSystem>(1),
+        _world.makeSystem<PhysicsSystem>(1),
+        _world.makeSystem<ParallaxSystem>(1),
+        //    _world.registerSystem<BulletSystem>(1);
+        _world.makeSystem<DamageCollisionSystem>(1),
+        _world.makeSystem<DamageSoundSystem>(1),
+        // _world.registerSystem<MonsterGenSystem>(1);
+        _world.makeSystem<InvulSystem>(1)
+    };
+    std::function<void()> setup = [this] () {
+        auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
+        bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
+        EntityFactory::createBackground(2, sf::Vector2f(5, 0));
+        EntityFactory::createBackground(3, sf::Vector2f(3, 0));
+        EntityFactory::createBackground(4, sf::Vector2f(12, 0));
+        EntityFactory::createBackground(5, sf::Vector2f(15, 0));
+    };
 
-    // commented to show that movement comes from server
-    _world.registerSystem<ControlPlayerSystem>(0);
-    _world.registerSystem<AnimPlayerSystem>(1);
-    _world.registerSystem<AnimSystem>(1);
-    _world.registerSystem<PhysicsSystem>(1);
-    _world.registerSystem<ParallaxSystem>(1);
-    //    _world.registerSystem<BulletSystem>(1);
-    _world.registerSystem<DamageCollisionSystem>(1);
-    _world.registerSystem<DamageSoundSystem>(1);
-    // _world.registerSystem<MonsterGenSystem>(1);
-    _world.registerSystem<InvulSystem>(1);
+    std::map<Input, std::function<void()>> handlers2;
+    handlers2[sf::Keyboard::Enter] = [this]() { _world.goToMenu(0); };
+    Menu game(buttons, handlers2, systems2, std::move(setup));
+    _world.addMenu(game, 1);
+
+    _world.goToMenu(0);
 }
 
 void rtype::RTypeClient::run()

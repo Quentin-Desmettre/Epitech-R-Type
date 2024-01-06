@@ -29,8 +29,6 @@ namespace rtype
             return "SpriteComponent";
         };
 
-      private:
-        sf::Texture _texture;
     };
 } // namespace rtype
 

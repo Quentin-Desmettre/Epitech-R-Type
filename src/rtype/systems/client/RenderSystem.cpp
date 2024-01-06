@@ -3,39 +3,41 @@
 //
 
 #include "rtype/systems/client/RenderSystem.hpp"
-#include "rtype/components/PositionComponent.hpp"
-#include "rtype/components/ShaderComponent.hpp"
-#include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/TextComponent.hpp"
 
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-    ARenderSystem(world, entities, {typeid(rtype::SpriteComponent), typeid(rtype::PositionComponent)}),
+    ARenderSystem(world, entities, {}),
     _window(sf::VideoMode(1088, 640), "R-Type")
 {
 }
 
 void rtype::RenderSystem::onEntityAdded(const aecs::EntityPtr &entity)
 {
-    if (entity->hasComponents(_componentsNeeded)) {
+    if (!entity->hasComponent<PositionComponent>())
+        return;
+    if (entity->hasComponent<SpriteComponent>() || entity->hasComponent<TextComponent>()) {
         addEntity(entity);
     }
 }
 
 void rtype::RenderSystem::onEntityRemoved(const aecs::EntityPtr &entity)
 {
-    if (entity->hasComponents(_componentsNeeded)) {
+    if (entity->hasComponents({typeid(SpriteComponent), typeid(PositionComponent)}) ||
+        entity->hasComponents({typeid(TextComponent), typeid(PositionComponent)})) {
         deleteEntity(entity->getId());
     }
 }
 
 void rtype::RenderSystem::onEntityModified(const aecs::EntityPtr &entity)
 {
-    bool hasComponents = entity->hasComponents(_componentsNeeded);
+    bool isSprite = entity->hasComponents({typeid(SpriteComponent), typeid(PositionComponent)});
+    bool isText = entity->hasComponents({typeid(TextComponent), typeid(PositionComponent)});
     bool isInMap = _entitiesMap.find(entity->getId()) != _entitiesMap.end();
 
-    if (hasComponents && !isInMap) {
+    if ((isSprite || isText) && !isInMap) {
         addEntity(entity);
-    } else if (!hasComponents && isInMap) {
+    } else if (!isSprite && !isText && isInMap) {
         deleteEntity(entity->getId());
     }
 }
@@ -62,9 +64,10 @@ void rtype::RenderSystem::_sortEntities()
               });
 }
 
-aecs::ClientInputs rtype::RenderSystem::render()
+aecs::RenderInputs rtype::RenderSystem::render()
 {
     aecs::ClientInputs inputs;
+    aecs::MouseInputs mouseInputs;
 
     // Poll events
     sf::Event event{};
@@ -73,6 +76,10 @@ aecs::ClientInputs rtype::RenderSystem::render()
             _window.close();
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             _window.close();
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+            mouseInputs.emplace_back(1, sf::Vector2f(sf::Mouse::getPosition(_window)));
+        if (event.type == sf::Event::MouseMoved)
+            mouseInputs.emplace_back(0, sf::Vector2f(sf::Mouse::getPosition(_window)));
     }
     for (int i = 0; i < sf::Keyboard::KeyCount; i++) {
         if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(i)))
@@ -83,18 +90,34 @@ aecs::ClientInputs rtype::RenderSystem::render()
     _window.clear(sf::Color(63, 63, 63));
     _flushBuffers();
     for (auto &entity : _sortedEntities) {
-        auto &sprite = entity->getComponent<rtype::SpriteComponent>();
-        auto &pos = entity->getComponent<PositionComponent>();
-        sprite.sprite.setPosition(pos.x, pos.y);
-        if (entity->hasComponent<ShaderComponent>()) {
-            auto &shader = entity->getComponent<ShaderComponent>();
-            _window.draw(sprite.sprite, shader.shader.get());
-        } else
-            _window.draw(sprite.sprite);
+        if (entity->hasComponent<SpriteComponent>())
+            drawSprite(entity);
+        if (entity->hasComponent<TextComponent>())
+            drawText(entity);
     }
     _window.display();
     _flushBuffers();
-    return inputs;
+    return {inputs, mouseInputs};
+}
+
+void rtype::RenderSystem::drawText(const aecs::EntityPtr &entity)
+{
+    auto &text = entity->getComponent<rtype::TextComponent>();
+    auto &pos = entity->getComponent<PositionComponent>();
+    text._text.setPosition(pos.x, pos.y);
+    _window.draw(text._text);
+}
+
+void rtype::RenderSystem::drawSprite(const aecs::EntityPtr &entity)
+{
+    auto &sprite = entity->getComponent<rtype::SpriteComponent>();
+    auto &pos = entity->getComponent<PositionComponent>();
+    sprite.sprite.setPosition(pos.x, pos.y);
+    if (entity->hasComponent<ShaderComponent>()) {
+        auto &shader = entity->getComponent<ShaderComponent>();
+        _window.draw(sprite.sprite, shader.shader.get());
+    } else
+        _window.draw(sprite.sprite);
 }
 
 bool rtype::RenderSystem::isOpen() const
@@ -113,10 +136,11 @@ void rtype::RenderSystem::_flushBuffers()
         _entitiesMap.erase(id);
     }
 
+    // Sort entities
+    if (!_entitiesToAdd.empty() || !_entitiesToDelete.empty())
+        _sortEntities();
+
     // Clear buffers
     _entitiesToDelete.clear();
     _entitiesToAdd.clear();
-
-    // Sort entities
-    _sortEntities();
 }
