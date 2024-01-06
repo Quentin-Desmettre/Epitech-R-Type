@@ -86,19 +86,12 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         _world.makeSystem<InvulSystem>(1)
     };
     std::function<void()> setup = [] () {
-        std::cout << "Setup" << std::endl;
         auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
-        std::cout << "Background" << std::endl;
         bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
-        std::cout << "Music" << std::endl;
         EntityFactory::createBackground(2, sf::Vector2f(5, 0));
-        std::cout << "Create Background 1" << std::endl;
         EntityFactory::createBackground(3, sf::Vector2f(3, 0));
-        std::cout << "Create Background 2" << std::endl;
         EntityFactory::createBackground(4, sf::Vector2f(12, 0));
-        std::cout << "Create Background 3" << std::endl;
         EntityFactory::createBackground(5, sf::Vector2f(15, 0));
-        std::cout << "Create Background 4" << std::endl;
     };
 
     std::map<Input, std::function<void()>> handlers2;
