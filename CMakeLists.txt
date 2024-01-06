@@ -90,6 +90,8 @@ set(SHARED_SRC
         include/shared/Utils.hpp
         src/shared/Menu.cpp
         include/shared/Menu.hpp
+        include/shared/SFMLLoader.cpp
+        include/shared/SFMLLoader.hpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp

@@ -67,7 +67,12 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     std::map<Input, std::function<void()>> handlers;
     handlers[sf::Keyboard::Enter] = [this]() { _world.goToMenu(1); };
     std::vector<SystemPriority> systems;
-    Menu menu(buttons, handlers, systems, [] () {});
+    Menu menu(buttons, handlers, systems, [this] () {
+        auto &e = _world.createEntity();
+
+        e.addComponent<TextComponent>("R-Type", 100, sf::Color::White, 1);
+        e.addComponent<PositionComponent>(200, 100);
+    });
     _world.addMenu(menu, 0);
     std::vector<SystemPriority> systems2 = {
         _world.makeSystem<ClientServerDataHandlerSystem>(-2),
@@ -85,7 +90,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         // _world.registerSystem<MonsterGenSystem>(1);
         _world.makeSystem<InvulSystem>(1)
     };
-    std::function<void()> setup = [] () {
+    std::function<void()> setup = [this] () {
         auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
         bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
         EntityFactory::createBackground(2, sf::Vector2f(5, 0));

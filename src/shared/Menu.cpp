@@ -6,13 +6,15 @@
 */
 
 #include "shared/Menu.hpp"
+#include "shared/SFMLLoader.hpp"
 
 ButtonData::ButtonData(const std::string &text, const std::string &texturePath, std::function<void()> &&handler, sf::Vector2f pos, sf::IntRect rect)
 {
     _pos = pos;
     _font.loadFromFile("assets/fonts/Minecraft.ttf");
-    _texture.loadFromFile(texturePath);
-    _sprite.setTexture(_texture);
+    auto *texture = rtype::SFMLLoader::loadTexture(texturePath);
+    if (texture)
+        _sprite.setTexture(*texture);
     _sprite.setTextureRect(rect);
     sf::FloatRect spriteRect = _sprite.getGlobalBounds();
     _sprite.setPosition(_pos);
