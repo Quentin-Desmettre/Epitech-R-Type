@@ -28,8 +28,7 @@ namespace rtype
         [[nodiscard]] bool isOpen() const override;
 
       private:
-        struct EntityCompare
-        {
+        struct EntityCompare {
             bool operator()(const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) const
             {
                 return lhs->getComponent<SpriteComponent>().zIndex < rhs->getComponent<SpriteComponent>().zIndex;

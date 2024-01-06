@@ -26,7 +26,8 @@ namespace rtype
         float timeLeftShootPowerUp = 0;
         float timeLeftMovePowerDown = 0;
 
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "PlayerComponent";
         };
 

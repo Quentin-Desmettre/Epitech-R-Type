@@ -20,7 +20,8 @@ namespace rtype
 
         std::shared_ptr<sf::Shader> shader;
 
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "ShaderComponent";
         };
     };

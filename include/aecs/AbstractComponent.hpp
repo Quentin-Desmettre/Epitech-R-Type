@@ -6,9 +6,9 @@
 #define R_TYPE_ABSTRACTCOMPONENT_HPP
 
 #include <cstddef>
+#include <cstdint>
 #include <string>
 #include <vector>
-#include <cstdint>
 
 namespace aecs
 {

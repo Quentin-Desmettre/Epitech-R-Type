@@ -14,7 +14,8 @@ namespace rtype
         explicit HPComponent(float hp = 10) :
             hp(hp){};
 
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "HPComponent";
         };
         [[nodiscard]] std::vector<std::byte> encode() const override;

@@ -10,8 +10,8 @@
 #include <SFML/Network.hpp>
 
 #if defined(WIN64) || defined(WIN32) || defined(WINNT)
-#include <winsock2.h>
 #include <windows.h>
+#include <winsock2.h>
 #else
 #include <netinet/in.h>
 #endif

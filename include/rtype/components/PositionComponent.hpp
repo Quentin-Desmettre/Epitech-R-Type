@@ -12,9 +12,10 @@ namespace rtype
     class PositionComponent : public aecs::AbstractComponent
     {
       public:
-        explicit PositionComponent(float x = 0, float y = 0) :
+        explicit PositionComponent(float x = 0, float y = 0, bool deleteIfOutOfScreen = false) :
             x(x),
-            y(y)
+            y(y),
+            deleteIfOutOfScreen(deleteIfOutOfScreen)
         {
         }
         ~PositionComponent() override = default;
@@ -23,8 +24,10 @@ namespace rtype
 
         float x;
         float y;
+        bool deleteIfOutOfScreen;
 
-        const char *getName() const override {
+        [[nodiscard]] const char *getName() const override
+        {
             return "PositionComponent";
         };
     };

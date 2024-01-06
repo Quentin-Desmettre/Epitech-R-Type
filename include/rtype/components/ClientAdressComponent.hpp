@@ -14,7 +14,8 @@ namespace rtype
         explicit ClientAdressComponent(unsigned int adress) :
             adress(adress){};
         ~ClientAdressComponent() override = default;
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "ClientAdressComponent";
         };
         unsigned int adress = 0;
