@@ -5,8 +5,9 @@
 #ifndef R_TYPE_MAPSYSTEM_HPP
 #define R_TYPE_MAPSYSTEM_HPP
 
+#include "SFML/Graphics.hpp"
 #include "aecs/SystemBase.hpp"
-#include <SFML/Graphics.hpp>
+#include "rtype/components/BlockComponent.hpp"
 #include <filesystem>
 
 namespace rtype
@@ -25,6 +26,9 @@ namespace rtype
 
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
 
+        static constexpr const float BLOCK_SIZE = 58;
+        static constexpr const float BLOCK_SPEED = -5;
+
       private:
         enum BlockType {
             NONE = ' ',
@@ -33,22 +37,8 @@ namespace rtype
             BREAKABLE_MEDIUM = 'O',
             BREAKABLE_HEAVY = 'X',
         };
-        struct BlockMetaData {
-            BlockMetaData(std::string texturePath, bool canBeShot, bool canBeHitBySmallBullet, float health);
-
-            bool canBeShot;
-            bool canBeHitBySmallBullet;
-            float health;
-            std::string texturePath;
-        };
-        struct Block {
-            Block(BlockMetaData metaData, const sf::Vector2f &position);
-
-            BlockMetaData metaData;
-            sf::Vector2f position;
-        };
         typedef int Difficulty;
-        typedef std::pair<std::vector<Block>, std::size_t> Pattern;
+        typedef std::pair<std::vector<BlockComponent>, std::size_t> Pattern;
 
         /**
          * @brief Load the patterns from the assets/patterns directory
@@ -57,16 +47,14 @@ namespace rtype
         void preloadPatterns(const std::filesystem::path &directoryPath);
         static Pattern parseBlocks(const std::vector<std::string> &lines);
 
-        static constexpr const float BLOCK_SIZE = 58;
-        static constexpr const float BLOCK_SPEED = -5;
         [[nodiscard]] const Pattern &getRandomPattern(Difficulty difficulty) const;
-        void generatePattern(Difficulty maxDifficulty);
-        void loadPatterns(Difficulty maxDifficulty);
-        static void loadPatternInWorld(const Pattern &pattern, float startX);
+        void generatePattern(aecs::EntityChanges &changes, Difficulty maxDifficulty);
+        aecs::EntityChanges loadPatterns(Difficulty maxDifficulty);
+        static void loadPatternInWorld(aecs::EntityChanges &changes, const Pattern &pattern, float startX);
         float _occupiedSpace;
 
         std::map<Difficulty, std::vector<Pattern>> _patterns;
-        static const std::map<BlockType, BlockMetaData> _blocks;
+        static const std::map<BlockType, BlockComponent> _blocks;
         static const std::string _acceptedCharacters;
     };
 } // namespace rtype

@@ -2,50 +2,31 @@
 // Created by qdesmettre on 04/01/24.
 //
 
-#include "MapSystem.hpp"
+#include "rtype/systems/server/MapSystem.hpp"
 #include "aecs/World.hpp"
 #include "rtype/EntityFactory.hpp"
 #include <fstream>
 #include <utility>
 
-const std::map<rtype::MapSystem::BlockType, rtype::MapSystem::BlockMetaData> rtype::MapSystem::_blocks = {
-    {rtype::MapSystem::SOLID, {"assets/sprites/Monster.png", false, false, 0}},
-    {rtype::MapSystem::BREAKABLE_LIGHT, {"assets/sprites/Monster.png", true, true, 1}},
-    {rtype::MapSystem::BREAKABLE_MEDIUM, {"assets/sprites/Monster.png", true, true, 2}},
-    {rtype::MapSystem::BREAKABLE_HEAVY, {"assets/sprites/Monster.png", true, false, 3}},
+const std::map<rtype::MapSystem::BlockType, rtype::BlockComponent> rtype::MapSystem::_blocks = {
+    {rtype::MapSystem::SOLID, rtype::BlockComponent{"assets/sprites/Monster.png", false, false, 0}},
+    {rtype::MapSystem::BREAKABLE_LIGHT, rtype::BlockComponent{"assets/sprites/Monster.png", true, true, 50}},
+    {rtype::MapSystem::BREAKABLE_MEDIUM, rtype::BlockComponent{"assets/sprites/Monster.png", true, true, 50}},
 };
 
 const std::string rtype::MapSystem::_acceptedCharacters = "#oOX ";
-
-rtype::MapSystem::BlockMetaData::BlockMetaData(std::string texturePath, bool canBeShot, bool canBeHitBySmallBullet,
-                                               float health) :
-    canBeShot(canBeShot),
-    canBeHitBySmallBullet(canBeHitBySmallBullet),
-    health(health),
-    texturePath(std::move(texturePath))
-{
-}
-
-rtype::MapSystem::Block::Block(rtype::MapSystem::BlockMetaData metaData, const sf::Vector2f &position) :
-    metaData(std::move(metaData)),
-    position(position)
-{
-}
 
 rtype::MapSystem::MapSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
     ALogicSystem(world, entities, {}),
     _occupiedSpace(0)
 {
     preloadPatterns();
-    loadPatterns(0);
 }
 
 // Window size: 1044x640
 
 aecs::EntityChanges rtype::MapSystem::update(aecs::UpdateParams &updateParams)
 {
-    _occupiedSpace -= std::abs(updateParams.deltaTime * BLOCK_SPEED);
-    loadPatterns(0);
     // procedure to generate map:
     // - check if enough time has passed since last generation
     // - select a random pattern amongst the available ones
@@ -59,7 +40,9 @@ aecs::EntityChanges rtype::MapSystem::update(aecs::UpdateParams &updateParams)
     //      - O       for blocks that needs multiple bullets to be destroyed
     //      - X       for blocks that can only be destroyed with charged bullets
     //      - <space> for empty space
-    return {};
+
+    _occupiedSpace -= std::abs(updateParams.deltaTime * BLOCK_SPEED);
+    return loadPatterns(0);
 }
 
 void rtype::MapSystem::preloadPatterns()
@@ -137,7 +120,7 @@ rtype::MapSystem::Pattern rtype::MapSystem::parseBlocks(const std::vector<std::s
     }
 
     // Parse pattern
-    std::vector<Block> blocks;
+    std::vector<BlockComponent> blocks;
     std::size_t patternWidth = 0;
     for (std::size_t y = 0; y < lines.size(); y++) {
         if (lines[y].size() > patternWidth)
@@ -147,10 +130,9 @@ rtype::MapSystem::Pattern rtype::MapSystem::parseBlocks(const std::vector<std::s
             if (c == NONE)
                 continue;
             auto &metaData = _blocks.at(c);
-            blocks.push_back(Block(metaData, {
-                static_cast<float>(x * BLOCK_SIZE),
-                static_cast<float>(y * BLOCK_SIZE)
-            }));
+            blocks.push_back(BlockComponent(metaData.texturePath, metaData.canBeShot, metaData.canBeHitBySmallBullet,
+                                            metaData.health,
+                                            {static_cast<float>(x * BLOCK_SIZE), static_cast<float>(y * BLOCK_SIZE)}));
         }
     }
     return {blocks, patternWidth};
@@ -162,32 +144,38 @@ const rtype::MapSystem::Pattern &rtype::MapSystem::getRandomPattern(rtype::MapSy
     return patterns[rand() % patterns.size()];
 }
 
-void rtype::MapSystem::loadPatternInWorld(const rtype::MapSystem::Pattern &pattern, float startX)
+void rtype::MapSystem::loadPatternInWorld(aecs::EntityChanges &changes, const rtype::MapSystem::Pattern &pattern,
+                                          float startX)
 {
     for (const auto &block : pattern.first) {
-        EntityFactory::createBlock({block.position.x + startX, block.position.y}, {BLOCK_SIZE * 0.9999, BLOCK_SIZE * 0.9999}, // WTF, why do I need to do this? (without it, blocks collide with each other)
-                                   block.metaData.texturePath, BLOCK_SPEED, block.metaData.canBeShot,
-                                   block.metaData.health);
+        changes.editedEntities.push_back(
+            EntityFactory::createBlock(
+                {block.position.x + startX, block.position.y},
+                block.texturePath,
+                block.canBeShot,
+                block.health).getId());
     }
 }
 
-void rtype::MapSystem::generatePattern(rtype::MapSystem::Difficulty maxDifficulty)
+void rtype::MapSystem::generatePattern(aecs::EntityChanges &changes, rtype::MapSystem::Difficulty maxDifficulty)
 {
     auto difficulty = static_cast<Difficulty>(rand() % (maxDifficulty + 1));
     auto &pattern = getRandomPattern(difficulty);
-    loadPatternInWorld(pattern, _occupiedSpace);
+    loadPatternInWorld(changes, pattern, _occupiedSpace);
     _occupiedSpace += pattern.second * BLOCK_SIZE;
 }
 
-void rtype::MapSystem::loadPatterns(rtype::MapSystem::Difficulty maxDifficulty)
+aecs::EntityChanges rtype::MapSystem::loadPatterns(rtype::MapSystem::Difficulty maxDifficulty)
 {
     // Generate patterns up until all the space has been filled
     const std::size_t WINDOW_WIDTH = 1088; // +2 for a bit of margin
+    aecs::EntityChanges changes;
 
-//    std::cout << "Start, occupied space: " << _occupiedSpace << std::endl;
+    //    std::cout << "Start, occupied space: " << _occupiedSpace << std::endl;
     while (_occupiedSpace < WINDOW_WIDTH * 1.2) {
-        generatePattern(maxDifficulty);
-//        generatePattern(maxDifficulty);
-//        std::cout << "Occupied space: " << _occupiedSpace << std::endl;
+        generatePattern(changes, maxDifficulty);
+        //        generatePattern(maxDifficulty);
+        //        std::cout << "Occupied space: " << _occupiedSpace << std::endl;
     }
+    return changes;
 }

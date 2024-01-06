@@ -21,31 +21,30 @@
 #include <chrono>
 #include <thread>
 
+#include "rtype/components/BlockComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/MusicComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
-#include "rtype/systems/shared/MapSystem.hpp"
+#include "rtype/systems/server/MapSystem.hpp"
 
 void rtype::RTypeClient::setDecodeMap()
 {
     _world.addDecodeMap("PlayerComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
-        entity.addComponent<PlayerComponent>();
-        auto &component = entity.getComponent<PlayerComponent>();
-        component.decode(data);
+        entity.addComponent<PlayerComponent>().decode(data);
         EntityFactory::toPlayer(entity);
     });
     _world.addDecodeMap("BulletComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
-        entity.addComponent<BulletComponent>();
-        auto &component = entity.getComponent<BulletComponent>();
-        component.decode(data);
+        entity.addComponent<BulletComponent>().decode(data);
         EntityFactory::toBullet(entity);
     });
     _world.addDecodeMap("MonsterComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
-        entity.addComponent<MonsterComponent>();
-        auto &component = entity.getComponent<MonsterComponent>();
-        component.decode(data);
+        entity.addComponent<MonsterComponent>().decode(data);
         EntityFactory::toEnemy(entity);
+    });
+    _world.addDecodeMap("BlockComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<BlockComponent>().decode(data);
+        EntityFactory::toBlock(entity);
     });
 }
 
@@ -63,12 +62,11 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     EntityFactory::createBackground(3, sf::Vector2f(3, 0));
     EntityFactory::createBackground(4, sf::Vector2f(12, 0));
     EntityFactory::createBackground(5, sf::Vector2f(15, 0));
-    EntityFactory::createPlayer();
+    //    EntityFactory::createPlayer();
 
-    // Network systems
-    //    _world.registerSystem<ClientServerDataHandlerSystem>(-2);
-    //    _world.registerSystem<ClientInputSenderSystem>(-1);
-    //    _world.registerSystem<ClientPingSystem>(0);
+    _world.registerSystem<ClientServerDataHandlerSystem>(-2);
+    _world.registerSystem<ClientInputSenderSystem>(-1);
+    _world.registerSystem<ClientPingSystem>(0);
 
     // commented to show that movement comes from server
     _world.registerSystem<ControlPlayerSystem>(0);
@@ -76,12 +74,11 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     _world.registerSystem<AnimSystem>(1);
     _world.registerSystem<PhysicsSystem>(1);
     _world.registerSystem<ParallaxSystem>(1);
-    _world.registerSystem<BulletSystem>(1);
+    //    _world.registerSystem<BulletSystem>(1);
     _world.registerSystem<DamageCollisionSystem>(1);
-//    _world.registerSystem<MonsterGenSystem>(1);
+    _world.registerSystem<DamageSoundSystem>(1);
+    // _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
-    _world.registerSystem<MonsterBullet>(1);
-    _world.registerSystem<MapSystem>(2);
 }
 
 void rtype::RTypeClient::run()

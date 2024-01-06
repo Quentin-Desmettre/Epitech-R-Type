@@ -4,6 +4,7 @@
 
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/AnimComponent.hpp"
+#include "rtype/components/BlockComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/CollidableComponent.hpp"
 #include "rtype/components/DamageCollisionComponent.hpp"
@@ -15,6 +16,7 @@
 #include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
+#include "rtype/systems/server/MapSystem.hpp"
 #include <memory>
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
@@ -142,16 +144,27 @@ void rtype::EntityFactory::setWorld(aecs::World *world)
     _world = world;
 }
 
-aecs::Entity &rtype::EntityFactory::createBlock(sf::Vector2f position, sf::Vector2f size, const std::string &texture,
-                                                float speed, bool breakable, float hp)
+aecs::Entity &rtype::EntityFactory::toBlock(aecs::Entity &block)
+{
+    auto &blockComponent = block.getComponent<BlockComponent>();
+
+    block.addComponent<SpriteComponent>(blockComponent.texturePath,
+                                        sf::Vector2f{MapSystem::BLOCK_SIZE, MapSystem::BLOCK_SIZE});
+    block.addComponent<PositionComponent>(blockComponent.position.x, blockComponent.position.y, true);
+    block.addComponent<VelocityComponent>(MapSystem::BLOCK_SPEED, 0);
+    block.addComponent<CollidableComponent>(1000000);
+    if (blockComponent.canBeShot) {
+        block.addComponent<HPComponent>(blockComponent.health);
+        block.addComponent<DamageCollisionComponent>(1, blockComponent.health);
+    }
+    return block;
+}
+
+aecs::Entity &rtype::EntityFactory::createBlock(sf::Vector2f position, const std::string &texture, bool breakable,
+                                                float hp)
 {
     auto &block = _world->createEntity();
+    block.addComponent<BlockComponent>(texture, breakable, true, hp, position);
 
-    block.addComponent<PositionComponent>(position.x, position.y, true);
-    block.addComponent<SpriteComponent>(texture, size);
-    block.addComponent<VelocityComponent>(speed, 0);
-    block.addComponent<CollidableComponent>(1000000);
-    if (breakable)
-        block.addComponent<HPComponent>(hp);
-    return block;
+    return toBlock(block);
 }

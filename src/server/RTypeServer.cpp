@@ -5,6 +5,7 @@
 #include "rtype/RTypeServer.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/systems/server/DeleteClientSystem.hpp"
+#include "rtype/systems/server/MapSystem.hpp"
 #include "rtype/systems/server/NewConnectionSystem.hpp"
 #include "rtype/systems/server/PlayerOnConnectionSystem.hpp"
 #include "rtype/systems/server/ServerCorrectionsSystem.hpp"
@@ -41,6 +42,7 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate, int ac, char **av) :
     _world.registerSystem<ParallaxSystem>(1);
     _world.registerSystem<BulletSystem>(1);
     _world.registerSystem<DamageCollisionSystem>(1);
+    _world.registerSystem<MapSystem>(1);
     _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
     _world.registerSystem<MonsterBullet>(1);
