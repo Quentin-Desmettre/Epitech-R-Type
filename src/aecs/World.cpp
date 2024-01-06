@@ -322,10 +322,8 @@ namespace aecs
             this->destroyEntity(*entity.second);
         }
         this->_entities.clear();
-        _menus.at(id)._setup();
 
         this->registerSystem<MenuInputSystem>(0);
-
 
 //        for (auto &button : _menus.at(id)._buttons) {
 //            auto &entity = createEntity();
@@ -337,6 +335,8 @@ namespace aecs
         for (auto &system : _menus.at(id)._systems) {
             this->registerSystem(system.first, system.second);
         }
+
+        _menus.at(id)._setup();
 
         for (auto &handler : _menus.at(id)._handlers) {
             rtype::EntityFactory::createInputs(handler.first, std::move(handler.second));

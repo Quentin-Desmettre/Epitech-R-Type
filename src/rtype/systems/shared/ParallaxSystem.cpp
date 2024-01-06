@@ -17,7 +17,6 @@ namespace rtype
     {
         aecs::EntityChanges changes;
         for (auto &[_id, entity] : _entitiesMap) {
-            std::cout << "ParallaxSystem" << std::endl;
             auto &parallax = entity->getComponent<ParallaxComponent>();
             auto &sprite = entity->getComponent<SpriteComponent>();
             auto &position = entity->getComponent<PositionComponent>();
