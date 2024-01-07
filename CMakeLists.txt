@@ -57,6 +57,8 @@ set(SHARED_SRC
         src/rtype/components/PositionComponent.cpp
         src/rtype/components/SpriteComponent.cpp
         src/rtype/components/VelocityComponent.cpp
+        src/rtype/components/TextComponent.cpp
+        include/rtype/components/TextComponent.hpp
 
         # Systems
         include/rtype/systems/shared/AnimPlayerSystem.hpp
@@ -82,6 +84,8 @@ set(SHARED_SRC
         src/shared/ArgParser.cpp
         include/shared/ArgParser.hpp
         include/shared/Utils.hpp
+        src/rtype/components/TagComponent.cpp
+        include/rtype/components/TagComponent.hpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
@@ -113,6 +117,8 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/components/MusicComponent.hpp
         src/rtype/components/MusicComponent.cpp
         src/rtype/systems/client/DamageSoundSystem.cpp
+        src/rtype/systems/client/ClientScoreSystem.cpp
+        include/rtype/systems/client/ClientScoreSystem.hpp
 )
 
 

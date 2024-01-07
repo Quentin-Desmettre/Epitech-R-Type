@@ -14,6 +14,8 @@
 #include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
+#include "rtype/components/TextComponent.hpp"
+#include "rtype/components/TagComponent.hpp"
 #include <memory>
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
@@ -138,4 +140,13 @@ aecs::Entity &rtype::EntityFactory::createBackground(int id, sf::Vector2f speed)
 void rtype::EntityFactory::setWorld(aecs::World *world)
 {
     _world = world;
+}
+
+aecs::Entity &rtype::EntityFactory::createScore()
+{
+    auto &score = _world->createEntity();
+    score.addComponent<TextComponent>("Score: 0");
+    score.addComponent<PositionComponent>(0, 0);
+    score.addComponent<TagComponent>("scoreText");
+    return score;
 }
