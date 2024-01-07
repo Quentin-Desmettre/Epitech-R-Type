@@ -14,7 +14,4 @@ rtype::TextComponent::TextComponent(const std::string &text, int fontSize, sf::C
     _text.setString(text);
     _text.setCharacterSize(fontSize);
     _text.setFillColor(color);
-    sf::FloatRect textRect = _text.getLocalBounds();
-    _text.setOrigin(textRect.left + textRect.width / 2.0f,
-        textRect.top + textRect.height / 2.0f);
 }

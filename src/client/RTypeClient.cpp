@@ -28,6 +28,7 @@
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PowerComponent.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
+#include "rtype/systems/client/ProfilingSystem.hpp"
 
 void rtype::RTypeClient::setDecodeMap()
 {
@@ -88,7 +89,8 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         _world.makeSystem<DamageCollisionSystem>(1),
         _world.makeSystem<DamageSoundSystem>(1),
         // _world.registerSystem<MonsterGenSystem>(1);
-        _world.makeSystem<InvulSystem>(1)
+        _world.makeSystem<InvulSystem>(1),
+        _world.makeSystem<ProfilingSystem>(10)
     };
     std::function<void()> setup = [this] () {
         auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
@@ -97,6 +99,16 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         EntityFactory::createBackground(3, sf::Vector2f(3, 0));
         EntityFactory::createBackground(4, sf::Vector2f(12, 0));
         EntityFactory::createBackground(5, sf::Vector2f(15, 0));
+
+        _world.getSystem<ProfilingSystem>()
+                .clear()
+                .addProfiling([](aecs::World &world) {
+                    return std::to_string(world.getEntityCount());
+                }, "Entities")
+                .addProfiling([](aecs::World &world) {
+                    return std::to_string(world.getTick());
+                }, "Tick")
+        ;
     };
 
     std::map<Input, std::function<void()>> handlers2;

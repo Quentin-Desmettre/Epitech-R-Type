@@ -12,16 +12,19 @@ namespace rtype {
 
     class ProfilingSystem: public aecs::ALogicSystem {
     public:
-        ProfilingSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
+        ProfilingSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities, float timeBetweenUpdate = 0.5f);
         ~ProfilingSystem() override = default;
 
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
 
-        typedef std::function<std::pair<std::string, std::string>(aecs::World &)> ProfilingFunction;
-        void addProfiling(const ProfilingFunction &function);
+        typedef std::string (*ProfilingFunction)(aecs::World &);
+        ProfilingSystem &addProfiling(ProfilingFunction function, const std::string &name);
+        ProfilingSystem &clear();
 
     private:
-        std::map<ProfilingFunction, aecs::EntityPtr> _profilers;
+        std::map<aecs::Entity *, std::pair<std::string, ProfilingFunction>> _profilers;
+        float _timeBetweenUpdate;
+        float _elapsedTime;
     };
 }
 

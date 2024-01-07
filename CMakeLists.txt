@@ -132,6 +132,8 @@ set(CLIENT_SRC src/client/main.cpp
         src/rtype/components/MusicComponent.cpp
         src/rtype/systems/client/DamageSoundSystem.cpp
         src/rtype/components/TextComponent.cpp
+        src/rtype/systems/client/ProfilingSystem.cpp
+        include/rtype/systems/client/ProfilingSystem.hpp
 )
 
 

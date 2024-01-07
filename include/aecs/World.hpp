@@ -124,6 +124,14 @@ namespace aecs
             sortSystems();
         }
 
+        template<typename T>
+        T &getSystem()
+        {
+            static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
+
+            return *std::dynamic_pointer_cast<T>(_systems[typeid(T)].first);
+        }
+
         template <typename T>
         void removeSystem()
         {
@@ -142,6 +150,8 @@ namespace aecs
 
         int addMenu(const Menu &menu, int id = -1);
         void goToMenu(int id);
+
+        [[nodiscard]] std::size_t getEntityCount() const { return _entities.size();}
 
       private:
         void sortSystems();
