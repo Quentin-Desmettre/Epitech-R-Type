@@ -64,6 +64,8 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     EntityFactory::createBackground(4, sf::Vector2f(12, 0));
     EntityFactory::createBackground(5, sf::Vector2f(15, 0));
 
+    EntityFactory::createScore();
+
     // Network systems
     _world.registerSystem<ClientServerDataHandlerSystem>(-2);
     _world.registerSystem<ClientInputSenderSystem>(-1);
