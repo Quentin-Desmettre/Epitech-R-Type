@@ -53,7 +53,7 @@ aecs::Entity &rtype::EntityFactory::toBullet(aecs::Entity &entity)
 {
     auto &component = entity.getComponent<BulletComponent>();
     bool big = component.big;
-    entity.addComponent<HPComponent>(big ? 50 : 5);
+    entity.addComponent<HPComponent>(big ? 25 : 5);
     if (big)
         entity.addComponent<SpriteComponent>("assets/sprites/BigBullet.png", sf::Vector2f(55 * 3, 29 * 3),
                                              sf::IntRect(0, 0, 55, 29));
@@ -164,10 +164,10 @@ aecs::Entity &rtype::EntityFactory::createSnake(sf::Vector2f position, int nb)
         toSnake(enemy);
         enemy.addComponent<PositionComponent>(position.x, position.y);
         if (i == 0)
-            enemy.addComponent<VelocityComponent>(0, 20);
+            enemy.addComponent<VelocityComponent>(-20, 0);
         else
             enemy.addComponent<VelocityComponent>(0, 0);
-        enemy.addComponent<DamageCollisionComponent>(1, 20);
+        enemy.addComponent<DamageCollisionComponent>(1, 15);
         enemy.addComponent<HPComponent>(10);
     }
 }

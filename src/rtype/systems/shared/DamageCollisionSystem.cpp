@@ -68,12 +68,14 @@ namespace rtype
                 if (rect.intersects(rect2) && damage.team != damage2.team) {
                     if (damage.damage != 0 && damage2.invulnerability == 0) {
                         hp2.hp -= damage.damage;
-                        damage2.invulnerability = 5;
+                        if (damage2.type != DamageCollisionComponent::ObjectType::LG_BULLET)
+                            damage2.invulnerability = 5;
                         damage2.damaged = true;
                     }
                     if (damage2.damage != 0 && damage.invulnerability == 0) {
                         hp.hp -= damage2.damage;
-                        damage.invulnerability = 5;
+                        if (damage.type != DamageCollisionComponent::ObjectType::LG_BULLET)
+                            damage.invulnerability = 5;
                         damage.damaged = true;
                     }
                     //                    bool kill = killed(entity, entity2);

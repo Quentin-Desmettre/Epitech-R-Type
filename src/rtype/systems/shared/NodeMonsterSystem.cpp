@@ -30,12 +30,11 @@ void rtype::NodeMonsterSystem::follow(aecs::EntityPtr &entity1, float delta)
     }
     sf::Vector2f prec = positions[i - 1];
     sf::Vector2f pos2 = positions[i];
-    if (_world.getIsServer()) {
-        float angle = atan2(prec.y - pos2.y, prec.x - pos2.x);
-//        if (angle < 0)
-//            angle += 2 * M_PI;
-        node1.rotate = angle * 180 / M_PI;
-    }
+    float angle = atan2(prec.y - pos2.y, prec.x - pos2.x);
+    if (angle < 0)
+        angle += 2 * M_PI;
+    node1.rotate = angle * 180 / M_PI;
+
 
     pos1.x = pos2.x;
     pos1.y = pos2.y;
@@ -99,20 +98,19 @@ void rtype::NodeMonsterSystem::wave(aecs::Entity &entity, float delta)
         auto &vel = entity.getComponent<VelocityComponent>();
         auto &sprite = entity.getComponent<SpriteComponent>();
         sprite.zIndex = 40;
-        static float dir = atan2(vel.y, vel.x);
-        if (pos.x > 980) {
-            vel.x = -20;
-            vel.y = 0;
-            return;
+        static float dir = -20;
+        if (vel.y == 0)
+            vel.y = dir;
+        else
+            dir = vel.y;
+        if (pos.y > 740 || pos.y < -100) {
+            vel.y = -vel.y;
+            pos.x -= 100;
         }
-        float angle = dir;
-        if (pos.y > 400 || pos.y < 200)
-            angle = dir + 0.1 * delta;
-        dir = angle;
-        if (angle > 2 * M_PI)
-            angle -= 2 * M_PI;
-        vel.x = cosf(angle) * 20;
-        vel.y = sinf(angle) * 20;
-        angle -= M_PI;
+        vel.x = sinf(pos.y / 100) * 10;
+        float angle = atan2(vel.y, vel.x);
+        angle = angle - M_PI;
+        if (angle < 0)
+            angle += 2 * M_PI;
         sprite.sprite.setRotation(angle * 180 / M_PI);
 }
