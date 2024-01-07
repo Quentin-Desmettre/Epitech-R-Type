@@ -154,9 +154,10 @@ aecs::Entity &rtype::EntityFactory::toSnake(aecs::Entity &entity)
         entity.addComponent<VelocityComponent>(0, 0);
         entity.addComponent<HPComponent>();
     }
+    return entity;
 }
 
-aecs::Entity &rtype::EntityFactory::createSnake(sf::Vector2f position, int nb)
+void rtype::EntityFactory::createSnake(sf::Vector2f position, int nb)
 {
     for (int i = 0; i < nb; i++) {
         auto &enemy = _world->createEntity();

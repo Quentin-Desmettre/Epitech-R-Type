@@ -16,7 +16,7 @@ rtype::NodeMonsterSystem::
 {
 }
 
-void rtype::NodeMonsterSystem::follow(aecs::EntityPtr &entity1, float delta)
+void rtype::NodeMonsterSystem::follow(aecs::EntityPtr &entity1)
 {
     auto &node1 = entity1->getComponent<NodeComponent>();
     auto &pos1 = entity1->getComponent<PositionComponent>();
@@ -63,11 +63,12 @@ aecs::EntityChanges rtype::NodeMonsterSystem::update(aecs::UpdateParams &updateP
     for (auto entity : entities) {
         auto &node = entity->getComponent<NodeComponent>();
         auto &monster = entity->getComponent<MonsterComponent>();
-        follow(entity, updateParams.deltaTime);
+        changes.editedEntities.push_back(entity->getId());
+        follow(entity);
 
         if (node.delay == 0) {
             monster._isShooting = true;
-            wave(*entity, updateParams.deltaTime);
+            wave(*entity);
             if (time > offset) {
                 auto &position = entity->getComponent<PositionComponent>();
                 positions.emplace_back(position.x, position.y);
@@ -92,7 +93,7 @@ void rtype::NodeMonsterSystem::onEntityRemoved(const aecs::EntityPtr &entity)
         _entitiesMap.erase(entity->getId());
     }
 }
-void rtype::NodeMonsterSystem::wave(aecs::Entity &entity, float delta)
+void rtype::NodeMonsterSystem::wave(aecs::Entity &entity)
 {
         auto &pos = entity.getComponent<PositionComponent>();
         auto &vel = entity.getComponent<VelocityComponent>();

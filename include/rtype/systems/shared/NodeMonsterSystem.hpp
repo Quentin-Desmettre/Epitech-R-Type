@@ -19,8 +19,8 @@ namespace rtype
         std::vector<sf::Vector2f> positions;
 
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
-        void follow(aecs::EntityPtr &entity1, float delta);
-        void wave(aecs::Entity &entity, float delta);
+        void follow(aecs::EntityPtr &entity1);
+        void wave(aecs::Entity &entity);
 
         void onEntityRemoved(const aecs::EntityPtr &entity) override;
         std::vector<float> _dead;
