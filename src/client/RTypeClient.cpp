@@ -25,6 +25,8 @@
 #include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/MusicComponent.hpp"
+#include "rtype/systems/client/ClientScoreSystem.hpp"
+
 void rtype::RTypeClient::setDecodeMap()
 {
     _world.addDecodeMap(typeid(PlayerComponent), [](aecs::Entity &entity, const std::vector<std::byte> &data) {
@@ -78,6 +80,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     _world.registerSystem<DamageSoundSystem>(1);
     // _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
+    _world.registerSystem<ClientScoreSystem>(1);
 }
 
 void rtype::RTypeClient::run()
