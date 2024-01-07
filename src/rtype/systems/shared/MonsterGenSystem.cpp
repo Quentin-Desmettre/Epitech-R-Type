@@ -14,7 +14,9 @@ aecs::Entity &rtype::MonsterGenSystem::addRandomEnemy()
 {
     int rnd = std::rand() % 100;
     bool lil = rnd < 70;
-    return EntityFactory::createEnemy(sf::Vector2f(1080, std::rand() % 540), sf::Vector2f(-15, 0), lil);
+    if (rnd == 0)
+        return EntityFactory::createSnake(sf::Vector2f(1080, std::rand() % 540 + 50), 5);
+    return EntityFactory::createEnemy(sf::Vector2f(1080, std::rand() % 540 + 50), sf::Vector2f(-15, 0), lil);
 }
 
 aecs::EntityChanges rtype::MonsterGenSystem::update(aecs::UpdateParams &updateParams)

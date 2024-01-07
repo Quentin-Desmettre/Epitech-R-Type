@@ -19,6 +19,7 @@
 #include "rtype/systems/shared/MonsterGenSystem.hpp"
 #include "rtype/systems/shared/ParallaxSystem.hpp"
 #include "rtype/systems/shared/PhysicsSystem.hpp"
+#include "rtype/systems/shared/NodeMonsterSystem.hpp"
 #include <chrono>
 #include <thread>
 
@@ -37,7 +38,7 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate, int ac, char **av) :
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
     _world.registerSystem<AnimSystem>(1);
-    _world.registerSystem<PhysicsSystem>(1);
+    _world.registerSystem<PhysicsSystem>(2);
     _world.registerSystem<ParallaxSystem>(1);
     _world.registerSystem<BulletSystem>(1);
     _world.registerSystem<DamageCollisionSystem>(1);
@@ -47,6 +48,8 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate, int ac, char **av) :
 
     // Network systems
     _world.registerSystem<ServerCorrectionsSystem>(1000);
+    _world.registerSystem<NodeMonsterSystem>(1);
+    EntityFactory::createSnake(sf::Vector2f(1180, std::rand() % 540 + 50), 25);
 }
 
 void rtype::RTypeServer::run()

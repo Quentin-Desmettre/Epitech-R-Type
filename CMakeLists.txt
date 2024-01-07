@@ -82,6 +82,9 @@ set(SHARED_SRC
         src/shared/ArgParser.cpp
         include/shared/ArgParser.hpp
         include/shared/Utils.hpp
+        include/rtype/systems/shared/NodeMonsterSystem.hpp
+        src/rtype/systems/shared/NodeMonsterSystem.cpp
+        src/rtype/components/NodeComponent.cpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
@@ -96,6 +99,7 @@ set(SERVER_SRC src/server/main.cpp
         src/rtype/systems/server/PlayerOnConnectionSystem.cpp
         src/rtype/systems/server/ServerCorrectionsSystem.cpp
         src/rtype/systems/server/ServerInputsSystem.cpp
+        include/rtype/components/NodeComponent.hpp
 )
 set(CLIENT_SRC src/client/main.cpp
         src/client/RTypeClient.cpp
@@ -113,6 +117,7 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/components/MusicComponent.hpp
         src/rtype/components/MusicComponent.cpp
         src/rtype/systems/client/DamageSoundSystem.cpp
+        include/rtype/components/NodeComponent.hpp
 )
 
 

@@ -18,9 +18,10 @@
 #include "rtype/systems/shared/MonsterGenSystem.hpp"
 #include "rtype/systems/shared/ParallaxSystem.hpp"
 #include "rtype/systems/shared/PhysicsSystem.hpp"
+#include "rtype/systems/shared/NodeMonsterSystem.hpp"
 #include <chrono>
 #include <thread>
-
+#include "rtype/components/NodeComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
@@ -44,6 +45,12 @@ void rtype::RTypeClient::setDecodeMap()
         auto &component = entity.getComponent<MonsterComponent>();
         component.decode(data);
         EntityFactory::toEnemy(entity);
+    });
+    _world.addDecodeMap("NodeComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<NodeComponent>();
+        auto &component = entity.getComponent<NodeComponent>();
+        component.decode(data);
+        EntityFactory::toSnake(entity);
     });
 }
 
@@ -71,8 +78,9 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     _world.registerSystem<ControlPlayerSystem>(0);
     _world.registerSystem<AnimPlayerSystem>(1);
     _world.registerSystem<AnimSystem>(1);
-    _world.registerSystem<PhysicsSystem>(1);
+    _world.registerSystem<PhysicsSystem>(2);
     _world.registerSystem<ParallaxSystem>(1);
+    _world.registerSystem<NodeMonsterSystem>(1);
 //    _world.registerSystem<BulletSystem>(1);
     _world.registerSystem<DamageCollisionSystem>(1);
     _world.registerSystem<DamageSoundSystem>(1);
