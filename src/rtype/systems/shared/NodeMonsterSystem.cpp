@@ -53,6 +53,9 @@ aecs::EntityChanges rtype::NodeMonsterSystem::update(aecs::UpdateParams &updateP
     for (auto &[_id, entity] : _entitiesMap) {
         entities.push_back(entity);
     }
+    if (entities.size() == 0) {
+        positions.clear();
+    }
     for (std::size_t i = 0; i < entities.size(); i++) {
         auto &node = entities[i]->getComponent<NodeComponent>();
         if (node.delay != i)
@@ -65,7 +68,6 @@ aecs::EntityChanges rtype::NodeMonsterSystem::update(aecs::UpdateParams &updateP
         auto &monster = entity->getComponent<MonsterComponent>();
         changes.editedEntities.push_back(entity->getId());
         follow(entity);
-
         if (node.delay == 0) {
             monster._isShooting = true;
             wave(*entity);
