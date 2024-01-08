@@ -182,7 +182,7 @@ aecs::Entity &rtype::EntityFactory::toSnake(aecs::Entity &entity)
     entity.addComponent<MonsterComponent>();
     entity.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102),
                                          sf::IntRect(52 * (rand() % 5), 0, 52, 34));
-    entity.addComponent<CollidableComponent>(0);
+//    entity.addComponent<CollidableComponent>(0);
     if (!_world->getIsServer()) {
         entity.addComponent<AnimComponent>(1);
         entity.addComponent<PositionComponent>(1180, 200);

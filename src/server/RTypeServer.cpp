@@ -49,10 +49,10 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate, int ac, char **av) :
     _world.registerSystem<InvulSystem>(1);
     _world.registerSystem<MonsterBullet>(1);
     _world.registerSystem<PowerSystem>(2);
+    _world.registerSystem<NodeMonsterSystem>(1);
 
     // Network systems
     _world.registerSystem<ServerCorrectionsSystem>(1000);
-    _world.registerSystem<NodeMonsterSystem>(1);
 }
 
 void rtype::RTypeServer::run()

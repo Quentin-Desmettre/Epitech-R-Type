@@ -93,6 +93,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         _world.makeSystem<AnimSystem>(1), _world.makeSystem<PhysicsSystem>(1), _world.makeSystem<ParallaxSystem>(1),
         //    _world.registerSystem<BulletSystem>(1);
         _world.makeSystem<DamageCollisionSystem>(1), _world.makeSystem<DamageSoundSystem>(1),
+        _world.makeSystem<NodeMonsterSystem>(1),
         // _world.registerSystem<MonsterGenSystem>(1);
         _world.makeSystem<InvulSystem>(1), _world.makeSystem<ProfilingSystem>(10)};
     std::function<void()> setup = [this]() {

@@ -23,7 +23,7 @@ aecs::EntityChanges rtype::MonsterGenSystem::update(aecs::UpdateParams &updatePa
     std::size_t nbPlayer = _entitiesMap.size();
     static float time = 0;
     aecs::EntityChanges changes;
-    static float bossTime = 10.f;
+    static float bossTime = 300.f;
 
     if (nbPlayer == 0) {
         return {};
