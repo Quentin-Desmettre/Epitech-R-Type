@@ -86,6 +86,8 @@ set(SHARED_SRC
         include/shared/Utils.hpp
         src/rtype/components/TagComponent.cpp
         include/rtype/components/TagComponent.hpp
+        src/rtype/systems/client/ClientHealthSystem.cpp
+        include/rtype/systems/client/ClientHealthSystem.hpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
