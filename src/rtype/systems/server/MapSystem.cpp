@@ -64,6 +64,10 @@ void rtype::MapSystem::preloadPatterns()
      *
      * With the name of each folder being the difficulty of the patterns it contains
      */
+    if (!std::filesystem::exists("assets/patterns")) {
+            std::cerr << "Failed to open directory assets/patterns" << std::endl;
+            return;
+    }
     std::filesystem::directory_iterator it("assets/patterns");
     for (auto &file : it) {
         if (!file.is_directory())
@@ -169,6 +173,8 @@ aecs::EntityChanges rtype::MapSystem::loadPatterns(rtype::MapSystem::Difficulty 
     aecs::EntityChanges changes;
 
     //    std::cout << "Start, occupied space: " << _occupiedSpace << std::endl;
+    if (_patterns.empty())
+        return {};
     while (_occupiedSpace < WINDOW_WIDTH * 1.2) {
         generatePattern(changes, maxDifficulty);
         //        generatePattern(maxDifficulty);
