@@ -59,10 +59,12 @@ void rtype::RenderSystem::_sortEntities()
         _sortedEntities.push_back(entity.second);
     std::sort(_sortedEntities.begin(), _sortedEntities.end(),
               [](const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) {
-                    auto lIndex = lhs->hasComponent<rtype::SpriteComponent>() ?
-                                   lhs->getComponent<rtype::SpriteComponent>().zIndex : lhs->getComponent<rtype::TextComponent>().zIndex;
-                    auto rIndex = rhs->hasComponent<rtype::SpriteComponent>() ?
-                                      rhs->getComponent<rtype::SpriteComponent>().zIndex : rhs->getComponent<rtype::TextComponent>().zIndex;
+                  auto lIndex = lhs->hasComponent<rtype::SpriteComponent>()
+                                    ? lhs->getComponent<rtype::SpriteComponent>().zIndex
+                                    : lhs->getComponent<rtype::TextComponent>().zIndex;
+                  auto rIndex = rhs->hasComponent<rtype::SpriteComponent>()
+                                    ? rhs->getComponent<rtype::SpriteComponent>().zIndex
+                                    : rhs->getComponent<rtype::TextComponent>().zIndex;
                   return lIndex < rIndex;
               });
 }

@@ -97,8 +97,10 @@ namespace aecs
         // Lock inputs
         {
             std::lock_guard<std::mutex> lock(_renderInputsMutex);
-            updateParams = {
-                .inputs = _isServer ? getInputs() : popInputs(), .mouseInputs = _mouseInputs, .deltaTime = deltaTime, .entityChanges = {}};
+            updateParams = {.inputs = _isServer ? getInputs() : popInputs(),
+                            .mouseInputs = _mouseInputs,
+                            .deltaTime = deltaTime,
+                            .entityChanges = {}};
         }
 
         // Update systems
@@ -328,12 +330,12 @@ namespace aecs
 
         this->registerSystem<MenuInputSystem>(0);
 
-//        for (auto &button : _menus.at(id)._buttons) {
-//            auto &entity = createEntity();
-//            entity.addComponent<rtype::components::Button>(button._text, button._texture, button._sprite, button._pos, button._rect);
-//            entity.addComponent<rtype::components::Transform>(button._pos);
-//            entity.addComponent<rtype::components::Clickable>(button._handler);
-//        }
+        //        for (auto &button : _menus.at(id)._buttons) {
+        //            auto &entity = createEntity();
+        //            entity.addComponent<rtype::components::Button>(button._text, button._texture, button._sprite,
+        //            button._pos, button._rect); entity.addComponent<rtype::components::Transform>(button._pos);
+        //            entity.addComponent<rtype::components::Clickable>(button._handler);
+        //        }
 
         for (auto &system : _menus.at(id)._systems) {
             this->registerSystem(system.first, system.second);

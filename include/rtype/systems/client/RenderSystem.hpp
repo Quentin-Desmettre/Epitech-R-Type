@@ -9,9 +9,9 @@
 #include "SFML/Window.hpp"
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
-#include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/ShaderComponent.hpp"
+#include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/TextComponent.hpp"
 #include <set>
 

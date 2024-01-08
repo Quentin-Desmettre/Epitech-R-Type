@@ -28,7 +28,6 @@ namespace rtype
         {
             return "SpriteComponent";
         };
-
     };
 } // namespace rtype
 

@@ -4,7 +4,6 @@
 
 #include "aecs/InputComponent.hpp"
 
-aecs::InputComponent::InputComponent(int input, std::function<void()> &&onInput)
-:
-    input(input), onInput(std::move(onInput))
-{};
+aecs::InputComponent::InputComponent(int input, std::function<void()> &&onInput) :
+    input(input),
+    onInput(std::move(onInput)){};

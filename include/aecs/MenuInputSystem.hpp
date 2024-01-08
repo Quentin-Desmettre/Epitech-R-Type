@@ -21,6 +21,6 @@ namespace aecs
 
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
     };
-}
+} // namespace aecs
 
 #endif // R_TYPE_MENUINPUTSYSTEM_HPP

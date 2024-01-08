@@ -3,6 +3,7 @@
 //
 
 #include "rtype/EntityFactory.hpp"
+#include "aecs/InputComponent.hpp"
 #include "rtype/components/AnimComponent.hpp"
 #include "rtype/components/BlockComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
@@ -18,7 +19,6 @@
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
-#include "aecs/InputComponent.hpp"
 #include <memory>
 
 aecs::World *rtype::EntityFactory::_world = nullptr;

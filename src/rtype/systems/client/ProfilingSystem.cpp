@@ -4,19 +4,21 @@
 
 #include "rtype/systems/client/ProfilingSystem.hpp"
 
-#include <utility>
-#include "rtype/components/TextComponent.hpp"
 #include "aecs/World.hpp"
 #include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/TextComponent.hpp"
+#include <utility>
 
 rtype::ProfilingSystem::ProfilingSystem(aecs::World &world,
-                                        const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities, float timeBetweenUpdate) :
+                                        const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities,
+                                        float timeBetweenUpdate) :
     ALogicSystem(world, entities, {}),
     _timeBetweenUpdate(timeBetweenUpdate)
 {
 }
 
-rtype::ProfilingSystem &rtype::ProfilingSystem::addProfiling(rtype::ProfilingSystem::ProfilingFunction function, const std::string &name)
+rtype::ProfilingSystem &rtype::ProfilingSystem::addProfiling(rtype::ProfilingSystem::ProfilingFunction function,
+                                                             const std::string &name)
 {
     // When we add a profiling functions, we need to create an entity that will hold the result of the function
     // This entity is a text that will be displayed on the screen
@@ -44,7 +46,7 @@ aecs::EntityChanges rtype::ProfilingSystem::update(aecs::UpdateParams &updatePar
     // We iterate over all the entities that are registered in the system
     // We then call the profiling function associated with the entity
     // The result of the function is then set as the text of the entity
-    for (auto &[entity, function]: _profilers) {
+    for (auto &[entity, function] : _profilers) {
         auto &[name, profiler] = function;
         auto &text = entity->getComponent<TextComponent>();
         text._text.setString(name + ": " + profiler(_world));

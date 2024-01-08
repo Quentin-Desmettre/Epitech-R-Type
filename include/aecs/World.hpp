@@ -5,13 +5,13 @@
 #ifndef EPITECH_R_TYPE_WORLD_HPP
 #define EPITECH_R_TYPE_WORLD_HPP
 
-#include "shared/Menu.hpp"
 #include "Entity.hpp"
 #include "SFML/Network/Packet.hpp"
 #include "SystemBase.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
 #include "shared/ArgParser.hpp"
+#include "shared/Menu.hpp"
 #include "shared/PacketBuilder.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
@@ -124,7 +124,7 @@ namespace aecs
             sortSystems();
         }
 
-        template<typename T>
+        template <typename T>
         T &getSystem()
         {
             static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
@@ -151,7 +151,10 @@ namespace aecs
         int addMenu(const Menu &menu, int id = -1);
         void goToMenu(int id);
 
-        [[nodiscard]] std::size_t getEntityCount() const { return _entities.size();}
+        [[nodiscard]] std::size_t getEntityCount() const
+        {
+            return _entities.size();
+        }
 
       private:
         void sortSystems();

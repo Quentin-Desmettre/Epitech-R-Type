@@ -148,12 +148,9 @@ void rtype::MapSystem::loadPatternInWorld(aecs::EntityChanges &changes, const rt
                                           float startX)
 {
     for (const auto &block : pattern.first) {
-        changes.editedEntities.push_back(
-            EntityFactory::createBlock(
-                {block.position.x + startX, block.position.y},
-                block.texturePath,
-                block.canBeShot,
-                block.health).getId());
+        changes.editedEntities.push_back(EntityFactory::createBlock({block.position.x + startX, block.position.y},
+                                                                    block.texturePath, block.canBeShot, block.health)
+                                             .getId());
     }
 }
 

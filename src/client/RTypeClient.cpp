@@ -27,8 +27,8 @@
 #include "rtype/components/MusicComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PowerComponent.hpp"
-#include "rtype/systems/server/MapSystem.hpp"
 #include "rtype/systems/client/ProfilingSystem.hpp"
+#include "rtype/systems/server/MapSystem.hpp"
 
 void rtype::RTypeClient::setDecodeMap()
 {
@@ -66,9 +66,11 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     EntityFactory::setWorld(&_world);
     std::vector<ButtonData> buttons;
     std::map<Input, std::function<void()>> handlers;
-    handlers[sf::Keyboard::Enter] = [this]() { _world.goToMenu(1); };
+    handlers[sf::Keyboard::Enter] = [this]() {
+        _world.goToMenu(1);
+    };
     std::vector<SystemPriority> systems;
-    Menu menu(buttons, handlers, systems, [this] () {
+    Menu menu(buttons, handlers, systems, [this]() {
         auto &e = _world.createEntity();
 
         e.addComponent<TextComponent>("R-Type", 100, sf::Color::White, 1);
@@ -76,23 +78,16 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     });
     _world.addMenu(menu, 0);
     std::vector<SystemPriority> systems2 = {
-        _world.makeSystem<ClientServerDataHandlerSystem>(-2),
-        _world.makeSystem<ClientInputSenderSystem>(-1),
+        _world.makeSystem<ClientServerDataHandlerSystem>(-2), _world.makeSystem<ClientInputSenderSystem>(-1),
         _world.makeSystem<ClientPingSystem>(0),
         // commented to show that movement comes from server
-        _world.makeSystem<ControlPlayerSystem>(0),
-        _world.makeSystem<AnimPlayerSystem>(1),
-        _world.makeSystem<AnimSystem>(1),
-        _world.makeSystem<PhysicsSystem>(1),
-        _world.makeSystem<ParallaxSystem>(1),
+        _world.makeSystem<ControlPlayerSystem>(0), _world.makeSystem<AnimPlayerSystem>(1),
+        _world.makeSystem<AnimSystem>(1), _world.makeSystem<PhysicsSystem>(1), _world.makeSystem<ParallaxSystem>(1),
         //    _world.registerSystem<BulletSystem>(1);
-        _world.makeSystem<DamageCollisionSystem>(1),
-        _world.makeSystem<DamageSoundSystem>(1),
+        _world.makeSystem<DamageCollisionSystem>(1), _world.makeSystem<DamageSoundSystem>(1),
         // _world.registerSystem<MonsterGenSystem>(1);
-        _world.makeSystem<InvulSystem>(1),
-        _world.makeSystem<ProfilingSystem>(10)
-    };
-    std::function<void()> setup = [this] () {
+        _world.makeSystem<InvulSystem>(1), _world.makeSystem<ProfilingSystem>(10)};
+    std::function<void()> setup = [this]() {
         auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
         bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
         EntityFactory::createBackground(2, sf::Vector2f(5, 0));
@@ -101,18 +96,23 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         EntityFactory::createBackground(5, sf::Vector2f(15, 0));
 
         _world.getSystem<ProfilingSystem>()
-                .clear()
-                .addProfiling([](aecs::World &world) {
+            .clear()
+            .addProfiling(
+                [](aecs::World &world) {
                     return std::to_string(world.getEntityCount());
-                }, "Entities")
-                .addProfiling([](aecs::World &world) {
+                },
+                "Entities")
+            .addProfiling(
+                [](aecs::World &world) {
                     return std::to_string(world.getTick());
-                }, "Tick")
-        ;
+                },
+                "Tick");
     };
 
     std::map<Input, std::function<void()>> handlers2;
-    handlers2[sf::Keyboard::Enter] = [this]() { _world.goToMenu(0); };
+    handlers2[sf::Keyboard::Enter] = [this]() {
+        _world.goToMenu(0);
+    };
     Menu game(buttons, handlers2, systems2, std::move(setup));
     _world.addMenu(game, 1);
 

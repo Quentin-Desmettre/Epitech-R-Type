@@ -5,8 +5,8 @@
 #ifndef R_TYPE_INPUTCOMPONENT_HPP
 #define R_TYPE_INPUTCOMPONENT_HPP
 
-#include "aecs/AbstractComponent.hpp"
 #include "SFML/Graphics.hpp"
+#include "aecs/AbstractComponent.hpp"
 
 namespace aecs
 {
@@ -19,8 +19,11 @@ namespace aecs
         int input;
         std::function<void()> &&onInput;
 
-        [[nodiscard]] const char *getName() const override { return "InputComponent"; }
+        [[nodiscard]] const char *getName() const override
+        {
+            return "InputComponent";
+        }
     };
-}
+} // namespace aecs
 
 #endif // R_TYPE_INPUTCOMPONENT_HPP
