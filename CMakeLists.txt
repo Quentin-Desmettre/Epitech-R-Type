@@ -88,6 +88,9 @@ set(SHARED_SRC
         src/shared/ArgParser.cpp
         include/shared/ArgParser.hpp
         include/shared/Utils.hpp
+        include/rtype/systems/shared/NodeMonsterSystem.hpp
+        src/rtype/systems/shared/NodeMonsterSystem.cpp
+        src/rtype/components/NodeComponent.cpp
         src/rtype/systems/server/MapSystem.cpp
         include/rtype/systems/server/MapSystem.hpp
         include/rtype/components/CollidableComponent.hpp
@@ -113,6 +116,7 @@ set(SERVER_SRC src/server/main.cpp
         src/rtype/systems/server/PlayerOnConnectionSystem.cpp
         src/rtype/systems/server/ServerCorrectionsSystem.cpp
         src/rtype/systems/server/ServerInputsSystem.cpp
+        include/rtype/components/NodeComponent.hpp
         src/rtype/systems/server/PowerSystem.cpp
 )
 set(CLIENT_SRC src/client/main.cpp
@@ -131,6 +135,7 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/components/MusicComponent.hpp
         src/rtype/components/MusicComponent.cpp
         src/rtype/systems/client/DamageSoundSystem.cpp
+        include/rtype/components/NodeComponent.hpp
         src/rtype/components/TextComponent.cpp
         src/rtype/systems/client/ProfilingSystem.cpp
         include/rtype/systems/client/ProfilingSystem.hpp

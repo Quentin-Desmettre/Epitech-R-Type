@@ -17,6 +17,7 @@
 #include "rtype/components/PowerComponent.hpp"
 #include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/NodeComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
 #include <memory>
@@ -28,7 +29,7 @@ aecs::Entity &rtype::EntityFactory::toPlayer(aecs::Entity &entity)
     auto &component = entity.getComponent<PlayerComponent>();
     entity.addComponent<SpriteComponent>("assets/sprites/PlayerNew.png", sf::Vector2f{96, 96},
                                          sf::IntRect(0, 0, 32, 32));
-    entity.addComponent<PositionComponent>(0, 322);
+    entity.addComponent<PositionComponent>(50, 300);
     entity.addComponent<VelocityComponent>(0, 0);
     entity.addComponent<CollidableComponent>(0);
     entity.addComponent<DamageCollisionComponent>(0, 0);
@@ -58,7 +59,7 @@ aecs::Entity &rtype::EntityFactory::toBullet(aecs::Entity &entity)
 {
     auto &component = entity.getComponent<BulletComponent>();
     bool big = component.big;
-    entity.addComponent<HPComponent>(big ? 50 : 5);
+    entity.addComponent<HPComponent>(big ? 25 : 5);
     if (big)
         entity.addComponent<SpriteComponent>("assets/sprites/BigBullet.png", sf::Vector2f(55 * 3, 29 * 3),
                                              sf::IntRect(0, 0, 55, 29));
@@ -102,9 +103,9 @@ aecs::Entity &rtype::EntityFactory::toEnemy(aecs::Entity &entity)
                                              sf::IntRect(52 * (rand() % 5), 0, 52, 34));
     if (!_world->getIsServer()) {
         entity.addComponent<AnimComponent>(1);
-        entity.addComponent<PositionComponent>();
-        entity.addComponent<DamageCollisionComponent>();
-        entity.addComponent<VelocityComponent>();
+        entity.addComponent<PositionComponent>(1200, 200);
+        entity.addComponent<DamageCollisionComponent>(1, 1);
+        entity.addComponent<VelocityComponent>(0, 20);
         entity.addComponent<HPComponent>();
     }
     return entity;
@@ -135,7 +136,7 @@ aecs::Entity &rtype::EntityFactory::createBackground(int id, sf::Vector2f speed)
 {
     auto &back = _world->createEntity();
     back.addComponent<SpriteComponent>("assets/sprites/Back" + std::to_string(id) + ".png", sf::Vector2f{1088, 640},
-                                       sf::IntRect{0, 0, 272 * 2, 160}, -6 + id);
+                                       sf::IntRect{0, 0, 272 * 2, 160}, -6 + id, false);
     back.addComponent<PositionComponent>(0, 0);
     back.addComponent<ParallaxComponent>(speed);
     return back;
@@ -174,6 +175,40 @@ void rtype::EntityFactory::setWorld(aecs::World *world)
 {
     _world = world;
 }
+
+
+aecs::Entity &rtype::EntityFactory::toSnake(aecs::Entity &entity)
+{
+    entity.addComponent<MonsterComponent>();
+    entity.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102),
+                                         sf::IntRect(52 * (rand() % 5), 0, 52, 34));
+    entity.addComponent<CollidableComponent>(0);
+    if (!_world->getIsServer()) {
+        entity.addComponent<AnimComponent>(1);
+        entity.addComponent<PositionComponent>(1180, 200);
+        entity.addComponent<DamageCollisionComponent>(1, 1);
+        entity.addComponent<VelocityComponent>(0, 0);
+        entity.addComponent<HPComponent>();
+    }
+    return entity;
+}
+
+void rtype::EntityFactory::createSnake(sf::Vector2f position, int nb)
+{
+    for (int i = 0; i < nb; i++) {
+        auto &enemy = _world->createEntity();
+        enemy.addComponent<NodeComponent>(i);
+        toSnake(enemy);
+        enemy.addComponent<PositionComponent>(position.x, position.y);
+        if (i == 0)
+            enemy.addComponent<VelocityComponent>(-20, 0);
+        else
+            enemy.addComponent<VelocityComponent>(0, 0);
+        enemy.addComponent<DamageCollisionComponent>(1, 15);
+        enemy.addComponent<HPComponent>(10);
+    }
+}
+
 
 aecs::Entity &rtype::EntityFactory::toBlock(aecs::Entity &block)
 {

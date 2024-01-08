@@ -8,7 +8,7 @@
 std::vector<std::byte> rtype::MonsterComponent::encode() const
 {
     PacketBuilder pb;
-    pb << _lil << timeSinceLastShoot;
+    pb << _lil << timeSinceLastShoot << _isShooting;
     return pb.getData();
 }
 
@@ -16,5 +16,5 @@ void rtype::MonsterComponent::decode(const std::vector<std::byte> &encoded)
 {
     PacketBuilder pb;
     pb << encoded;
-    pb >> _lil >> timeSinceLastShoot;
+    pb >> _lil >> timeSinceLastShoot >> _isShooting;
 }

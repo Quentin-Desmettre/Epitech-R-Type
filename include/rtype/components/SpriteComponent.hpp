@@ -15,7 +15,7 @@ namespace rtype
     {
       public:
         explicit SpriteComponent(const std::string &path, sf::Vector2f size = {0, 0},
-                                 sf::IntRect TextureRect = {0, 0, 0, 0}, int zIndex = 0);
+                                 sf::IntRect TextureRect = {0, 0, 0, 0}, int zIndex = 0, bool centered = true);
         ~SpriteComponent() override = default;
 
         sf::Sprite sprite;
@@ -24,8 +24,10 @@ namespace rtype
         sf::Vector2f _size;
         int zIndex;
 
-        const char *getName() const override
-        {
+        [[nodiscard]] std::vector<std::byte> encode() const override;
+        void decode(const std::vector<std::byte> &encoded) override;
+
+        const char *getName() const override {
             return "SpriteComponent";
         };
     };

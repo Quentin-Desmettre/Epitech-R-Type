@@ -18,14 +18,13 @@ namespace rtype
     {
         auto &sprite = entity->getComponent<SpriteComponent>();
         auto &position = entity->getComponent<PositionComponent>();
+        sprite.sprite.setPosition(position.x, position.y);
         sf::Rect rect = sprite.sprite.getGlobalBounds();
-        rect.left = position.x;
-        rect.top = position.y;
         float reduction = 0.3;
         rect.width *= 1 - reduction;
         rect.height *= 1 - reduction;
-        rect.top = position.y + rect.height * (reduction / 2.0);
-        rect.left = position.x + rect.width * (reduction / 2.0);
+        rect.top += rect.height * (reduction / 2.0);
+        rect.left += rect.width * (reduction / 2.0);
         return rect;
     }
 
@@ -84,12 +83,14 @@ namespace rtype
                 if (rect.intersects(rect2) && damage.team != damage2.team) {
                     if (damage.damage != 0 && damage2.invulnerability == 0) {
                         hp2.hp -= damage.damage;
-                        damage2.invulnerability = 5;
+                        if (damage2.type != DamageCollisionComponent::ObjectType::LG_BULLET)
+                            damage2.invulnerability = 5;
                         damage2.damaged = true;
                     }
                     if (damage2.damage != 0 && damage.invulnerability == 0) {
                         hp.hp -= damage2.damage;
-                        damage.invulnerability = 5;
+                        if (damage.type != DamageCollisionComponent::ObjectType::LG_BULLET)
+                            damage.invulnerability = 5;
                         damage.damaged = true;
                     }
                     if (hp2.hp <= 0) {

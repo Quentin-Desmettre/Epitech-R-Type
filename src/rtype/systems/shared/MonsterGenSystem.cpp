@@ -14,7 +14,8 @@ aecs::Entity &rtype::MonsterGenSystem::addRandomEnemy()
 {
     int rnd = std::rand() % 100;
     bool lil = rnd < 70;
-    return EntityFactory::createEnemy(sf::Vector2f(1080, std::rand() % 540), sf::Vector2f(-15, 0), lil);
+
+    return EntityFactory::createEnemy(sf::Vector2f(1080, std::rand() % 540 + 50), sf::Vector2f(-15, 0), lil);
 }
 
 aecs::EntityChanges rtype::MonsterGenSystem::update(aecs::UpdateParams &updateParams)
@@ -22,17 +23,23 @@ aecs::EntityChanges rtype::MonsterGenSystem::update(aecs::UpdateParams &updatePa
     std::size_t nbPlayer = _entitiesMap.size();
     static float time = 0;
     aecs::EntityChanges changes;
+    static float bossTime = 10.f;
 
     if (nbPlayer == 0) {
         return {};
     }
     time += updateParams.deltaTime;
+    bossTime -= updateParams.deltaTime;
 
     int rnd;
     while (time > 1) {
         rnd = std::rand() % 100;
         if (rnd * nbPlayer < 10) {
             changes.editedEntities.push_back(addRandomEnemy().getId());
+        }
+        if (bossTime < 0) {
+            EntityFactory::createSnake(sf::Vector2f(1180, std::rand() % 540 + 50), 25);
+            bossTime = 99999.f;
         }
         time -= 1;
     }

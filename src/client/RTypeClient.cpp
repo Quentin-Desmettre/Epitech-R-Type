@@ -18,8 +18,10 @@
 #include "rtype/systems/shared/MonsterGenSystem.hpp"
 #include "rtype/systems/shared/ParallaxSystem.hpp"
 #include "rtype/systems/shared/PhysicsSystem.hpp"
+#include "rtype/systems/shared/NodeMonsterSystem.hpp"
 #include <chrono>
 #include <thread>
+#include "rtype/components/NodeComponent.hpp"
 
 #include "rtype/components/BlockComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
@@ -53,6 +55,12 @@ void rtype::RTypeClient::setDecodeMap()
     _world.addDecodeMap("BlockComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
         entity.addComponent<BlockComponent>().decode(data);
         EntityFactory::toBlock(entity);
+    });
+    _world.addDecodeMap("NodeComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<NodeComponent>();
+        auto &component = entity.getComponent<NodeComponent>();
+        component.decode(data);
+        EntityFactory::toSnake(entity);
     });
 }
 
@@ -109,6 +117,18 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
                 "Tick");
     };
 
+    // commented to show that movement comes from server
+    _world.registerSystem<ControlPlayerSystem>(0);
+    _world.registerSystem<AnimPlayerSystem>(1);
+    _world.registerSystem<AnimSystem>(1);
+    _world.registerSystem<PhysicsSystem>(2);
+    _world.registerSystem<ParallaxSystem>(1);
+    _world.registerSystem<NodeMonsterSystem>(1);
+//    _world.registerSystem<BulletSystem>(1);
+    _world.registerSystem<DamageCollisionSystem>(1);
+    _world.registerSystem<DamageSoundSystem>(1);
+    // _world.registerSystem<MonsterGenSystem>(1);
+    _world.registerSystem<InvulSystem>(1);
     std::map<Input, std::function<void()>> handlers2;
     handlers2[sf::Keyboard::Enter] = [this]() {
         _world.goToMenu(0);

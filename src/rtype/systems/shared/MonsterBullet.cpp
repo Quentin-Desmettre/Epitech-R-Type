@@ -18,10 +18,10 @@ namespace rtype
         for (auto &[_id, entity] : _entitiesMap) {
             auto &monster = entity->getComponent<MonsterComponent>();
             auto &position = entity->getComponent<PositionComponent>();
-            if (position.x < -100 || position.x > 1920 + 100 || position.y < -100 || position.y > 1080 + 100) {
+            if (position.x < -100 || position.x > 1920 + 100 || position.y < -200 || position.y > 1080 + 200) {
                 changes.deletedEntities.push_back(entity->getId());
             }
-            if (monster._lil)
+            if (!monster._isShooting)
                 continue;
             monster.timeSinceLastShoot += updateParams.deltaTime;
             changes.editedEntities.push_back(entity->getId());
