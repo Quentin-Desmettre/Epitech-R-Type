@@ -150,3 +150,12 @@ aecs::Entity &rtype::EntityFactory::createScore()
     score.addComponent<TagComponent>("scoreText");
     return score;
 }
+
+aecs::Entity &rtype::EntityFactory::createHealth()
+{
+    auto &score = _world->createEntity();
+    score.addComponent<TextComponent>("Health: 0");
+    score.addComponent<PositionComponent>(0, 20);
+    score.addComponent<TagComponent>("healthText");
+    return score;
+}

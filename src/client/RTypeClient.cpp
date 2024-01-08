@@ -26,6 +26,7 @@
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/MusicComponent.hpp"
 #include "rtype/systems/client/ClientScoreSystem.hpp"
+#include "rtype/systems/client/ClientHealthSystem.hpp"
 
 void rtype::RTypeClient::setDecodeMap()
 {
@@ -65,6 +66,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     EntityFactory::createBackground(5, sf::Vector2f(15, 0));
 
     EntityFactory::createScore();
+    EntityFactory::createHealth();
 
     // Network systems
     _world.registerSystem<ClientServerDataHandlerSystem>(-2);
@@ -83,6 +85,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     // _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
     _world.registerSystem<ClientScoreSystem>(1);
+    _world.registerSystem<ClientHealthSystem>(1);
 }
 
 void rtype::RTypeClient::run()

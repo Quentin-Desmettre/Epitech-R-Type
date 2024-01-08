@@ -26,6 +26,7 @@ namespace rtype
         static aecs::Entity &toEnemy(aecs::Entity &entity);
         static aecs::Entity &createBackground(int id, sf::Vector2f speed);
         static aecs::Entity &createScore();
+        static aecs::Entity &createHealth();
         static void setWorld(aecs::World *world);
 
       private:
