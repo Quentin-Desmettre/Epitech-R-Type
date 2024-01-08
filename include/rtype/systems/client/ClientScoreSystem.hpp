@@ -11,7 +11,6 @@
 #include "aecs/World.hpp"
 #include <iostream>
 
-
 namespace rtype {
     class ClientScoreSystem : public aecs::ALogicSystem {
         public:

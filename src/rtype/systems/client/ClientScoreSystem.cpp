@@ -33,6 +33,12 @@ namespace rtype {
             return;
 
         auto &monster = entity->getComponent<MonsterComponent>();
+        auto &hp = entity->getComponent<HPComponent>();
+
+        // TODO Les hp sont jamais a 0 :/
+//        std::cout << hp.hp << std::endl;
+//        if (hp.hp > 0) return;
+
         if (monster._lil)
             _score += 1;
         else
