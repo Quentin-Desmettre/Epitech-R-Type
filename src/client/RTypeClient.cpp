@@ -68,10 +68,10 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     handlers[sf::Keyboard::Enter] = [this]() { _world.goToMenu(1); };
     std::vector<SystemPriority> systems;
     Menu menu(buttons, handlers, systems, [this] () {
-        auto &e = _world.createEntity();
-
-        e.addComponent<TextComponent>("R-Type", 100, sf::Color::White, 1);
-        e.addComponent<PositionComponent>(200, 100);
+        float windowMid = 1080 / 2;
+        EntityFactory::createButton("R-Type", 30, sf::Color::White, 0, sf::Vector2f(windowMid, 100));
+        EntityFactory::createButton("Start", 30, sf::Color::White, 0, sf::Vector2f(windowMid, 300), [this]() { _world.goToMenu(1); });
+        EntityFactory::createButton("Quit", 30, sf::Color::White, 0, sf::Vector2f(windowMid, 500));
     });
     _world.addMenu(menu, 0);
     std::vector<SystemPriority> systems2 = {
@@ -90,7 +90,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         // _world.registerSystem<MonsterGenSystem>(1);
         _world.makeSystem<InvulSystem>(1)
     };
-    std::function<void()> setup = [this] () {
+    std::function<void()> setup = [] () {
         auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
         bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
         EntityFactory::createBackground(2, sf::Vector2f(5, 0));
@@ -100,7 +100,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     };
 
     std::map<Input, std::function<void()>> handlers2;
-    handlers2[sf::Keyboard::Enter] = [this]() { _world.goToMenu(0); };
+    handlers2[sf::Keyboard::Escape] = [this]() { _world.goToMenu(0); };
     Menu game(buttons, handlers2, systems2, std::move(setup));
     _world.addMenu(game, 1);
 

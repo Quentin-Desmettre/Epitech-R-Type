@@ -5,7 +5,7 @@
 #include "rtype/components/TextComponent.hpp"
 #include "shared/SFMLLoader.hpp"
 
-rtype::TextComponent::TextComponent(const std::string &text, int fontSize, sf::Color color, int zIndex) :
+rtype::TextComponent::TextComponent(const std::string &text, int fontSize, sf::Color color, int zIndex, std::function<void()> &&onClick) :
     zIndex(zIndex)
 {
     sf::Font *font = SFMLLoader::loadFont("assets/fonts/Minecraft.ttf");
@@ -14,7 +14,7 @@ rtype::TextComponent::TextComponent(const std::string &text, int fontSize, sf::C
     _text.setString(text);
     _text.setCharacterSize(fontSize);
     _text.setFillColor(color);
-    sf::FloatRect textRect = _text.getLocalBounds();
-    _text.setOrigin(textRect.left + textRect.width / 2.0f,
-        textRect.top + textRect.height / 2.0f);
+    sf::FloatRect textRect = _text.getGlobalBounds();
+    _text.setOrigin(textRect.width / 2, textRect.height / 2);
+    this->onClick = onClick;
 }

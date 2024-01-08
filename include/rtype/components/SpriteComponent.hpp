@@ -15,7 +15,7 @@ namespace rtype
     {
       public:
         explicit SpriteComponent(const std::string &path, sf::Vector2f size = {0, 0},
-                                 sf::IntRect TextureRect = {0, 0, 0, 0}, int zIndex = 0);
+                                 sf::IntRect TextureRect = {0, 0, 0, 0}, int zIndex = 0, int setOrigin = 0);
         ~SpriteComponent() override = default;
 
         sf::Sprite sprite;

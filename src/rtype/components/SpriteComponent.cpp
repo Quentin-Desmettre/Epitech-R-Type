@@ -5,7 +5,7 @@
 #include "rtype/components/SpriteComponent.hpp"
 #include "shared/SFMLLoader.hpp"
 
-rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size, sf::IntRect rect, int zIndex) :
+rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size, sf::IntRect rect, int zIndex, int setOrigin) :
     _size(size),
     zIndex(zIndex)
 {
@@ -31,5 +31,9 @@ rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f si
     sprite.setTextureRect(rect);
     if (size.x != 0 && size.y != 0) {
         sprite.setScale(size.x / spSize.x, size.y / spSize.y);
+    }
+
+    if (setOrigin == 1) {
+        sprite.setOrigin(sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().height / 2);
     }
 }
