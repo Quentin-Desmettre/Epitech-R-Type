@@ -93,7 +93,7 @@ namespace aecs
 
     void World::update()
     {
-        float deltaTime = clock.getElapsedTime().asSeconds();
+        float deltaTime = clock.getElapsedTime().asSeconds() * 10;
         clock.restart();
         UpdateParams updateParams;
         // Lock inputs
