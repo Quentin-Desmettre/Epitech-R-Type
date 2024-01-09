@@ -164,6 +164,7 @@ namespace aecs
 
       private:
         void sortSystems();
+        void updateCurrentMenu();
 
         void onEntityAdded(const EntityPtr &entity);
         void onEntityRemoved(const EntityPtr &entity);
@@ -186,6 +187,7 @@ namespace aecs
         ArgParser _argParser;
         std::map<int, Menu> _menus;
         int _currentMenu = -1;
+        int _nextMenu = -1;
     };
 } // namespace aecs
 

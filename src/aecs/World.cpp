@@ -105,9 +105,10 @@ namespace aecs
                             .entityChanges = {}};
         }
 
+        // Update current menu
+        updateCurrentMenu();
+
         // Update systems
-        sortSystems();
-        std::cout << "Systems: " << _sortedSystems.size() << std::endl;
         for (auto &[system, _] : _sortedSystems) {
             auto changes = system->update(updateParams);
 
@@ -318,7 +319,14 @@ namespace aecs
             return;
         if (_menus.find(id) == _menus.end())
             return;
-        _currentMenu = id;
+        _nextMenu = id;
+    }
+
+    void World::updateCurrentMenu()
+    {
+        if (_nextMenu == _currentMenu)
+            return;
+        _currentMenu = _nextMenu;
 
         this->_renderInputsMutex.lock();
         this->_renderInputs.clear();
@@ -336,20 +344,20 @@ namespace aecs
         this->registerSystem<MenuInputSystem>(0);
         this->registerSystem<rtype::ButtonSystem>(0);
 
-        //        for (auto &button : _menus.at(id)._buttons) {
+        //        for (auto &button : _menus.at(_currentMenu)._buttons) {
         //            auto &entity = createEntity();
         //            entity.addComponent<rtype::components::Button>(button._text, button._texture, button._sprite,
         //            button._pos, button._rect); entity.addComponent<rtype::components::Transform>(button._pos);
         //            entity.addComponent<rtype::components::Clickable>(button._handler);
         //        }
 
-        for (auto &system : _menus.at(id)._systems) {
+        for (auto &system : _menus.at(_currentMenu)._systems) {
             this->registerSystem(system.system, system.priority, system.typeIndex);
         }
 
-        _menus.at(id)._setup();
+        _menus.at(_currentMenu)._setup();
 
-        for (auto &handler : _menus.at(id)._handlers) {
+        for (auto &handler : _menus.at(_currentMenu)._handlers) {
             rtype::EntityFactory::createInputs(handler.first, std::move(handler.second));
         }
     }
