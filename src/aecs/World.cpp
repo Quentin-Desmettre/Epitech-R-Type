@@ -5,7 +5,7 @@
 #include "aecs/World.hpp"
 #include "aecs/Entity.hpp"
 #include "aecs/MenuInputSystem.hpp"
-#include "rtype/systems/server/ServerInputsSystem.hpp"
+#include "rtype/systems/client/ButtonSystem.hpp"
 #include "shared/PacketBuilder.hpp"
 #include <algorithm>
 #include <iostream>
@@ -126,6 +126,7 @@ namespace aecs
         // Clear
         // _renderInputs.clear();
         _tick++;
+        _mouseInputs.clear();
     }
 
     void World::render()
@@ -329,6 +330,7 @@ namespace aecs
         this->_entities.clear();
 
         this->registerSystem<MenuInputSystem>(0);
+        this->registerSystem<rtype::ButtonSystem>(0);
 
         //        for (auto &button : _menus.at(id)._buttons) {
         //            auto &entity = createEntity();

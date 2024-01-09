@@ -18,8 +18,9 @@
 #include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/NodeComponent.hpp"
-#include "rtype/components/VelocityComponent.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
+#include "rtype/components/TextComponent.hpp"
+#include "rtype/components/VelocityComponent.hpp"
 #include <memory>
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
@@ -169,6 +170,15 @@ aecs::Entity &rtype::EntityFactory::createInputs(int input, std::function<void()
     auto &inputs = _world->createEntity();
     inputs.addComponent<aecs::InputComponent>(input, std::move(onInput));
     return inputs;
+}
+
+aecs::Entity &rtype::EntityFactory::createButton(const std::string &text, int fontSize, sf::Color color, int zIndex, sf::Vector2f pos, std::function<void()> &&onClick)
+{
+    auto &buttons = _world->createEntity();
+
+    buttons.addComponent<TextComponent>(text, fontSize, color, zIndex, std::move(onClick));
+    buttons.addComponent<PositionComponent>(pos.x, pos.y);
+    return buttons;
 }
 
 void rtype::EntityFactory::setWorld(aecs::World *world)

@@ -32,6 +32,7 @@ namespace rtype
         static aecs::Entity &createPower(sf::Vector2f position, bool isPowerUp);
         static aecs::Entity &createInputs(int input, std::function<void()> &&onInput);
         static aecs::Entity &toPower(aecs::Entity &entity, bool isPowerUp);
+        static aecs::Entity &createButton(const std::string &text, int fontSize, sf::Color color, int zIndex = 0, sf::Vector2f pos = {0, 0}, std::function<void()> &&onClick = nullptr);
         static void setWorld(aecs::World *world);
         static aecs::Entity &toBlock(aecs::Entity &entity);
         static aecs::Entity &createBlock(sf::Vector2f position, const std::string &texture, bool breakable = false,

@@ -57,16 +57,11 @@ void rtype::RenderSystem::_sortEntities()
     _sortedEntities.clear();
     for (auto &entity : _entitiesMap)
         _sortedEntities.push_back(entity.second);
-    std::sort(_sortedEntities.begin(), _sortedEntities.end(),
-              [](const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) {
-                  auto lIndex = lhs->hasComponent<rtype::SpriteComponent>()
-                                    ? lhs->getComponent<rtype::SpriteComponent>().zIndex
-                                    : lhs->getComponent<rtype::TextComponent>().zIndex;
-                  auto rIndex = rhs->hasComponent<rtype::SpriteComponent>()
-                                    ? rhs->getComponent<rtype::SpriteComponent>().zIndex
-                                    : rhs->getComponent<rtype::TextComponent>().zIndex;
-                  return lIndex < rIndex;
-              });
+    std::sort(_sortedEntities.begin(), _sortedEntities.end(), [](const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) {
+        int lhsZindex = lhs->hasComponent<rtype::TextComponent>() ? lhs->getComponent<rtype::TextComponent>().zIndex : lhs->getComponent<rtype::SpriteComponent>().zIndex;
+        int rhsZindex = rhs->hasComponent<rtype::TextComponent>() ? rhs->getComponent<rtype::TextComponent>().zIndex : rhs->getComponent<rtype::SpriteComponent>().zIndex;
+        return lhsZindex < rhsZindex;
+    });
 }
 
 aecs::RenderInputs rtype::RenderSystem::render()
@@ -82,13 +77,14 @@ aecs::RenderInputs rtype::RenderSystem::render()
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             _window.close();
         if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            mouseInputs.emplace_back(1, sf::Vector2f(sf::Mouse::getPosition(_window)));
+            mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_LEFT_CLICK, sf::Vector2f(sf::Mouse::getPosition(_window)));
         if (event.type == sf::Event::MouseMoved)
-            mouseInputs.emplace_back(0, sf::Vector2f(sf::Mouse::getPosition(_window)));
+            mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_MOVE, sf::Vector2f(sf::Mouse::getPosition(_window)));
     }
     for (int i = 0; i < sf::Keyboard::KeyCount; i++) {
-        if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(i)))
+        if (sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(i))) {
             inputs.push_back(static_cast<aecs::RenderInput>(i));
+        }
     }
 
     // Render

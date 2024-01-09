@@ -7,17 +7,18 @@
 
 #include "aecs/AbstractComponent.hpp"
 #include <SFML/Graphics.hpp>
+#include <functional>
 
 namespace rtype
 {
     class TextComponent : public aecs::AbstractComponent
     {
       public:
-        explicit TextComponent(const std::string &text, int fontSize = 30, sf::Color color = sf::Color::White,
-                               int zIndex = 0);
+        explicit TextComponent(const std::string &text, int fontSize = 30, sf::Color color = sf::Color::White, int zIndex = 0, std::function<void()> &&onClick = nullptr);
         ~TextComponent() override = default;
 
         sf::Text _text;
+        std::function<void()> onClick;
         int zIndex;
 
         const char *getName() const override
