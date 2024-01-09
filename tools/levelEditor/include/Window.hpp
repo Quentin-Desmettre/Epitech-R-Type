@@ -30,6 +30,7 @@ class Window
   private:
     void handleEvents(Editor &editor);
     void drawOutlines(const std::vector<std::size_t> &visized, std::size_t i);
+    void drawSelected(const Block selectedBlock);
     sf::Texture &getTexture(const Block block);
 
     sf::RenderWindow _window;

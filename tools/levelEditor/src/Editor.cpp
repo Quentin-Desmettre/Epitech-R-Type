@@ -109,6 +109,11 @@ void Editor::click(sf::Vector2i pos)
         _map[y][x] = EMPTY;
 }
 
+Block Editor::getSelectedBlock() const
+{
+    return _selectedBlock;
+}
+
 Mode Editor::getMode() const
 {
     return _mode;

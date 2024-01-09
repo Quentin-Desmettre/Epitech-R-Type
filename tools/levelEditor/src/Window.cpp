@@ -70,6 +70,8 @@ void Window::drawMap(const Editor &editor)
             visited.push_back(j);
         }
         drawOutlines(visited, i);
+        if (editor.getMode() == ADD)
+            drawSelected(editor.getSelectedBlock());
     }
 }
 
@@ -81,6 +83,17 @@ void Window::drawOutlines(const std::vector<std::size_t> &visited, std::size_t i
             _window.draw(_outline);
         }
     }
+}
+
+void Window::drawSelected(const Block selectedBlock)
+{
+    sf::Sprite sprite;
+    sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
+
+    sprite.setTexture(getTexture(selectedBlock));
+    sprite.setPosition((mousePos.x / BLOCK_SIZE) * BLOCK_SIZE, (mousePos.y / BLOCK_SIZE) * BLOCK_SIZE);
+    sprite.setColor(sf::Color(255, 255, 255, 25));
+    _window.draw(sprite);
 }
 
 sf::Texture &Window::getTexture(const Block block)

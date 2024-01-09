@@ -46,6 +46,7 @@ class Editor
 
     void switchMode(Mode mode);
     void click(sf::Vector2i pos);
+    Block getSelectedBlock() const;
 
     [[nodiscard]] Mode getMode() const;
     [[nodiscard]] const std::array<Line, 11> &getMap() const;
