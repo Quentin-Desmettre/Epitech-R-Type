@@ -54,6 +54,7 @@ set(SHARED_SRC
         include/rtype/components/SpriteComponent.hpp
         include/rtype/components/VelocityComponent.hpp
         include/rtype/components/PowerComponent.hpp
+        include/rtype/components/TextComponent.hpp
         src/rtype/components/BulletComponent.cpp
         src/rtype/components/DamageCollisionComponent.cpp
         src/rtype/components/HPComponent.cpp
@@ -63,6 +64,7 @@ set(SHARED_SRC
         src/rtype/components/SpriteComponent.cpp
         src/rtype/components/VelocityComponent.cpp
         src/rtype/components/PowerComponent.cpp
+        src/rtype/components/TextComponent.cpp
 
         # Systems
         include/rtype/systems/shared/AnimPlayerSystem.hpp
@@ -74,6 +76,7 @@ set(SHARED_SRC
         include/rtype/systems/shared/MonsterBullet.hpp
         include/rtype/systems/shared/MonsterGenSystem.hpp
         include/rtype/systems/shared/ParallaxSystem.hpp
+        include/rtype/systems/client/ButtonSystem.hpp
         include/rtype/systems/shared/PhysicsSystem.hpp
         src/rtype/systems/shared/AnimPlayerSystem.cpp
         src/rtype/systems/shared/AnimSystem.cpp
@@ -85,6 +88,7 @@ set(SHARED_SRC
         src/rtype/systems/shared/MonsterGenSystem.cpp
         src/rtype/systems/shared/ParallaxSystem.cpp
         src/rtype/systems/shared/PhysicsSystem.cpp
+        src/rtype/systems/client/ButtonSystem.cpp
         src/shared/ArgParser.cpp
         include/shared/ArgParser.hpp
         include/shared/Utils.hpp
@@ -125,9 +129,6 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/components/MusicComponent.hpp
         src/rtype/components/MusicComponent.cpp
         src/rtype/systems/client/DamageSoundSystem.cpp
-        src/rtype/components/TextComponent.cpp
-        include/rtype/systems/client/ButtonSystem.hpp
-        src/rtype/systems/client/ButtonSystem.cpp
 )
 
 

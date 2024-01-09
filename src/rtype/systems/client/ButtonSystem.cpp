@@ -5,6 +5,7 @@
 #include "rtype/systems/client/ButtonSystem.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/TextComponent.hpp"
+#include "aecs/Entity.hpp"
 
 namespace rtype
 {

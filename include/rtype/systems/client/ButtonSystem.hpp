@@ -5,13 +5,7 @@
 #ifndef R_TYPE_BUTTONSYSTEM_HPP
 #define R_TYPE_BUTTONSYSTEM_HPP
 
-#include "SFML/Network.hpp"
-#include "aecs/StaticPacketBuilder.hpp"
-#include "aecs/StaticPacketParser.hpp"
 #include "aecs/SystemBase.hpp"
-#include "aecs/World.hpp"
-#include "rtype/NetworkGlobals.hpp"
-#include "rtype/components/ClientPingComponent.hpp"
 
 namespace rtype
 {
