@@ -169,16 +169,13 @@ void rtype::MapSystem::generatePattern(aecs::EntityChanges &changes, rtype::MapS
 aecs::EntityChanges rtype::MapSystem::loadPatterns(rtype::MapSystem::Difficulty maxDifficulty)
 {
     // Generate patterns up until all the space has been filled
-    const std::size_t WINDOW_WIDTH = 1088; // +2 for a bit of margin
+    const std::size_t WINDOW_WIDTH = 1088;
     aecs::EntityChanges changes;
 
-    //    std::cout << "Start, occupied space: " << _occupiedSpace << std::endl;
     if (_patterns.empty())
         return {};
     while (_occupiedSpace < WINDOW_WIDTH * 1.2) {
         generatePattern(changes, maxDifficulty);
-        //        generatePattern(maxDifficulty);
-        //        std::cout << "Occupied space: " << _occupiedSpace << std::endl;
     }
     return changes;
 }

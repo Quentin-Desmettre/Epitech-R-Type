@@ -225,7 +225,7 @@ aecs::Entity &rtype::EntityFactory::toBlock(aecs::Entity &block)
     auto &blockComponent = block.getComponent<BlockComponent>();
 
     block.addComponent<SpriteComponent>(blockComponent.texturePath,
-                                        sf::Vector2f{MapSystem::BLOCK_SIZE, MapSystem::BLOCK_SIZE});
+                                        sf::Vector2f{MapSystem::BLOCK_SIZE, MapSystem::BLOCK_SIZE}, sf::IntRect{0, 0, 0, 0}, 0, false);
     block.addComponent<PositionComponent>(blockComponent.position.x, blockComponent.position.y, true);
     block.addComponent<VelocityComponent>(MapSystem::BLOCK_SPEED, 0);
     block.addComponent<CollidableComponent>(1000000);
