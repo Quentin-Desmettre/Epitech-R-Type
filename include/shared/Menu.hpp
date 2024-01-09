@@ -32,14 +32,13 @@ class ButtonData
 };
 
 typedef int Input;
-typedef std::pair<std::shared_ptr<aecs::ISystem>, int> SystemPriority;
 
 class Menu
 {
   public:
     Menu(
         const std::vector<ButtonData> &buttons, const std::map<Input, std::function<void()>> &handlers,
-        const std::vector<SystemPriority> &systems = {}, std::function<void()> &&setup = []() {
+        const std::vector<aecs::SystemData> &systems = {}, std::function<void()> &&setup = []() {
         });
     ~Menu() = default;
     Menu(const Menu &menu) = default;
@@ -47,7 +46,7 @@ class Menu
 
     std::vector<ButtonData> _buttons;
     std::map<Input, std::function<void()>> _handlers;
-    std::vector<SystemPriority> _systems;
+    std::vector<aecs::SystemData> _systems;
     std::function<void()> _setup;
 };
 

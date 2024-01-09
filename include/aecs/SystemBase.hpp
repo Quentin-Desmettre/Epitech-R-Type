@@ -60,6 +60,12 @@ namespace aecs
         [[nodiscard]] virtual bool isOpen() const = 0;
     };
 
+    struct SystemData {
+        std::shared_ptr<ISystem> system;
+        int priority;
+        std::type_index typeIndex;
+    };
+
     class ASystem : public ISystem
     {
       public:

@@ -97,22 +97,26 @@ namespace aecs
         T &registerSystem(int priority, Args &&...args)
         {
             auto sys = makeSystem<T>(priority, std::forward<Args>(args)...);
-            _systems[typeid(T)] = sys;
+            _systems[typeid(T)] = {sys.system, sys.priority};
             sortSystems();
-            return *sys.first;
+            return *std::dynamic_pointer_cast<T>(sys.system);
         }
 
-        void registerSystem(const std::shared_ptr<ISystem> &system, int priority);
+        void registerSystem(const std::shared_ptr<ISystem> &system, int priority, std::type_index typeIndex);
 
         template <typename T, typename... Args>
-        std::pair<std::shared_ptr<T>, int> makeSystem(int priority, Args &&...args)
+        SystemData makeSystem(int priority, Args &&...args)
         {
             static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
 
             // To avoid changes in the entities vector while building the system
             const auto &constRefEntities = _entities;
-            const auto &built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
-            return {built, priority};
+            std::shared_ptr<ISystem> built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
+            return {
+                .system = built,
+                .priority = priority,
+                .typeIndex = typeid(T),
+            };
         }
 
         template <typename T>
@@ -129,6 +133,8 @@ namespace aecs
         {
             static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
 
+            if (_systems.find(typeid(T)) == _systems.end())
+                throw std::runtime_error("System not found");
             return *std::dynamic_pointer_cast<T>(_systems[typeid(T)].first);
         }
 

@@ -31,7 +31,7 @@ ButtonData::ButtonData(const std::string &text, const std::string &texturePath, 
 }
 
 Menu::Menu(const std::vector<ButtonData> &buttons, const std::map<Input, std::function<void()>> &handlers,
-           const std::vector<SystemPriority> &systems, std::function<void()> &&setup)
+           const std::vector<aecs::SystemData> &systems, std::function<void()> &&setup)
 {
     _buttons = buttons;
     _handlers = handlers;

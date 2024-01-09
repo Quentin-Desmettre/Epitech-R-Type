@@ -25,7 +25,7 @@ rtype::ProfilingSystem &rtype::ProfilingSystem::addProfiling(rtype::ProfilingSys
     auto &entity = _world.createEntity();
     entity.addComponent<TextComponent>(name, 20, sf::Color::White);
     entity.addComponent<PositionComponent>(20, _profilers.size() * 30 + 20);
-    _profilers[&entity] = {name, function};
+    _profilers[entity.getId()] = {name, function};
     std::cout << "adding new profiler: " << name << ", new size: " << _profilers.size() << std::endl;
     return *this;
 }
@@ -46,8 +46,11 @@ aecs::EntityChanges rtype::ProfilingSystem::update(aecs::UpdateParams &updatePar
     // We iterate over all the entities that are registered in the system
     // We then call the profiling function associated with the entity
     // The result of the function is then set as the text of the entity
-    for (auto &[entity, function] : _profilers) {
+    for (auto &[id, function] : _profilers) {
         auto &[name, profiler] = function;
+        auto entity = _world.getEntity(id);
+        if (!entity)
+            continue;
         auto &text = entity->getComponent<TextComponent>();
         text._text.setString(name + ": " + profiler(_world));
     }

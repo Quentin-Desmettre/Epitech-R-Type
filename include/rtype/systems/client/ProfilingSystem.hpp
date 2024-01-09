@@ -25,9 +25,9 @@ namespace rtype
         ProfilingSystem &clear();
 
       private:
-        std::map<aecs::Entity *, std::pair<std::string, ProfilingFunction>> _profilers;
+        std::map<std::size_t, std::pair<std::string, ProfilingFunction>> _profilers;
         float _timeBetweenUpdate;
-        float _elapsedTime;
+        float _elapsedTime{};
     };
 } // namespace rtype
 

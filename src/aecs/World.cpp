@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <iostream>
 
+#include <thread>
+
 namespace aecs
 {
     World::World(bool isServer, int ac, char **av) :
@@ -91,7 +93,7 @@ namespace aecs
 
     void World::update()
     {
-        float deltaTime = clock.getElapsedTime().asSeconds() * 10;
+        float deltaTime = clock.getElapsedTime().asSeconds();
         clock.restart();
         UpdateParams updateParams;
         // Lock inputs
@@ -104,6 +106,8 @@ namespace aecs
         }
 
         // Update systems
+        sortSystems();
+        std::cout << "Systems: " << _sortedSystems.size() << std::endl;
         for (auto &[system, _] : _sortedSystems) {
             auto changes = system->update(updateParams);
 
@@ -294,9 +298,9 @@ namespace aecs
         return _argParser.getTcpPort();
     }
 
-    void World::registerSystem(const std::shared_ptr<ISystem> &system, int priority)
+    void World::registerSystem(const std::shared_ptr<ISystem> &system, int priority, std::type_index type)
     {
-        _systems[typeid(*system)] = {system, priority};
+        _systems[type] = {system, priority};
         sortSystems();
     }
 
@@ -340,7 +344,7 @@ namespace aecs
         //        }
 
         for (auto &system : _menus.at(id)._systems) {
-            this->registerSystem(system.first, system.second);
+            this->registerSystem(system.system, system.priority, system.typeIndex);
         }
 
         _menus.at(id)._setup();

@@ -77,7 +77,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     handlers[sf::Keyboard::Enter] = [this]() {
         _world.goToMenu(1);
     };
-    std::vector<SystemPriority> systems;
+    std::vector<aecs::SystemData> systems;
     Menu menu(buttons, handlers, systems, [this] () {
         float windowMid = 1080 / 2;
         EntityFactory::createButton("R-Type", 30, sf::Color::White, 0, sf::Vector2f(windowMid, 100));
@@ -85,17 +85,34 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         EntityFactory::createButton("Quit", 30, sf::Color::White, 0, sf::Vector2f(windowMid, 500));
     });
     _world.addMenu(menu, 0);
-    std::vector<SystemPriority> systems2 = {
-        _world.makeSystem<ClientServerDataHandlerSystem>(-2), _world.makeSystem<ClientInputSenderSystem>(-1),
+    std::vector<aecs::SystemData> systems2 = {
+        _world.makeSystem<ClientServerDataHandlerSystem>(-2),
+        _world.makeSystem<ClientInputSenderSystem>(-1),
         _world.makeSystem<ClientPingSystem>(0),
         // commented to show that movement comes from server
-        _world.makeSystem<ControlPlayerSystem>(0), _world.makeSystem<AnimPlayerSystem>(1),
-        _world.makeSystem<AnimSystem>(1), _world.makeSystem<PhysicsSystem>(1), _world.makeSystem<ParallaxSystem>(1),
+        _world.makeSystem<ControlPlayerSystem>(0),
+        _world.makeSystem<AnimPlayerSystem>(1),
+        _world.makeSystem<AnimSystem>(1),
+        _world.makeSystem<PhysicsSystem>(1),
+        _world.makeSystem<ParallaxSystem>(1),
         //    _world.registerSystem<BulletSystem>(1);
-        _world.makeSystem<DamageCollisionSystem>(1), _world.makeSystem<DamageSoundSystem>(1),
+        _world.makeSystem<DamageCollisionSystem>(1),
+        _world.makeSystem<DamageSoundSystem>(1),
         _world.makeSystem<NodeMonsterSystem>(1),
         // _world.registerSystem<MonsterGenSystem>(1);
-        _world.makeSystem<InvulSystem>(1)
+        _world.makeSystem<InvulSystem>(1),
+        _world.makeSystem<ControlPlayerSystem>(0),
+        _world.makeSystem<AnimPlayerSystem>(1),
+        _world.makeSystem<AnimSystem>(1),
+        _world.makeSystem<PhysicsSystem>(2),
+        _world.makeSystem<ParallaxSystem>(1),
+        _world.makeSystem<NodeMonsterSystem>(1),
+//    _world.makeSystem<BulletSystem>(1),
+        _world.makeSystem<DamageCollisionSystem>(1),
+        _world.makeSystem<DamageSoundSystem>(1),
+        // _world.makeSystem<MonsterGenSystem>(1);
+        _world.makeSystem<InvulSystem>(1),
+        _world.makeSystem<ProfilingSystem>(2),
     };
     std::function<void()> setup = [this] () {
         auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
@@ -120,17 +137,6 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     };
 
     // commented to show that movement comes from server
-    _world.registerSystem<ControlPlayerSystem>(0);
-    _world.registerSystem<AnimPlayerSystem>(1);
-    _world.registerSystem<AnimSystem>(1);
-    _world.registerSystem<PhysicsSystem>(2);
-    _world.registerSystem<ParallaxSystem>(1);
-    _world.registerSystem<NodeMonsterSystem>(1);
-//    _world.registerSystem<BulletSystem>(1);
-    _world.registerSystem<DamageCollisionSystem>(1);
-    _world.registerSystem<DamageSoundSystem>(1);
-    // _world.registerSystem<MonsterGenSystem>(1);
-    _world.registerSystem<InvulSystem>(1);
     std::map<Input, std::function<void()>> handlers2;
     handlers2[sf::Keyboard::Escape] = [this]() { _world.goToMenu(0); };
     Menu game(buttons, handlers2, systems2, std::move(setup));
