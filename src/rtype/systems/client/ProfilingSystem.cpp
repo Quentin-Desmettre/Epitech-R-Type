@@ -26,7 +26,6 @@ rtype::ProfilingSystem &rtype::ProfilingSystem::addProfiling(rtype::ProfilingSys
     entity.addComponent<TextComponent>(name, 20, sf::Color::White);
     entity.addComponent<PositionComponent>(20, _profilers.size() * 30 + 20);
     _profilers[entity.getId()] = {name, function};
-    std::cout << "adding new profiler: " << name << ", new size: " << _profilers.size() << std::endl;
     return *this;
 }
 
@@ -39,8 +38,8 @@ rtype::ProfilingSystem &rtype::ProfilingSystem::clear()
 aecs::EntityChanges rtype::ProfilingSystem::update(aecs::UpdateParams &updateParams)
 {
     _elapsedTime += updateParams.deltaTime;
-    if (_elapsedTime < _timeBetweenUpdate)
-        return {};
+//    if (_elapsedTime < _timeBetweenUpdate)
+//        return {};
     _elapsedTime = 0;
 
     // We iterate over all the entities that are registered in the system
