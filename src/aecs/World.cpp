@@ -6,7 +6,6 @@
 #include "aecs/Entity.hpp"
 #include "aecs/MenuInputSystem.hpp"
 #include "rtype/systems/client/ButtonSystem.hpp"
-#include "rtype/systems/server/ServerInputsSystem.hpp"
 #include "shared/PacketBuilder.hpp"
 #include <algorithm>
 #include <iostream>
