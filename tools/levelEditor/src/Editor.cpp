@@ -43,8 +43,10 @@ void Editor::saveMap(std::string path)
         path = "pattern.txt";
 
     std::ofstream file(path);
-    if (!file.is_open())
+    if (!file.is_open()) {
+        std::cerr << "Error: Failed to open file" << std::endl;
         return;
+    }
 
     for (auto &line : _map) {
         std::vector<std::pair<int, Block>> blocks;
@@ -60,6 +62,8 @@ void Editor::saveMap(std::string path)
         if (&line != &_map.back())
             file << std::endl;
     }
+    file.close();
+    std::cout << "Saved map to " << path << std::endl;
 }
 
 bool Editor::isBlock(const Block block) const

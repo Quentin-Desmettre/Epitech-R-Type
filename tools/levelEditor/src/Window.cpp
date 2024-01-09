@@ -7,11 +7,13 @@
 
 #include "Window.hpp"
 #include "Editor.hpp"
+#include <cmath>
 
 Window::Window() :
     _window(sf::VideoMode(1920, 1080), "Level Editor")
 {
     _window.setFramerateLimit(60);
+    _view = _window.getDefaultView();
 
     _backTexture.loadFromFile("assets/background.png");
     _back.setTexture(_backTexture);
@@ -28,8 +30,14 @@ void Window::run(Editor &editor)
     while (_window.isOpen()) {
         handleEvents(editor);
         _window.clear();
-        _window.draw(_back);
+
+        drawBackground();
+        drawOutlines();
         drawMap(editor);
+        if (editor.getMode() == ADD)
+            drawSelected(editor.getSelectedBlock());
+
+        _window.setView(_view);
         _window.display();
     }
 }
@@ -47,10 +55,21 @@ void Window::handleEvents(Editor &editor)
                 editor.switchMode(DELETE);
             if (_event.key.code == sf::Keyboard::Enter)
                 editor.saveMap();
+            if (_event.key.code == sf::Keyboard::Right)
+                _view.move(15, 0);
+            if (_event.key.code == sf::Keyboard::Left && _view.getCenter().x > _view.getSize().x / 2)
+                _view.move(-15, 0);
         }
     }
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        editor.click(sf::Mouse::getPosition(_window));
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+        sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
+
+        if (mousePos.x < 0 || mousePos.y < 0 || (uint)mousePos.x > _window.getSize().x ||
+            (uint)mousePos.y > _window.getSize().y)
+            return;
+        mousePos.x += _view.getCenter().x - _view.getSize().x / 2;
+        editor.click(mousePos);
+    }
 }
 
 void Window::drawMap(const Editor &editor)
@@ -60,26 +79,37 @@ void Window::drawMap(const Editor &editor)
 
     for (std::size_t i = 0; i < map.size(); i++) {
         const Line &line = map[i];
-        std::vector<std::size_t> visited;
         for (auto &[j, block] : line) {
             if (block == EMPTY)
                 continue;
             sprite.setTexture(getTexture(block));
             sprite.setPosition(j * BLOCK_SIZE, i * BLOCK_SIZE);
             _window.draw(sprite);
-            visited.push_back(j);
         }
-        drawOutlines(visited, i);
-        if (editor.getMode() == ADD)
-            drawSelected(editor.getSelectedBlock());
     }
 }
 
-void Window::drawOutlines(const std::vector<std::size_t> &visited, std::size_t i)
+void Window::drawBackground()
 {
-    for (std::size_t j = 0; j < 20; j++) {
-        if (std::find(visited.begin(), visited.end(), j) == visited.end()) {
-            _outline.setPosition(j * BLOCK_SIZE, i * BLOCK_SIZE);
+    sf::Vector2f pos = _view.getCenter() - _view.getSize() / 2.0f;
+
+    _back.setPosition(pos);
+    _window.draw(_back);
+}
+
+void Window::drawOutlines()
+{
+    sf::Vector2f pos = _view.getCenter() - _view.getSize() / 2.0f;
+    sf::Vector2f size = _view.getSize();
+
+    pos.x = std::floor(pos.x / BLOCK_SIZE) * BLOCK_SIZE;
+    pos.y = std::floor(pos.y / BLOCK_SIZE) * BLOCK_SIZE;
+    size.x = std::ceil(size.x / BLOCK_SIZE) * BLOCK_SIZE;
+    size.y = std::ceil(size.y / BLOCK_SIZE) * BLOCK_SIZE;
+
+    for (float i = pos.x; i < pos.x + size.x + 1; i += BLOCK_SIZE) {
+        for (float j = pos.y; j < pos.y + size.y - BLOCK_SIZE; j += BLOCK_SIZE) {
+            _outline.setPosition(i, j);
             _window.draw(_outline);
         }
     }
@@ -90,9 +120,14 @@ void Window::drawSelected(const Block selectedBlock)
     sf::Sprite sprite;
     sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
 
+    mousePos.x += _view.getCenter().x - _view.getSize().x / 2;
+    mousePos /= BLOCK_SIZE;
+    if (mousePos.x < 0 || mousePos.y < 0 || mousePos.y > 10)
+        return;
+
     sprite.setTexture(getTexture(selectedBlock));
-    sprite.setPosition((mousePos.x / BLOCK_SIZE) * BLOCK_SIZE, (mousePos.y / BLOCK_SIZE) * BLOCK_SIZE);
-    sprite.setColor(sf::Color(255, 255, 255, 25));
+    sprite.setPosition(mousePos.x * BLOCK_SIZE, mousePos.y * BLOCK_SIZE);
+    sprite.setColor(sf::Color(255, 255, 255, 75));
     _window.draw(sprite);
 }
 

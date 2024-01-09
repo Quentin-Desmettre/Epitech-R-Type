@@ -15,7 +15,8 @@ void print_usage()
     std::cout << "DESCRIPTION" << std::endl;
     std::cout << "\tmap:\tmap to load" << std::endl;
     std::cout << "Use A to add blocks, D to delete blocks and Enter to save the map" << std::endl;
-    std::cout << "Switch between blocks by pressing A" << std::endl;
+    std::cout << "Cycle between blocks by pressing A" << std::endl;
+    std::cout << "Press right and left arrows to move the camera" << std::endl;
 }
 
 int main(int ac, char **av)

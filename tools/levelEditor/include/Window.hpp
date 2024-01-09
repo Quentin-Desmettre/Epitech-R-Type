@@ -29,11 +29,13 @@ class Window
   protected:
   private:
     void handleEvents(Editor &editor);
-    void drawOutlines(const std::vector<std::size_t> &visized, std::size_t i);
+    void drawBackground();
+    void drawOutlines();
     void drawSelected(const Block selectedBlock);
     sf::Texture &getTexture(const Block block);
 
     sf::RenderWindow _window;
+    sf::View _view;
     sf::Event _event;
     sf::Sprite _back;
     sf::Texture _backTexture;
