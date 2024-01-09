@@ -6,6 +6,7 @@
 #define R_TYPE_ENTITYFACTORY_HPP
 #include "aecs/Entity.hpp"
 #include <SFML/Graphics.hpp>
+#include <functional>
 #define FLOAT_MAX 3.402823466e+38F
 
 namespace aecs

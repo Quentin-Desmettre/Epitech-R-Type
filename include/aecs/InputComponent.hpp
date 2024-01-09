@@ -7,6 +7,7 @@
 
 #include "SFML/Graphics.hpp"
 #include "aecs/AbstractComponent.hpp"
+#include <functional>
 
 namespace aecs
 {
