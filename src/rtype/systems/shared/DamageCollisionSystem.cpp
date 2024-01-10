@@ -42,7 +42,7 @@ namespace rtype
         return false;
     }
 
-    void DamageCollisionSystem::addPowerUp(const aecs::EntityChanges &changes)
+    void DamageCollisionSystem::addPowerUp(aecs::EntityChanges &changes)
     {
         if (!_world.getIsServer())
             return;
@@ -54,7 +54,8 @@ namespace rtype
             int dropChance = entity->second->getComponent<MonsterComponent>()._lil ? 15 : 30;
             if (random < dropChance) {
                 PositionComponent &position = entity->second->getComponent<PositionComponent>();
-                EntityFactory::createPower(sf::Vector2f(position.x, position.y), rand() % 2);
+                aecs::Entity &power = EntityFactory::createPower(sf::Vector2f(position.x, position.y), rand() % 2);
+                changes.editedEntities.push_back(power.getId());
             }
         }
     }

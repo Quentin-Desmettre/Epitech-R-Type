@@ -27,7 +27,7 @@ namespace rtype
       private:
         sf::Rect<float> getRect(const std::shared_ptr<aecs::Entity> &entity);
         bool killed(const std::shared_ptr<aecs::Entity> &entity, const std::shared_ptr<aecs::Entity> &entity2);
-        void addPowerUp(const aecs::EntityChanges &changes);
+        void addPowerUp(aecs::EntityChanges &changes);
     };
 
 } // namespace rtype
