@@ -6,6 +6,7 @@
 #include "aecs/World.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/SpriteComponent.hpp"
 #include <fstream>
 #include <utility>
 
@@ -68,7 +69,7 @@ const sf::IntRect rtype::MapSystem::rects[] = {
 };
 
 rtype::MapSystem::MapSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-    ALogicSystem(world, entities, {}),
+    ALogicSystem(world, entities, {typeid(BlockComponent)}),
     _occupiedSpace(0)
 {
     preloadPatterns();
@@ -87,7 +88,7 @@ void rtype::MapSystem::onEntityRemoved(const aecs::EntityPtr &entity)
 
 // Window size: 1044x640
 
-aecs::EntityChanges rtype::MapSystem::update(aecs::UpdateParams &updateParams)
+aecs::EntityChanges rtype::MapSystem::update(aecs::UpdateParams &)
 {
     // procedure to generate map:
     // - check if enough time has passed since last generation
@@ -103,7 +104,14 @@ aecs::EntityChanges rtype::MapSystem::update(aecs::UpdateParams &updateParams)
     //      - X       for blocks that can only be destroyed with charged bullets
     //      - <space> for empty space
 
-    _occupiedSpace -= std::abs(updateParams.deltaTime * BLOCK_SPEED);
+    _occupiedSpace = 0;
+    for (auto &[id, entity]: _entitiesMap) {
+        auto &position = entity->getComponent<PositionComponent>();
+        auto &sprite = entity->getComponent<SpriteComponent>();
+        _occupiedSpace = std::max(_occupiedSpace, position.x + BLOCK_SIZE);
+//        std::cout << "Block rect: " << position.x << ", " << position.y << " - " << sprite._size.x << ", "
+//                  << sprite._size.y << std::endl;
+    }
     return loadPatterns(0);
 }
 
@@ -219,6 +227,14 @@ std::uint8_t rtype::MapSystem::getUsedSides(std::size_t x, std::size_t y) const
         usedSides |= UsedSide::TOP;
     if (_loadedPatterns.find({x, y + 1}) != _loadedPatterns.end())
         usedSides |= UsedSide::BOTTOM;
+    if (_loadedPatterns.find({x - 1, y - 1}) != _loadedPatterns.end())
+        usedSides |= UsedSide::TOP_LEFT;
+    if (_loadedPatterns.find({x + 1, y - 1}) != _loadedPatterns.end())
+        usedSides |= UsedSide::TOP_RIGHT;
+    if (_loadedPatterns.find({x - 1, y + 1}) != _loadedPatterns.end())
+        usedSides |= UsedSide::BOTTOM_LEFT;
+    if (_loadedPatterns.find({x + 1, y + 1}) != _loadedPatterns.end())
+        usedSides |= UsedSide::BOTTOM_RIGHT;
     return usedSides;
 }
 
@@ -239,8 +255,8 @@ void rtype::MapSystem::loadPatternInWorld(aecs::EntityChanges &changes, const rt
     }
     for (const auto &block: pattern.first) {
         auto sides = getUsedSides((block.position.x + startX) / BLOCK_SIZE, block.position.y / BLOCK_SIZE);
-        auto rect = rects[sides];
-        changes.editedEntities.push_back(EntityFactory::createBlock({block.position.x + startX, block.position.y},
+        auto rect = rects[sides & 0b1111];
+        changes.editedEntities.insert(EntityFactory::createBlock({block.position.x + startX, block.position.y},
                                                                     block.texturePath, block.canBeShot, block.health, rect)
                                                  .getId());
     }

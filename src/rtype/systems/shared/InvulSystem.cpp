@@ -19,7 +19,7 @@ namespace rtype
             auto &sprite = entity->getComponent<SpriteComponent>();
             auto &damage = entity->getComponent<DamageCollisionComponent>();
             if (damage.invulnerability > 0) {
-                changes.editedEntities.push_back(entity->getId());
+                changes.editedEntities.insert(entity->getId());
                 damage.invulnerability -= updateParams.deltaTime;
                 if (damage.invulnerability < 0)
                     damage.invulnerability = 0;

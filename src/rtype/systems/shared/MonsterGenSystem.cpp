@@ -35,7 +35,7 @@ aecs::EntityChanges rtype::MonsterGenSystem::update(aecs::UpdateParams &updatePa
     while (time > 1) {
         rnd = std::rand() % 100;
         if (rnd * nbPlayer < 10) {
-            changes.editedEntities.push_back(addRandomEnemy().getId());
+            changes.editedEntities.insert(addRandomEnemy().getId());
         }
         if (bossTime < 0) {
             EntityFactory::createSnake(sf::Vector2f(1180, std::rand() % 540 + 50), 25);

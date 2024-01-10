@@ -88,18 +88,6 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         _world.makeSystem<ClientServerDataHandlerSystem>(-2),
         _world.makeSystem<ClientInputSenderSystem>(-1),
         _world.makeSystem<ClientPingSystem>(0),
-        // commented to show that movement comes from server
-        _world.makeSystem<ControlPlayerSystem>(0),
-        _world.makeSystem<AnimPlayerSystem>(1),
-        _world.makeSystem<AnimSystem>(1),
-        _world.makeSystem<PhysicsSystem>(1),
-        _world.makeSystem<ParallaxSystem>(1),
-        //    _world.registerSystem<BulletSystem>(1);
-        _world.makeSystem<DamageCollisionSystem>(1),
-        _world.makeSystem<DamageSoundSystem>(1),
-        _world.makeSystem<NodeMonsterSystem>(1),
-        // _world.registerSystem<MonsterGenSystem>(1);
-        _world.makeSystem<InvulSystem>(1),
         _world.makeSystem<ControlPlayerSystem>(0),
         _world.makeSystem<AnimPlayerSystem>(1),
         _world.makeSystem<AnimSystem>(1),
@@ -109,7 +97,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
 //    _world.makeSystem<BulletSystem>(1),
         _world.makeSystem<DamageCollisionSystem>(1),
         _world.makeSystem<DamageSoundSystem>(1),
-        // _world.makeSystem<MonsterGenSystem>(1);
+//         _world.makeSystem<MonsterGenSystem>(1),
         _world.makeSystem<InvulSystem>(1),
         _world.makeSystem<ProfilingSystem>(2),
     };

@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <typeindex>
 #include <vector>
+#include <set>
 
 namespace aecs
 {
@@ -34,8 +35,8 @@ namespace aecs
     typedef std::pair<ClientInputs, MouseInputs> RenderInputs;
 
     typedef struct EntityChanges {
-        std::vector<unsigned int> deletedEntities;
-        std::vector<unsigned int> editedEntities;
+        std::set<unsigned int> deletedEntities;
+        std::set<unsigned int> editedEntities;
     } EntityChanges;
 
     typedef struct UpdateParams {

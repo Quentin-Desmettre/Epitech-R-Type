@@ -25,7 +25,7 @@ namespace rtype
             my.timeSinceLastShoot += updateParams.deltaTime;
             my.timeLeftShootPowerUp -= updateParams.deltaTime * 0.1;
             my.timeLeftMovePowerDown -= updateParams.deltaTime * 0.1;
-            changes.editedEntities.push_back(entity->getId());
+            changes.editedEntities.insert(entity->getId());
 
             velocity.x = 0;
             velocity.y = 0;
@@ -74,7 +74,7 @@ namespace rtype
 
             if (space && shift && my.timeInShift > 6) {
                 if (_world.getIsServer())
-                    changes.editedEntities.push_back(
+                    changes.editedEntities.insert(
                         EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y), sf::Vector2f(100, 0),
                                                     0, true)
                             .getId());

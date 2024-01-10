@@ -107,7 +107,6 @@ aecs::RenderInputs rtype::RenderSystem::render()
             drawText(entity);
     }
     _window.display();
-    _flushBuffers();
     return {inputs, mouseInputs};
 }
 

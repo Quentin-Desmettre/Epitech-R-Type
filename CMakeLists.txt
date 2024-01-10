@@ -106,6 +106,7 @@ set(SHARED_SRC
         include/shared/SFMLLoader.cpp
         include/shared/SFMLLoader.hpp
         include/rtype/components/NodeComponent.hpp
+        src/rtype/systems/server/MapSystem.cpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp

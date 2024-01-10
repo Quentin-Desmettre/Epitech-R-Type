@@ -20,6 +20,10 @@ namespace rtype
             RIGHT = 2,
             TOP = 4,
             BOTTOM = 8,
+            TOP_LEFT = 16,
+            TOP_RIGHT = 32,
+            BOTTOM_LEFT = 64,
+            BOTTOM_RIGHT = 128
         };
         std::uint8_t operator|(UsedSide side) const {
             return usedSides | side;

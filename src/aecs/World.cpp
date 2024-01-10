@@ -114,15 +114,14 @@ namespace aecs
         updateCurrentMenu();
 
         // Update systems
+        sf::Clock cl;
         for (auto &[system, _] : _sortedSystems) {
             auto changes = system->update(updateParams);
 
             // Update entity changes
-            updateParams.entityChanges.deletedEntities.insert(updateParams.entityChanges.deletedEntities.end(),
-                                                              changes.deletedEntities.begin(),
+            updateParams.entityChanges.deletedEntities.insert(changes.deletedEntities.begin(),
                                                               changes.deletedEntities.end());
-            updateParams.entityChanges.editedEntities.insert(updateParams.entityChanges.editedEntities.end(),
-                                                             changes.editedEntities.begin(),
+            updateParams.entityChanges.editedEntities.insert(changes.editedEntities.begin(),
                                                              changes.editedEntities.end());
         }
 

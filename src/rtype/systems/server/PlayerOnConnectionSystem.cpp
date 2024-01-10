@@ -18,7 +18,7 @@ namespace rtype
     {
         aecs::EntityChanges changes;
         while (!_deletedEntities.empty()) {
-            changes.deletedEntities.push_back(_deletedEntities[0]);
+            changes.deletedEntities.insert(_deletedEntities[0]);
             _deletedEntities.erase(_deletedEntities.begin());
         }
         return {};

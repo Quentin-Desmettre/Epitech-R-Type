@@ -71,7 +71,6 @@ namespace rtype
 
         for (size_t i = 0; i < entities.size(); i++) {
             auto &entity = entities[i];
-            changes.editedEntities.push_back(entity->getId());
             auto &damage = entity->getComponent<DamageCollisionComponent>();
             auto &hp = entity->getComponent<HPComponent>();
             sf::Rect rect = getRect(entity);
@@ -80,36 +79,38 @@ namespace rtype
                 auto &damage2 = entity2->getComponent<DamageCollisionComponent>();
                 auto &hp2 = entity2->getComponent<HPComponent>();
                 sf::Rect rect2 = getRect(entity2);
-                if (rect.intersects(rect2) && damage.team != damage2.team) {
-                    if (damage.damage != 0 && damage2.invulnerability == 0) {
-                        hp2.hp -= damage.damage;
-                        if (damage2.type != DamageCollisionComponent::ObjectType::LG_BULLET)
-                            damage2.invulnerability = 5;
-                        damage2.damaged = true;
-                    }
-                    if (damage2.damage != 0 && damage.invulnerability == 0) {
-                        hp.hp -= damage2.damage;
-                        if (damage.type != DamageCollisionComponent::ObjectType::LG_BULLET)
-                            damage.invulnerability = 5;
-                        damage.damaged = true;
-                    }
-                    if (hp2.hp <= 0) {
-                        if (_world.getIsServer())
-                            changes.deletedEntities.push_back(entity2->getId());
-                        entities.erase(entities.begin() + j);
-                        j--;
-                    }
-                    if (hp.hp <= 0) {
-                        if (_world.getIsServer())
-                            changes.deletedEntities.push_back(entity->getId());
-                        entities.erase(entities.begin() + i);
-                        i--;
-                        break;
-                    }
+                if (!(rect.intersects(rect2) && damage.team != damage2.team))
+                    continue;
+                if (damage.damage != 0 && damage.invulnerability == 0) {
+                    hp2.hp -= damage.damage;
+                    if (damage2.type != DamageCollisionComponent::ObjectType::LG_BULLET)
+                        damage2.invulnerability = 5;
+                    damage2.damaged = true;
+                    changes.editedEntities.insert(entity2->getId());
+                }
+                if (damage2.damage != 0 && damage.invulnerability == 0) {
+                    hp.hp -= damage2.damage;
+                    if (damage.type != DamageCollisionComponent::ObjectType::LG_BULLET)
+                        damage.invulnerability = 5;
+                    damage.damaged = true;
+                    changes.editedEntities.insert(entity->getId());
+                }
+                if (hp2.hp <= 0) {
+                    if (_world.getIsServer())
+                        changes.deletedEntities.insert(entity2->getId());
+                    entities.erase(entities.begin() + j);
+                    j--;
+                }
+                if (hp.hp <= 0) {
+                    if (_world.getIsServer())
+                        changes.deletedEntities.insert(entity->getId());
+                    entities.erase(entities.begin() + i);
+                    i--;
+                    break;
                 }
             }
         }
-        addPowerUp(changes);
+//        addPowerUp(changes);
         return changes;
     }
 

@@ -19,12 +19,12 @@ namespace rtype
             auto &monster = entity->getComponent<MonsterComponent>();
             auto &position = entity->getComponent<PositionComponent>();
             if (position.x < -100 || position.x > 1920 + 100 || position.y < -200 || position.y > 1080 + 200) {
-                changes.deletedEntities.push_back(entity->getId());
+                changes.deletedEntities.insert(entity->getId());
             }
             if (!monster._isShooting)
                 continue;
             monster.timeSinceLastShoot += updateParams.deltaTime;
-            changes.editedEntities.push_back(entity->getId());
+            changes.editedEntities.insert(entity->getId());
 
             if (monster.timeSinceLastShoot > 15) {
                 monster.timeSinceLastShoot = 0;

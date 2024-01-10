@@ -66,7 +66,7 @@ aecs::EntityChanges rtype::NodeMonsterSystem::update(aecs::UpdateParams &updateP
     for (auto entity : entities) {
         auto &node = entity->getComponent<NodeComponent>();
         auto &monster = entity->getComponent<MonsterComponent>();
-        changes.editedEntities.push_back(entity->getId());
+        changes.editedEntities.insert(entity->getId());
         follow(entity);
         if (node.delay == 0) {
             monster._isShooting = true;

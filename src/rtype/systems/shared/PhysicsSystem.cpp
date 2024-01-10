@@ -41,7 +41,7 @@ namespace rtype
 
             // Check if need to erase
             if (position.deleteIfOutOfScreen && isOutOfScreen(position, size)) {
-                changes.deletedEntities.push_back(_id);
+                changes.deletedEntities.insert(_id);
                 continue;
             }
             // Check collisions

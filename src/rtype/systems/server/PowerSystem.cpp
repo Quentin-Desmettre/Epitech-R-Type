@@ -51,13 +51,13 @@ namespace rtype
             auto &power = entity->getComponent<PowerComponent>();
             auto &position = entity->getComponent<PositionComponent>();
             if (position.x < -100 || position.x > 1920 + 100 || position.y < -100 || position.y > 1080 + 100) {
-                changes.deletedEntities.push_back(entity->getId());
+                changes.deletedEntities.insert(entity->getId());
                 continue;
             }
             sf::Rect rect = getRect(entity);
 
             if (playerRect.intersects(rect)) {
-                changes.deletedEntities.push_back(entity->getId());
+                changes.deletedEntities.insert(entity->getId());
                 auto &playerComponent = player->getComponent<PlayerComponent>();
                 if (power.isPowerUp)
                     playerComponent.timeLeftShootPowerUp = 10;
