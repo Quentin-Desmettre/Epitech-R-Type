@@ -176,7 +176,7 @@ aecs::Entity &rtype::EntityFactory::createButton(const std::string &text, int fo
 {
     auto &buttons = _world->createEntity();
 
-    buttons.addComponent<TextComponent>(text, fontSize, color, zIndex, std::move(onClick));
+    buttons.addComponent<TextComponent>(text, fontSize, color, true, zIndex, std::move(onClick));
     buttons.addComponent<PositionComponent>(pos.x, pos.y);
     return buttons;
 }

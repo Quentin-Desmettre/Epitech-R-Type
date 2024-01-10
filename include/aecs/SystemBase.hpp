@@ -17,8 +17,10 @@ namespace aecs
 
     enum MouseInputType {
         MOUSE_MOVE = 0,
-        MOUSE_LEFT_CLICK,
-        MOUSE_RIGHT_CLICK,
+        MOUSE_LEFT_CLICK_PRESSED,
+        MOUSE_LEFT_CLICK_RELEASED,
+        MOUSE_RIGHT_CLICK_PRESSED,
+        MOUSE_RIGHT_CLICK_RELEASED,
     };
 
     class Entity;
@@ -58,6 +60,7 @@ namespace aecs
         // For render systems
         virtual RenderInputs render() = 0;
         [[nodiscard]] virtual bool isOpen() const = 0;
+        virtual void close() = 0;
     };
 
     struct SystemData {
@@ -104,6 +107,7 @@ namespace aecs
         // For render systems ONLY
         RenderInputs render() override;
         [[nodiscard]] bool isOpen() const override;
+        void close() override;
     };
 
 } // namespace aecs

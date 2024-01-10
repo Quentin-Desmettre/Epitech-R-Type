@@ -76,8 +76,18 @@ aecs::RenderInputs rtype::RenderSystem::render()
             _window.close();
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             _window.close();
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-            mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_LEFT_CLICK, sf::Vector2f(sf::Mouse::getPosition(_window)));
+        if (event.type == sf::Event::MouseButtonPressed) {
+            if (event.mouseButton.button == sf::Mouse::Left)
+                    mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_LEFT_CLICK_PRESSED, sf::Vector2f(sf::Mouse::getPosition(_window)));
+            if (event.mouseButton.button == sf::Mouse::Right)
+                    mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_RIGHT_CLICK_PRESSED, sf::Vector2f(sf::Mouse::getPosition(_window)));
+        }
+        if (event.type == sf::Event::MouseButtonReleased) {
+            if (event.mouseButton.button == sf::Mouse::Left)
+                    mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_LEFT_CLICK_RELEASED, sf::Vector2f(sf::Mouse::getPosition(_window)));
+            if (event.mouseButton.button == sf::Mouse::Right)
+                    mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_RIGHT_CLICK_RELEASED, sf::Vector2f(sf::Mouse::getPosition(_window)));
+        }
         if (event.type == sf::Event::MouseMoved)
             mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_MOVE, sf::Vector2f(sf::Mouse::getPosition(_window)));
     }
@@ -119,6 +129,11 @@ void rtype::RenderSystem::drawSprite(const aecs::EntityPtr &entity)
         _window.draw(sprite.sprite, shader.shader.get());
     } else
         _window.draw(sprite.sprite);
+}
+
+void rtype::RenderSystem::close()
+{
+    _window.close();
 }
 
 bool rtype::RenderSystem::isOpen() const

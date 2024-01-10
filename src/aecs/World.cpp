@@ -91,6 +91,11 @@ namespace aecs
         });
     }
 
+    void World::leave()
+    {
+        _needLeave = true;
+    }
+
     void World::update()
     {
         float deltaTime = clock.getElapsedTime().asSeconds() * 10;
@@ -130,14 +135,16 @@ namespace aecs
 
         // Clear
         // _renderInputs.clear();
-        _tick++;
         _mouseInputs.clear();
+        _tick++;
     }
 
     void World::render()
     {
         // Render system
         if (_renderSystem) {
+            if (_needLeave)
+                _renderSystem->close();
             auto tmp = _renderSystem->render();
             {
                 std::lock_guard<std::mutex> lock(_renderInputsMutex);

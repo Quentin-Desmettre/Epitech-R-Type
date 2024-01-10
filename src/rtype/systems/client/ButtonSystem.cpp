@@ -6,6 +6,7 @@
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/TextComponent.hpp"
 #include "aecs/Entity.hpp"
+#include <iostream>
 
 namespace rtype
 {
@@ -23,16 +24,22 @@ namespace rtype
             return {};
 
         for (auto &[_, entity] : _entitiesMap) {
-            const auto &component = entity->getComponent<TextComponent>();
+            auto &component = entity->getComponent<TextComponent>();
             const auto &text = component._text.getGlobalBounds();
 
             for (auto &input : updateParams.mouseInputs) {
-                if (input.first == aecs::MOUSE_LEFT_CLICK) {
-                    sf::Vector2f mousePos = input.second;
-                    if (text.contains(mousePos) && component.onClick) {
+                sf::Vector2f mousePos = input.second;
+                if (text.contains(mousePos) && component.onClick) {
+                    component.onOver();
+                    if (input.first == aecs::MOUSE_LEFT_CLICK_PRESSED) {
+                        component.onPress();
+                    }
+                    if (input.first == aecs::MOUSE_LEFT_CLICK_RELEASED) {
                         component.onClick();
                         return changes;
                     }
+                } else {
+                    component.removeOver();
                 }
             }
         }
