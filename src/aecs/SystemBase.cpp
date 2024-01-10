@@ -63,4 +63,8 @@ namespace aecs
     {
         throw std::runtime_error("IRenderSystem::isOpen() should not be called");
     }
+    void ALogicSystem::close()
+    {
+        throw std::runtime_error("IRenderSystem::close() should not be called");
+    }
 } // namespace aecs

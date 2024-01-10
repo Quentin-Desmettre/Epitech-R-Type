@@ -131,6 +131,11 @@ void rtype::RenderSystem::drawSprite(const aecs::EntityPtr &entity)
         _window.draw(sprite.sprite);
 }
 
+void rtype::RenderSystem::close()
+{
+    _window.close();
+}
+
 bool rtype::RenderSystem::isOpen() const
 {
     return _window.isOpen();

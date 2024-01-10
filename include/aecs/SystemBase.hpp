@@ -60,6 +60,7 @@ namespace aecs
         // For render systems
         virtual RenderInputs render() = 0;
         [[nodiscard]] virtual bool isOpen() const = 0;
+        virtual void close() = 0;
     };
 
     struct SystemData {
@@ -106,6 +107,7 @@ namespace aecs
         // For render systems ONLY
         RenderInputs render() override;
         [[nodiscard]] bool isOpen() const override;
+        void close() override;
     };
 
 } // namespace aecs

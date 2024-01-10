@@ -46,8 +46,8 @@ void rtype::TextComponent::onPress()
     _text.setOutlineThickness(2);
     _text.setCharacterSize(_character_size);
     if (_setCenter) {
-            sf::FloatRect textRect = _text.getGlobalBounds();
-            _text.setOrigin(textRect.width / 2, textRect.height / 2);
+        sf::FloatRect textRect = _text.getGlobalBounds();
+        _text.setOrigin(textRect.width / 2, textRect.height / 2);
     }
 }
 

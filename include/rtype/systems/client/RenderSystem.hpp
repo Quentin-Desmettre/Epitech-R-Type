@@ -29,6 +29,7 @@ namespace rtype
 
         aecs::RenderInputs render() override;
         [[nodiscard]] bool isOpen() const override;
+        void close() override;
 
       private:
         void _sortEntities();

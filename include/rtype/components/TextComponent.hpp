@@ -31,7 +31,7 @@ namespace rtype
         };
 
       private:
-        int _character_size;
+        int _character_size = 30;
         int _over_size;
         int _default_size;
         bool _setCenter;
