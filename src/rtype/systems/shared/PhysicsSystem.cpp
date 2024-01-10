@@ -95,7 +95,15 @@ namespace rtype
         auto &sprite2 = entity2->getComponent<SpriteComponent>();
 
         sf::Rect<float> rect1(position1.x, position1.y, sprite1._size.x, sprite1._size.y);
+        if (sprite1.centered) {
+            rect1.top -= sprite1._size.y / 2;
+            rect1.left -= sprite1._size.x / 2;
+        }
         sf::Rect<float> rect2(position2.x, position2.y, sprite2._size.x, sprite2._size.y);
+        if (sprite2.centered) {
+            rect2.top -= sprite2._size.y / 2;
+            rect2.left -= sprite2._size.x / 2;
+        }
         int direction = NONE;
         if (rect1.intersects(rect2)) {
             if (rect1.top < rect2.top)

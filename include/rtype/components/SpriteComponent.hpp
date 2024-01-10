@@ -23,6 +23,7 @@ namespace rtype
         float time = 0;
         sf::Vector2f _size;
         int zIndex;
+        bool centered;
 
         [[nodiscard]] std::vector<std::byte> encode() const override;
         void decode(const std::vector<std::byte> &encoded) override;

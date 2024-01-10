@@ -54,7 +54,7 @@ namespace rtype
         [[nodiscard]] const Pattern &getRandomPattern(Difficulty difficulty) const;
         [[nodiscard]] std::uint8_t getUsedSides(std::size_t x, std::size_t y) const;
         void generatePattern(aecs::EntityChanges &changes, Difficulty maxDifficulty);
-        aecs::EntityChanges loadPatterns(Difficulty maxDifficulty);
+        void loadPatterns(aecs::EntityChanges &changes, Difficulty maxDifficulty);
         void loadPatternInWorld(aecs::EntityChanges &changes, const Pattern &pattern, float startX);
         float _occupiedSpace;
 

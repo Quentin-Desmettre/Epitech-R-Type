@@ -8,7 +8,8 @@
 
 rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size, sf::IntRect rect, int zIndex, bool centered) :
     _size(size),
-    zIndex(zIndex)
+    zIndex(zIndex),
+    centered(centered)
 {
     sf::Texture *texture = SFMLLoader::loadTexture(path);
 
@@ -40,7 +41,7 @@ rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f si
 std::vector<std::byte> rtype::SpriteComponent::encode() const
 {
     PacketBuilder pb;
-    pb << zIndex;
+    pb << zIndex << centered;
     return pb.getData();
 }
 
@@ -48,5 +49,5 @@ void rtype::SpriteComponent::decode(const std::vector<std::byte> &encoded)
 {
     PacketBuilder pb;
     pb << encoded;
-    pb >> zIndex;
+    pb >> zIndex >> centered;
 }

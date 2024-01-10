@@ -104,15 +104,14 @@ aecs::EntityChanges rtype::MapSystem::update(aecs::UpdateParams &)
     //      - X       for blocks that can only be destroyed with charged bullets
     //      - <space> for empty space
 
+    aecs::EntityChanges changes;
     _occupiedSpace = 0;
     for (auto &[id, entity]: _entitiesMap) {
         auto &position = entity->getComponent<PositionComponent>();
-        auto &sprite = entity->getComponent<SpriteComponent>();
         _occupiedSpace = std::max(_occupiedSpace, position.x + BLOCK_SIZE);
-//        std::cout << "Block rect: " << position.x << ", " << position.y << " - " << sprite._size.x << ", "
-//                  << sprite._size.y << std::endl;
     }
-    return loadPatterns(0);
+    loadPatterns(changes, 0);
+    return changes;
 }
 
 void rtype::MapSystem::preloadPatterns()
@@ -270,16 +269,14 @@ void rtype::MapSystem::generatePattern(aecs::EntityChanges &changes, rtype::MapS
     _occupiedSpace += pattern.second * BLOCK_SIZE;
 }
 
-aecs::EntityChanges rtype::MapSystem::loadPatterns(rtype::MapSystem::Difficulty maxDifficulty)
+void rtype::MapSystem::loadPatterns(aecs::EntityChanges &changes, rtype::MapSystem::Difficulty maxDifficulty)
 {
     // Generate patterns up until all the space has been filled
     const std::size_t WINDOW_WIDTH = 1088;
-    aecs::EntityChanges changes;
 
     if (_patterns.empty())
-        return {};
+        return;
     while (_occupiedSpace < WINDOW_WIDTH * 1.2) {
         generatePattern(changes, maxDifficulty);
     }
-    return changes;
 }

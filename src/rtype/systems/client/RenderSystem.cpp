@@ -4,6 +4,7 @@
 
 #include "rtype/systems/client/RenderSystem.hpp"
 #include "rtype/components/TextComponent.hpp"
+#include "rtype/components/CollidableComponent.hpp"
 
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
