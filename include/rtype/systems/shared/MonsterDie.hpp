@@ -2,8 +2,8 @@
 // Created by edo on 19/12/23.
 //
 
-#ifndef R_TYPE_MONSTERBULLET_HPP
-#define R_TYPE_MONSTERBULLET_HPP
+#ifndef R_TYPE_MONSTERDIE_HPP
+#define R_TYPE_MONSTERDIE_HPP
 
 #include "aecs/SystemBase.hpp"
 #include "aecs/World.hpp"
@@ -12,15 +12,15 @@
 namespace rtype
 {
 
-    class MonsterBullet : public aecs::ALogicSystem
+    class MonsterDie : public aecs::ALogicSystem
     {
       public:
-        MonsterBullet(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
-        ~MonsterBullet() override = default;
+        MonsterDie(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
+        ~MonsterDie() override = default;
 
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
     };
 
 } // namespace rtype
 
-#endif // R_TYPE_MONSTERBULLET_HPP
+#endif // R_TYPE_MONSTERDIE_HPP

@@ -4,6 +4,7 @@
 
 #include "rtype/RTypeClient.hpp"
 #include "rtype/EntityFactory.hpp"
+#include "rtype/components/NodeComponent.hpp"
 #include "rtype/systems/client/ClientInputSenderSystem.hpp"
 #include "rtype/systems/client/ClientPingSystem.hpp"
 #include "rtype/systems/client/ClientServerDataHandlerSystem.hpp"
@@ -14,14 +15,13 @@
 #include "rtype/systems/shared/ControlPlayerSystem.hpp"
 #include "rtype/systems/shared/DamageCollisionSystem.hpp"
 #include "rtype/systems/shared/InvulSystem.hpp"
-#include "rtype/systems/shared/MonsterBullet.hpp"
+#include "rtype/systems/shared/MonsterDie.hpp"
 #include "rtype/systems/shared/MonsterGenSystem.hpp"
+#include "rtype/systems/shared/NodeMonsterSystem.hpp"
 #include "rtype/systems/shared/ParallaxSystem.hpp"
 #include "rtype/systems/shared/PhysicsSystem.hpp"
-#include "rtype/systems/shared/NodeMonsterSystem.hpp"
 #include <chrono>
 #include <thread>
-#include "rtype/components/NodeComponent.hpp"
 
 #include "rtype/components/BlockComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"

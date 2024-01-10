@@ -18,6 +18,7 @@
 #include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/NodeComponent.hpp"
+#include "rtype/components/BulletGenComponent.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
 #include "rtype/components/TextComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
@@ -99,9 +100,11 @@ aecs::Entity &rtype::EntityFactory::toEnemy(aecs::Entity &entity)
     if (lil)
         entity.addComponent<SpriteComponent>("assets/sprites/LilMonster.png", sf::Vector2f(63, 48),
                                              sf::IntRect(21 * (rand() % 5), 0, 21, 16));
-    else
+    else {
         entity.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102),
                                              sf::IntRect(52 * (rand() % 5), 0, 52, 34));
+        entity.addComponent<BulletGenComponent>(15);
+    }
     if (!_world->getIsServer()) {
         entity.addComponent<AnimComponent>(1);
         entity.addComponent<PositionComponent>(1200, 200);
@@ -192,7 +195,6 @@ aecs::Entity &rtype::EntityFactory::toSnake(aecs::Entity &entity)
     entity.addComponent<MonsterComponent>();
     entity.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102),
                                          sf::IntRect(52 * (rand() % 5), 0, 52, 34));
-//    entity.addComponent<CollidableComponent>(0);
     if (!_world->getIsServer()) {
         entity.addComponent<AnimComponent>(1);
         entity.addComponent<PositionComponent>(1180, 200);
@@ -210,6 +212,9 @@ void rtype::EntityFactory::createSnake(sf::Vector2f position, int nb)
         enemy.addComponent<NodeComponent>(i);
         toSnake(enemy);
         enemy.addComponent<PositionComponent>(position.x, position.y);
+        if (i % 4 == 0) {
+            enemy.addComponent<BulletGenComponent>(15);
+        }
         if (i == 0)
             enemy.addComponent<VelocityComponent>(-20, 0);
         else

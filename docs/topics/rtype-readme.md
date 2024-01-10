@@ -23,7 +23,7 @@ in several systems, which are executed in this order:
 - `DamageCollisionSystem`: Handles collisions between entities that have a `Position` and a `Damage` component.
 - `MonsterGenSystem`: Handles the generation of monsters.
 - `InvulSystem`: Handles the invulnerability of every entity that has a `Position` and a `Invul` component.
-- `MonsterBullet`: Handles the generation of bullets by monsters.
+- `MonsterDie`: Handles the generation of bullets by monsters.
 
 This game logic runs at 128 ticks per second on both the server and the client.
 

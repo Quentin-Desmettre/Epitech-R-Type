@@ -53,10 +53,10 @@ namespace rtype
             }
             if (space && !shift && my.timeSinceLastShoot > 3) {
                 if (_world.getIsServer()) {
-                    EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y), sf::Vector2f(100, 0),
+                    EntityFactory::createBullet(sf::Vector2f(position.x + 20, position.y), sf::Vector2f(100, 0),
                                                 0);
                     if (my.timeLeftShootPowerUp > 0)
-                        EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y + 32),
+                        EntityFactory::createBullet(sf::Vector2f(position.x + 20, position.y + 32),
                                                     sf::Vector2f(100, 0), 0);
                 }
                 my.timeSinceLastShoot = 0;

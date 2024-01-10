@@ -9,6 +9,7 @@
 #include "rtype/systems/server/NewConnectionSystem.hpp"
 #include "rtype/systems/server/PlayerOnConnectionSystem.hpp"
 #include "rtype/systems/server/PowerSystem.hpp"
+#include "rtype/systems/server/BulletGenSystem.hpp"
 #include "rtype/systems/server/ServerCorrectionsSystem.hpp"
 #include "rtype/systems/server/ServerInputsSystem.hpp"
 #include "rtype/systems/shared/AnimPlayerSystem.hpp"
@@ -17,11 +18,11 @@
 #include "rtype/systems/shared/ControlPlayerSystem.hpp"
 #include "rtype/systems/shared/DamageCollisionSystem.hpp"
 #include "rtype/systems/shared/InvulSystem.hpp"
-#include "rtype/systems/shared/MonsterBullet.hpp"
+#include "rtype/systems/shared/MonsterDie.hpp"
 #include "rtype/systems/shared/MonsterGenSystem.hpp"
+#include "rtype/systems/shared/NodeMonsterSystem.hpp"
 #include "rtype/systems/shared/ParallaxSystem.hpp"
 #include "rtype/systems/shared/PhysicsSystem.hpp"
-#include "rtype/systems/shared/NodeMonsterSystem.hpp"
 #include <chrono>
 #include <thread>
 
@@ -47,9 +48,10 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate, int ac, char **av) :
     _world.registerSystem<MapSystem>(1);
     _world.registerSystem<MonsterGenSystem>(1);
     _world.registerSystem<InvulSystem>(1);
-    _world.registerSystem<MonsterBullet>(1);
+    _world.registerSystem<MonsterDie>(1);
     _world.registerSystem<PowerSystem>(2);
     _world.registerSystem<NodeMonsterSystem>(1);
+    _world.registerSystem<BulletGenSystem>(1);
 
     // Network systems
     _world.registerSystem<ServerCorrectionsSystem>(1000);
