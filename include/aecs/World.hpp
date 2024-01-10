@@ -156,6 +156,7 @@ namespace aecs
 
         int addMenu(const Menu &menu, int id = -1);
         void goToMenu(int id);
+        void leave();
 
         [[nodiscard]] std::size_t getEntityCount() const
         {
@@ -186,6 +187,7 @@ namespace aecs
         std::mutex _renderInputsMutex;
         ArgParser _argParser;
         std::map<int, Menu> _menus;
+        bool _needLeave = false;
         int _currentMenu = -1;
         int _nextMenu = -1;
     };

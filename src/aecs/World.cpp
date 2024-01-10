@@ -130,8 +130,8 @@ namespace aecs
 
         // Clear
         // _renderInputs.clear();
-        _tick++;
         _mouseInputs.clear();
+        _tick++;
     }
 
     void World::render()

@@ -23,7 +23,7 @@ rtype::ProfilingSystem &rtype::ProfilingSystem::addProfiling(rtype::ProfilingSys
     // When we add a profiling functions, we need to create an entity that will hold the result of the function
     // This entity is a text that will be displayed on the screen
     auto &entity = _world.createEntity();
-    entity.addComponent<TextComponent>(name, 20, sf::Color::White);
+    entity.addComponent<TextComponent>(name, 20, sf::Color::White, false);
     entity.addComponent<PositionComponent>(20, _profilers.size() * 30 + 20);
     _profilers[entity.getId()] = {name, function};
     return *this;

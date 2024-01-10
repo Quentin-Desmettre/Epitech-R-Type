@@ -17,8 +17,10 @@ namespace aecs
 
     enum MouseInputType {
         MOUSE_MOVE = 0,
-        MOUSE_LEFT_CLICK,
-        MOUSE_RIGHT_CLICK,
+        MOUSE_LEFT_CLICK_PRESSED,
+        MOUSE_LEFT_CLICK_RELEASED,
+        MOUSE_RIGHT_CLICK_PRESSED,
+        MOUSE_RIGHT_CLICK_RELEASED,
     };
 
     class Entity;
