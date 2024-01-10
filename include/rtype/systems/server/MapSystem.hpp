@@ -26,8 +26,11 @@ namespace rtype
 
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
 
+        void onEntityRemoved(const aecs::EntityPtr &entity) override;
+
         static constexpr const float BLOCK_SIZE = 58;
         static constexpr const float BLOCK_SPEED = -5;
+        static const sf::IntRect rects[];
 
       private:
         enum BlockType {
@@ -38,6 +41,7 @@ namespace rtype
             BREAKABLE_HEAVY = 'X',
         };
         typedef int Difficulty;
+        typedef sf::Vector2<std::size_t> Position;
         typedef std::pair<std::vector<BlockComponent>, std::size_t> Pattern;
 
         /**
@@ -48,12 +52,20 @@ namespace rtype
         static Pattern parseBlocks(const std::vector<std::string> &lines);
 
         [[nodiscard]] const Pattern &getRandomPattern(Difficulty difficulty) const;
+        [[nodiscard]] std::uint8_t getUsedSides(std::size_t x, std::size_t y) const;
         void generatePattern(aecs::EntityChanges &changes, Difficulty maxDifficulty);
         aecs::EntityChanges loadPatterns(Difficulty maxDifficulty);
-        static void loadPatternInWorld(aecs::EntityChanges &changes, const Pattern &pattern, float startX);
+        void loadPatternInWorld(aecs::EntityChanges &changes, const Pattern &pattern, float startX);
         float _occupiedSpace;
 
         std::map<Difficulty, std::vector<Pattern>> _patterns;
+
+        struct PositionComparator {
+            bool operator()(const Position &lhs, const Position &rhs) const {
+                return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
+            }
+        };
+        std::map<Position, BlockComponent, PositionComparator> _loadedPatterns;
         static const std::map<BlockType, BlockComponent> _blocks;
         static const std::string _acceptedCharacters;
     };

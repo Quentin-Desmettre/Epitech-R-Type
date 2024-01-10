@@ -36,7 +36,7 @@ namespace rtype
         static void setWorld(aecs::World *world);
         static aecs::Entity &toBlock(aecs::Entity &entity);
         static aecs::Entity &createBlock(sf::Vector2f position, const std::string &texture, bool breakable = false,
-                                         float hp = FLOAT_MAX);
+                                         float hp = FLOAT_MAX, sf::IntRect rect = {0, 0, 0, 0});
 
       private:
         static aecs::World *_world;

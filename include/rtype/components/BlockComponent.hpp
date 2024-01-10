@@ -13,8 +13,26 @@ namespace rtype
     class BlockComponent : public aecs::AbstractComponent
     {
       public:
-        explicit BlockComponent(std::string texturePath = "", bool canBeShot = false,
-                                bool canBeHitBySmallBullet = false, float health = 0, sf::Vector2f position = {0, 0});
+
+        enum UsedSide: std::uint8_t {
+            NONE = 0,
+            LEFT = 1,
+            RIGHT = 2,
+            TOP = 4,
+            BOTTOM = 8,
+        };
+        std::uint8_t operator|(UsedSide side) const {
+            return usedSides | side;
+        }
+
+        explicit BlockComponent(std::string texturePath = "",
+                                bool canBeShot = false,
+                                bool canBeHitBySmallBullet = false,
+                                float health = 0,
+                                sf::IntRect textureRect = {0, 0, 0, 0},
+                                sf::Vector2f position = {0, 0},
+                                std::uint8_t usedSides = NONE
+        );
         ~BlockComponent() override = default;
 
         const char *getName() const override;
@@ -26,6 +44,8 @@ namespace rtype
         float health;
         std::string texturePath;
         sf::Vector2f position;
+        sf::IntRect rect;
+        std::uint8_t usedSides;
     };
 } // namespace rtype
 
