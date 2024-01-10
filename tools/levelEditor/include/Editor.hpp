@@ -24,7 +24,7 @@ enum Block : char {
     STRONG = 'O',
 };
 
-#define BLOCK_SIZE 98
+#define BLOCK_SIZE 98.0f
 
 typedef std::map<int, Block> Line;
 

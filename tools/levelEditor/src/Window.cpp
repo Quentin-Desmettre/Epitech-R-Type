@@ -72,6 +72,12 @@ void Window::handleEvents(Editor &editor)
     }
 }
 
+static void setToBlockSize(sf::Sprite &sprite)
+{
+    sprite.setScale(BLOCK_SIZE / sprite.getTexture()->getSize().x,
+        BLOCK_SIZE / sprite.getTexture()->getSize().y);
+}
+
 void Window::drawMap(const Editor &editor)
 {
     sf::Sprite sprite;
@@ -83,6 +89,7 @@ void Window::drawMap(const Editor &editor)
             if (block == EMPTY)
                 continue;
             sprite.setTexture(getTexture(block));
+            setToBlockSize(sprite);
             sprite.setPosition(j * BLOCK_SIZE, i * BLOCK_SIZE);
             _window.draw(sprite);
         }
@@ -121,11 +128,12 @@ void Window::drawSelected(const Block selectedBlock)
     sf::Vector2i mousePos = sf::Mouse::getPosition(_window);
 
     mousePos.x += _view.getCenter().x - _view.getSize().x / 2;
-    mousePos /= BLOCK_SIZE;
+    mousePos /= (int)BLOCK_SIZE;
     if (mousePos.x < 0 || mousePos.y < 0 || mousePos.y > 10)
         return;
 
     sprite.setTexture(getTexture(selectedBlock));
+    setToBlockSize(sprite);
     sprite.setPosition(mousePos.x * BLOCK_SIZE, mousePos.y * BLOCK_SIZE);
     sprite.setColor(sf::Color(255, 255, 255, 75));
     _window.draw(sprite);
