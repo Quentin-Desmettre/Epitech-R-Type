@@ -5,22 +5,84 @@
 #include "rtype/systems/server/MapSystem.hpp"
 #include "aecs/World.hpp"
 #include "rtype/EntityFactory.hpp"
+#include "rtype/components/PositionComponent.hpp"
 #include <fstream>
 #include <utility>
 
 const std::map<rtype::MapSystem::BlockType, rtype::BlockComponent> rtype::MapSystem::_blocks = {
-    {rtype::MapSystem::SOLID, rtype::BlockComponent{"assets/sprites/Monster.png", false, false, 0}},
-    {rtype::MapSystem::BREAKABLE_LIGHT, rtype::BlockComponent{"assets/sprites/Monster.png", true, true, 50}},
-    {rtype::MapSystem::BREAKABLE_MEDIUM, rtype::BlockComponent{"assets/sprites/Monster.png", true, true, 50}},
+    {rtype::MapSystem::SOLID, rtype::BlockComponent{"assets/sprites/tilemap.png", false, false, 0}},
+    {rtype::MapSystem::BREAKABLE_LIGHT, rtype::BlockComponent{"assets/sprites/tilemap.png", true, true, 50}},
+    {rtype::MapSystem::BREAKABLE_MEDIUM, rtype::BlockComponent{"assets/sprites/tilemap.png", true, true, 50}},
 };
 
 const std::string rtype::MapSystem::_acceptedCharacters = "#oOX ";
+
+const sf::IntRect rtype::MapSystem::rects[] = {
+    // No side used
+    {51, 51, 17, 17},
+
+    // Only left
+    {34, 51, 17, 17},
+
+    // Only right
+    {0, 51, 17, 17},
+
+    // Left and right
+    {17, 51, 17, 17},
+
+    // Only top
+    {51, 34, 17, 17},
+
+    // Top and left
+    {34, 34, 17, 17},
+
+    // Top and right
+    {0, 34, 17, 17},
+
+    // Top, left and right
+    {17, 34, 17, 17},
+
+    // Only bottom
+    {51, 0, 17, 17},
+
+    // Bottom and left
+    {34, 0, 17, 17},
+
+    // Bottom and right
+    {0, 0, 17, 17},
+
+    // Bottom, left and right
+    {17, 0, 17, 17},
+
+    // Top and bottom
+    {51, 17, 17, 17},
+
+    // Top, bottom and left
+    {34, 17, 17, 17},
+
+    // Top, bottom and right
+    {0, 17, 17, 17},
+
+    // All sides used
+    {17, 17, 17, 17},
+};
 
 rtype::MapSystem::MapSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
     ALogicSystem(world, entities, {}),
     _occupiedSpace(0)
 {
     preloadPatterns();
+}
+
+void rtype::MapSystem::onEntityRemoved(const aecs::EntityPtr &entity)
+{
+    if (!entity->hasComponent<BlockComponent>())
+        return;
+    auto &position = entity->getComponent<PositionComponent>();
+    _loadedPatterns.erase({
+        static_cast<std::size_t>(position.x / BLOCK_SIZE),
+        static_cast<std::size_t>(position.y / BLOCK_SIZE)
+    });
 }
 
 // Window size: 1044x640
@@ -124,6 +186,7 @@ rtype::MapSystem::Pattern rtype::MapSystem::parseBlocks(const std::vector<std::s
     }
 
     // Parse pattern
+    std::map<Position, BlockComponent *> blockMap;
     std::vector<BlockComponent> blocks;
     std::size_t patternWidth = 0;
     for (std::size_t y = 0; y < lines.size(); y++) {
@@ -136,10 +199,27 @@ rtype::MapSystem::Pattern rtype::MapSystem::parseBlocks(const std::vector<std::s
             auto &metaData = _blocks.at(c);
             blocks.push_back(BlockComponent(metaData.texturePath, metaData.canBeShot, metaData.canBeHitBySmallBullet,
                                             metaData.health,
+                                            rects[0],
                                             {static_cast<float>(x * BLOCK_SIZE), static_cast<float>(y * BLOCK_SIZE)}));
         }
     }
     return {blocks, patternWidth};
+}
+
+std::uint8_t rtype::MapSystem::getUsedSides(std::size_t x, std::size_t y) const
+{
+    using UsedSide = BlockComponent::UsedSide;
+    std::uint8_t usedSides = UsedSide::NONE;
+
+    if (_loadedPatterns.find({x - 1, y}) != _loadedPatterns.end())
+        usedSides |= UsedSide::LEFT;
+    if (_loadedPatterns.find({x + 1, y}) != _loadedPatterns.end())
+        usedSides |= UsedSide::RIGHT;
+    if (_loadedPatterns.find({x, y - 1}) != _loadedPatterns.end())
+        usedSides |= UsedSide::TOP;
+    if (_loadedPatterns.find({x, y + 1}) != _loadedPatterns.end())
+        usedSides |= UsedSide::BOTTOM;
+    return usedSides;
 }
 
 const rtype::MapSystem::Pattern &rtype::MapSystem::getRandomPattern(rtype::MapSystem::Difficulty difficulty) const
@@ -152,9 +232,17 @@ void rtype::MapSystem::loadPatternInWorld(aecs::EntityChanges &changes, const rt
                                           float startX)
 {
     for (const auto &block : pattern.first) {
+        _loadedPatterns[{
+            static_cast<std::size_t>((block.position.x + startX) / BLOCK_SIZE),
+            static_cast<std::size_t>(block.position.y / BLOCK_SIZE)
+        }] = block;
+    }
+    for (const auto &block: pattern.first) {
+        auto sides = getUsedSides((block.position.x + startX) / BLOCK_SIZE, block.position.y / BLOCK_SIZE);
+        auto rect = rects[sides];
         changes.editedEntities.push_back(EntityFactory::createBlock({block.position.x + startX, block.position.y},
-                                                                    block.texturePath, block.canBeShot, block.health)
-                                             .getId());
+                                                                    block.texturePath, block.canBeShot, block.health, rect)
+                                                 .getId());
     }
 }
 

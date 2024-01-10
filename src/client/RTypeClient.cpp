@@ -128,12 +128,14 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
                 [](aecs::World &world) {
                     return std::to_string(world.getEntityCount());
                 },
-                "Entities")
+                "Entities"
+            )
             .addProfiling(
                 [](aecs::World &world) {
                     return std::to_string(world.getTick());
                 },
-                "Tick")
+                "Tick"
+            )
             .addProfiling(
                 [](aecs::World &) {
                     static sf::Clock clock;
@@ -147,7 +149,8 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
                     fps = std::to_string(int(1.0 / elapsed.asSeconds()));
                     return fps;
                 },
-                "FPS");
+                "FPS"
+            );
     };
 
     // commented to show that movement comes from server

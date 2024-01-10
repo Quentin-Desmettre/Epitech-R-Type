@@ -8,5 +8,5 @@ rtype::MusicComponent::MusicComponent(const std::string &path, float volume, boo
     music.openFromFile(path);
     music.setVolume(volume);
     music.setLoop(loop);
-    music.play();
+//    music.play();
 }
