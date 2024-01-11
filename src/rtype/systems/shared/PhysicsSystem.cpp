@@ -5,6 +5,7 @@
 #include "rtype/systems/shared/PhysicsSystem.hpp"
 #include "rtype/components/CollidableComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
+#include "rtype/components/BlockComponent.hpp"
 
 namespace rtype
 {
@@ -54,6 +55,8 @@ namespace rtype
             int priority = entity->getComponent<CollidableComponent>().getPriority();
             auto collisions = getCollisions(entity);
             for (auto &[entityOther, direction] : collisions) {
+                if (entity->hasComponent<BlockComponent>() && entityOther->hasComponent<BlockComponent>())
+                    continue;
                 int priorityOther = entityOther->getComponent<CollidableComponent>().getPriority();
                 if (priority <= priorityOther) {
                     // If after cancel dx, no more collision, do not cancel dy
