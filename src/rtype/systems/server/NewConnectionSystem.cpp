@@ -10,8 +10,8 @@
 #include "rtype/components/PlayerComponent.hpp"
 #include <iostream>
 
-#ifdef SFML_SYSTEM_WINDOWS
-#include <winsock2.h>
+#if defined(WIN64) || defined(WIN32) || defined(WINNT)
+    #include <winsock2.h>
 #else
 #include <sys/socket.h>
 #endif

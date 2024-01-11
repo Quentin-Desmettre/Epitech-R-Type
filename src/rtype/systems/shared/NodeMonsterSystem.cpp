@@ -9,6 +9,10 @@
 #include "rtype/components/SpriteComponent.hpp"
 #include <cmath>
 
+#if defined(WIN64) || defined(WIN32) || defined(WINNT)
+    #define M_PI		3.14159265358979323846
+#endif
+
 rtype::NodeMonsterSystem::
     NodeMonsterSystem(aecs::World &world,
                     const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
