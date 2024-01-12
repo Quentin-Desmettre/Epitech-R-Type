@@ -53,8 +53,8 @@ namespace rtype
             int dropChance = entity->second->getComponent<MonsterComponent>()._lil ? 15 : 30;
             if (random < dropChance) {
                 PositionComponent &position = entity->second->getComponent<PositionComponent>();
-                auto id = EntityFactory::createPower(sf::Vector2f(position.x, position.y), rand() % 2).getId();
-                changes.editedEntities.insert(id);
+                aecs::Entity &power = EntityFactory::createPower(sf::Vector2f(position.x, position.y), rand() % 2);
+                changes.editedEntities.insert(power.getId());
             }
         }
     }
