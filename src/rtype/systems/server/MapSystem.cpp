@@ -12,11 +12,11 @@
 
 const std::map<rtype::MapSystem::BlockType, rtype::BlockComponent> rtype::MapSystem::_blocks = {
     {rtype::MapSystem::SOLID, rtype::BlockComponent{"assets/sprites/tilemap.png", false, false, 0}},
-    {rtype::MapSystem::BREAKABLE_LIGHT, rtype::BlockComponent{"assets/sprites/tilemap.png", true, true, 50}},
+    {rtype::MapSystem::BREAKABLE_LIGHT, rtype::BlockComponent{"assets/sprites/tilemap.png", true, true, 5}},
     {rtype::MapSystem::BREAKABLE_MEDIUM, rtype::BlockComponent{"assets/sprites/tilemap.png", true, true, 50}},
 };
 
-const std::string rtype::MapSystem::_acceptedCharacters = "#oOX ";
+const std::string rtype::MapSystem::_acceptedCharacters = "#oO ";
 
 const sf::IntRect rtype::MapSystem::rects[] = {
     // No side used
@@ -79,6 +79,12 @@ const sf::IntRect rtype::MapSystem::rects[] = {
 
     // Top left empty
     {85, 17, 17, 17},
+
+    // Breakable block
+    {85, 51, 17, 17},
+
+    // Strong breakable block
+    {68, 51, 17, 17},
 };
 
 rtype::MapSystem::MapSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
@@ -282,6 +288,10 @@ void rtype::MapSystem::loadPatternInWorld(aecs::EntityChanges &changes, const rt
             else if (!(sides & UsedSide::TOP_LEFT))
                 rect = rects[19];
         }
+        if (block.health == 5)
+            rect = rects[20];
+        else if (block.health == 50)
+            rect = rects[21];
         changes.editedEntities.insert(EntityFactory::createBlock({block.position.x + startX, block.position.y},
                                                                     block.texturePath, block.canBeShot, block.health, rect)
                                                  .getId());
