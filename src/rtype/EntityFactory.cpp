@@ -234,7 +234,7 @@ aecs::Entity &rtype::EntityFactory::toBlock(aecs::Entity &block)
     auto &blockComponent = block.getComponent<BlockComponent>();
 
     block.addComponent<SpriteComponent>(blockComponent.texturePath,
-                                        sf::Vector2f{MapSystem::BLOCK_SIZE, MapSystem::BLOCK_SIZE},
+                                        sf::Vector2f{MapSystem::BLOCK_SIZE * 1.01, MapSystem::BLOCK_SIZE * 1.01},
                                         blockComponent.rect,
                                         0,
                                         false

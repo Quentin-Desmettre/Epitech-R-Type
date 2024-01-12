@@ -66,6 +66,19 @@ const sf::IntRect rtype::MapSystem::rects[] = {
 
     // All sides used
     {17, 17, 17, 17},
+
+    // Misc
+    // Bottom right empty
+    {68, 0, 17, 17},
+
+    // Bottom left empty
+    {85, 0, 17, 17},
+
+    // Top right empty
+    {68, 17, 17, 17},
+
+    // Top left empty
+    {85, 17, 17, 17},
 };
 
 rtype::MapSystem::MapSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
@@ -246,6 +259,8 @@ const rtype::MapSystem::Pattern &rtype::MapSystem::getRandomPattern(rtype::MapSy
 void rtype::MapSystem::loadPatternInWorld(aecs::EntityChanges &changes, const rtype::MapSystem::Pattern &pattern,
                                           float startX)
 {
+    using UsedSide = BlockComponent::UsedSide;
+
     for (const auto &block : pattern.first) {
         _loadedPatterns[{
             static_cast<std::size_t>((block.position.x + startX) / BLOCK_SIZE),
@@ -255,6 +270,18 @@ void rtype::MapSystem::loadPatternInWorld(aecs::EntityChanges &changes, const rt
     for (const auto &block: pattern.first) {
         auto sides = getUsedSides((block.position.x + startX) / BLOCK_SIZE, block.position.y / BLOCK_SIZE);
         auto rect = rects[sides & 0b1111];
+        int numDiag = bool(sides & UsedSide::TOP_LEFT) + bool(sides & UsedSide::TOP_RIGHT) +
+                      bool(sides & UsedSide::BOTTOM_LEFT) + bool(sides & UsedSide::BOTTOM_RIGHT);
+        if (numDiag == 3 && (sides & 0b1111) == 15) {
+            if (!(sides & UsedSide::BOTTOM_RIGHT))
+                rect = rects[16];
+            else if (!(sides & UsedSide::BOTTOM_LEFT))
+                rect = rects[17];
+            else if (!(sides & UsedSide::TOP_RIGHT))
+                rect = rects[18];
+            else if (!(sides & UsedSide::TOP_LEFT))
+                rect = rects[19];
+        }
         changes.editedEntities.insert(EntityFactory::createBlock({block.position.x + startX, block.position.y},
                                                                     block.texturePath, block.canBeShot, block.health, rect)
                                                  .getId());

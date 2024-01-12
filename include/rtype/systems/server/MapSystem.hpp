@@ -33,6 +33,12 @@ namespace rtype
         static const sf::IntRect rects[];
 
       private:
+        typedef sf::Vector2<std::size_t> Position;
+        struct PositionComparator {
+            bool operator()(const Position &lhs, const Position &rhs) const {
+                return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
+            }
+        };
         enum BlockType {
             NONE = ' ',
             SOLID = '#',
@@ -41,7 +47,6 @@ namespace rtype
             BREAKABLE_HEAVY = 'X',
         };
         typedef int Difficulty;
-        typedef sf::Vector2<std::size_t> Position;
         typedef std::pair<std::vector<BlockComponent>, std::size_t> Pattern;
 
         /**
@@ -60,11 +65,6 @@ namespace rtype
 
         std::map<Difficulty, std::vector<Pattern>> _patterns;
 
-        struct PositionComparator {
-            bool operator()(const Position &lhs, const Position &rhs) const {
-                return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
-            }
-        };
         std::map<Position, BlockComponent, PositionComparator> _loadedPatterns;
         static const std::map<BlockType, BlockComponent> _blocks;
         static const std::string _acceptedCharacters;
