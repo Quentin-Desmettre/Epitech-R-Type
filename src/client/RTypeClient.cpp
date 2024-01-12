@@ -4,6 +4,7 @@
 
 #include "rtype/RTypeClient.hpp"
 #include "rtype/EntityFactory.hpp"
+#include "rtype/components/NodeComponent.hpp"
 #include "rtype/systems/client/ClientInputSenderSystem.hpp"
 #include "rtype/systems/client/ClientPingSystem.hpp"
 #include "rtype/systems/client/ClientServerDataHandlerSystem.hpp"
@@ -14,16 +15,16 @@
 #include "rtype/systems/shared/ControlPlayerSystem.hpp"
 #include "rtype/systems/shared/DamageCollisionSystem.hpp"
 #include "rtype/systems/shared/InvulSystem.hpp"
-#include "rtype/systems/shared/MonsterBullet.hpp"
+#include "rtype/systems/shared/MonsterDie.hpp"
 #include "rtype/systems/shared/MonsterGenSystem.hpp"
+#include "rtype/systems/shared/NodeMonsterSystem.hpp"
 #include "rtype/systems/shared/ParallaxSystem.hpp"
 #include "rtype/systems/shared/PhysicsSystem.hpp"
-#include "rtype/systems/shared/NodeMonsterSystem.hpp"
 #include <chrono>
 #include <thread>
-#include "rtype/components/NodeComponent.hpp"
 
 #include "rtype/components/BlockComponent.hpp"
+#include "rtype/components/BossComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/MusicComponent.hpp"
@@ -62,6 +63,10 @@ void rtype::RTypeClient::setDecodeMap()
         component.decode(data);
         EntityFactory::toSnake(entity);
     });
+    _world.addDecodeMap("BossComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<BossComponent>();
+        EntityFactory::toBossEnemy(entity);
+    });
 }
 
 rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int ac, char **av) :
@@ -94,7 +99,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         _world.makeSystem<PhysicsSystem>(2),
         _world.makeSystem<ParallaxSystem>(1),
         _world.makeSystem<NodeMonsterSystem>(1),
-//    _world.makeSystem<BulletSystem>(1),
+        _world.makeSystem<BulletSystem>(1),
         _world.makeSystem<DamageCollisionSystem>(1),
         _world.makeSystem<DamageSoundSystem>(1),
 //         _world.makeSystem<MonsterGenSystem>(1),

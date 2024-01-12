@@ -17,7 +17,9 @@
 #include "rtype/components/PowerComponent.hpp"
 #include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/BossComponent.hpp"
 #include "rtype/components/NodeComponent.hpp"
+#include "rtype/components/BulletGenComponent.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
 #include "rtype/components/TextComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
@@ -81,9 +83,12 @@ aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vect
     auto &bullet = _world->createEntity();
     bullet.addComponent<BulletComponent>(big);
     toBullet(bullet);
+    int damage = big ? 50 : 5;
+    if (team == 1 && big)
+        damage = 25;
 
     bullet.addComponent<DamageCollisionComponent>(
-        team, big ? 50 : 5, big ? DamageCollisionComponent::LG_BULLET : DamageCollisionComponent::SM_BULLET);
+        team, damage, big ? DamageCollisionComponent::LG_BULLET : DamageCollisionComponent::SM_BULLET);
     bullet.addComponent<PositionComponent>(position.x, position.y);
     if (!big)
         bullet.addComponent<VelocityComponent>(velocity.x * 1.5, velocity.y * 1.5);
@@ -99,9 +104,11 @@ aecs::Entity &rtype::EntityFactory::toEnemy(aecs::Entity &entity)
     if (lil)
         entity.addComponent<SpriteComponent>("assets/sprites/LilMonster.png", sf::Vector2f(63, 48),
                                              sf::IntRect(21 * (rand() % 5), 0, 21, 16));
-    else
+    else {
         entity.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102),
                                              sf::IntRect(52 * (rand() % 5), 0, 52, 34));
+        entity.addComponent<BulletGenComponent>(15);
+    }
     if (!_world->getIsServer()) {
         entity.addComponent<AnimComponent>(1);
         entity.addComponent<PositionComponent>(1200, 200);
@@ -192,7 +199,6 @@ aecs::Entity &rtype::EntityFactory::toSnake(aecs::Entity &entity)
     entity.addComponent<MonsterComponent>();
     entity.addComponent<SpriteComponent>("assets/sprites/Monster.png", sf::Vector2f(156, 102),
                                          sf::IntRect(52 * (rand() % 5), 0, 52, 34));
-//    entity.addComponent<CollidableComponent>(0);
     if (!_world->getIsServer()) {
         entity.addComponent<AnimComponent>(1);
         entity.addComponent<PositionComponent>(1180, 200);
@@ -210,6 +216,9 @@ void rtype::EntityFactory::createSnake(sf::Vector2f position, int nb)
         enemy.addComponent<NodeComponent>(i);
         toSnake(enemy);
         enemy.addComponent<PositionComponent>(position.x, position.y);
+        if (i % 4 == 0) {
+            enemy.addComponent<BulletGenComponent>(15);
+        }
         if (i == 0)
             enemy.addComponent<VelocityComponent>(-20, 0);
         else
@@ -247,4 +256,29 @@ aecs::Entity &rtype::EntityFactory::createBlock(sf::Vector2f position, const std
     block.addComponent<BlockComponent>(texture, breakable, true, hp, rect, position);
 
     return toBlock(block);
+}
+aecs::Entity &rtype::EntityFactory::toBossEnemy(aecs::Entity &entity)
+{
+    entity.addComponent<SpriteComponent>("assets/sprites/Boss.png", sf::Vector2f(531, 288),
+                                         sf::IntRect(0, 0, 177, 96));
+    if (!_world->getIsServer()) {
+        entity.addComponent<AnimComponent>(1);
+        entity.addComponent<PositionComponent>(1200, 200);
+        entity.addComponent<DamageCollisionComponent>(1, 1);
+        entity.addComponent<VelocityComponent>(0, 20);
+        entity.addComponent<BulletGenComponent>(20.f, true, true, 3, 64, 1, sf::Vector2f(-50, 0));
+        entity.addComponent<HPComponent>();
+    }
+    return entity;
+}
+aecs::Entity &rtype::EntityFactory::createBossEnemy(sf::Vector2f position, sf::Vector2f velocity)
+{
+    auto &enemy = _world->createEntity();
+    enemy.addComponent<BossComponent>();
+    enemy.addComponent<PositionComponent>(position.x, position.y);
+    enemy.addComponent<DamageCollisionComponent>(1, 30);
+    enemy.addComponent<HPComponent>(100);
+    enemy.addComponent<VelocityComponent>(velocity.x, velocity.y);
+    enemy.addComponent<BulletGenComponent>(50.f, true, true, 3, 96, 1, sf::Vector2f(-25, 0));
+    return toBossEnemy(enemy);
 }

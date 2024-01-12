@@ -73,7 +73,7 @@ set(SHARED_SRC
         include/rtype/systems/shared/ControlPlayerSystem.hpp
         include/rtype/systems/shared/DamageCollisionSystem.hpp
         include/rtype/systems/shared/InvulSystem.hpp
-        include/rtype/systems/shared/MonsterBullet.hpp
+        include/rtype/systems/shared/MonsterDie.hpp
         include/rtype/systems/shared/MonsterGenSystem.hpp
         include/rtype/systems/shared/ParallaxSystem.hpp
         include/rtype/systems/client/ButtonSystem.hpp
@@ -84,7 +84,7 @@ set(SHARED_SRC
         src/rtype/systems/shared/ControlPlayerSystem.cpp
         src/rtype/systems/shared/DamageCollisionSystem.cpp
         src/rtype/systems/shared/InvulSystem.cpp
-        src/rtype/systems/shared/MonsterBullet.cpp
+        src/rtype/systems/shared/MonsterDie.cpp
         src/rtype/systems/shared/MonsterGenSystem.cpp
         src/rtype/systems/shared/ParallaxSystem.cpp
         src/rtype/systems/shared/PhysicsSystem.cpp
@@ -106,6 +106,9 @@ set(SHARED_SRC
         include/shared/SFMLLoader.cpp
         include/shared/SFMLLoader.hpp
         include/rtype/components/NodeComponent.hpp
+        include/rtype/components/BossComponent.hpp
+        include/rtype/systems/shared/BossSystem.hpp
+        src/rtype/systems/shared/BossSystem.cpp
         src/rtype/systems/server/MapSystem.cpp
 )
 set(SERVER_SRC src/server/main.cpp
@@ -123,6 +126,9 @@ set(SERVER_SRC src/server/main.cpp
         src/rtype/systems/server/ServerCorrectionsSystem.cpp
         src/rtype/systems/server/ServerInputsSystem.cpp
         src/rtype/systems/server/PowerSystem.cpp
+        include/rtype/components/BulletGenComponent.hpp
+        include/rtype/systems/server/BulletGenSystem.hpp
+        src/rtype/systems/server/BulletGenSystem.cpp
 )
 set(CLIENT_SRC src/client/main.cpp
         src/client/RTypeClient.cpp
