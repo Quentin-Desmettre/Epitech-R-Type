@@ -110,7 +110,7 @@ namespace rtype
                 }
             }
         }
-//        addPowerUp(changes);
+        addPowerUp(changes);
         return changes;
     }
 
