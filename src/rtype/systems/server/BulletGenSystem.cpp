@@ -30,7 +30,7 @@ namespace rtype
 
             bulletGen.time = 0;
             sf::Vector2f pos = {position.x, position.y};
-            position.y -= bulletGen.padding * float(bulletGen.nb - 1) / 2.f;
+            pos.y -= bulletGen.padding * float(bulletGen.nb - 1) / 2.f;
             for (int i = 0; i < bulletGen.nb; ++i) {
                 updateParams.entityChanges.editedEntities.push_back(
                     EntityFactory::createBullet(pos, bulletGen.velocity, bulletGen.team, bulletGen.big).getId()

@@ -106,6 +106,9 @@ set(SHARED_SRC
         include/shared/SFMLLoader.cpp
         include/shared/SFMLLoader.hpp
         include/rtype/components/NodeComponent.hpp
+        include/rtype/components/BossComponent.hpp
+        include/rtype/systems/shared/BossSystem.hpp
+        src/rtype/systems/shared/BossSystem.cpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp

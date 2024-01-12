@@ -24,6 +24,7 @@
 #include <thread>
 
 #include "rtype/components/BlockComponent.hpp"
+#include "rtype/components/BossComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/MusicComponent.hpp"
@@ -61,6 +62,10 @@ void rtype::RTypeClient::setDecodeMap()
         auto &component = entity.getComponent<NodeComponent>();
         component.decode(data);
         EntityFactory::toSnake(entity);
+    });
+    _world.addDecodeMap("BossComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<BossComponent>();
+        EntityFactory::toBossEnemy(entity);
     });
 }
 
@@ -107,7 +112,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         _world.makeSystem<PhysicsSystem>(2),
         _world.makeSystem<ParallaxSystem>(1),
         _world.makeSystem<NodeMonsterSystem>(1),
-//    _world.makeSystem<BulletSystem>(1),
+        _world.makeSystem<BulletSystem>(1),
         _world.makeSystem<DamageCollisionSystem>(1),
         _world.makeSystem<DamageSoundSystem>(1),
         // _world.makeSystem<MonsterGenSystem>(1);

@@ -14,6 +14,7 @@
 #include "rtype/systems/server/ServerInputsSystem.hpp"
 #include "rtype/systems/shared/AnimPlayerSystem.hpp"
 #include "rtype/systems/shared/AnimSystem.hpp"
+#include "rtype/systems/shared/BossSystem.hpp"
 #include "rtype/systems/shared/BulletSystem.hpp"
 #include "rtype/systems/shared/ControlPlayerSystem.hpp"
 #include "rtype/systems/shared/DamageCollisionSystem.hpp"
@@ -52,6 +53,7 @@ rtype::RTypeServer::RTypeServer(int logicRefreshRate, int ac, char **av) :
     _world.registerSystem<PowerSystem>(2);
     _world.registerSystem<NodeMonsterSystem>(1);
     _world.registerSystem<BulletGenSystem>(1);
+    _world.registerSystem<BossSystem>(1);
 
     // Network systems
     _world.registerSystem<ServerCorrectionsSystem>(1000);
