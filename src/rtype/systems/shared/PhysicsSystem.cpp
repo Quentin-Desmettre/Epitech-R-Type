@@ -55,8 +55,6 @@ namespace rtype
             int priority = entity->getComponent<CollidableComponent>().getPriority();
             auto collisions = getCollisions(entity);
             for (auto &[entityOther, direction] : collisions) {
-                if (entity->hasComponent<BlockComponent>() && entityOther->hasComponent<BlockComponent>())
-                    continue;
                 int priorityOther = entityOther->getComponent<CollidableComponent>().getPriority();
                 if (priority <= priorityOther) {
                     // If after cancel dx, no more collision, do not cancel dy
@@ -88,10 +86,6 @@ namespace rtype
     PhysicsSystem::CollisionDirection PhysicsSystem::getCollisionDirection(const aecs::EntityPtr &entity1,
                                                                            const aecs::EntityPtr &entity2)
     {
-        if (!entity1->hasComponents({typeid(CollidableComponent)}) ||
-            !entity2->hasComponents({typeid(CollidableComponent)}))
-            return NONE;
-
         auto &position1 = entity1->getComponent<PositionComponent>();
         auto &sprite1 = entity1->getComponent<SpriteComponent>();
         auto &position2 = entity2->getComponent<PositionComponent>();
@@ -126,8 +120,9 @@ namespace rtype
     {
         std::vector<std::pair<aecs::EntityPtr, CollisionDirection>> collisions;
         CollisionDirection direction;
+        bool isBlock = entity->hasComponent<BlockComponent>();
         for (auto &[_id, entity2] : _collidableEntities) {
-            if (entity->getId() == _id)
+            if ((isBlock && entity2->hasComponent<BlockComponent>()) || (entity == entity2 || !entity2->hasComponent<CollidableComponent>() || !entity->hasComponent<CollidableComponent>()))
                 continue;
             direction = getCollisionDirection(entity, entity2);
             if (direction != NONE)

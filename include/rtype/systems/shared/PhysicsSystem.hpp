@@ -11,6 +11,8 @@
 #include "rtype/components/SpriteComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include <iostream>
+#include "rtype/components/CollidableComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
 
 namespace rtype
 {
