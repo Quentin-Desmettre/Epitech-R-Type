@@ -19,7 +19,7 @@ enum Mode {
 
 enum Block : char {
     EMPTY = ' ',
-    INVINCIBLE = 'X',
+    INVINCIBLE = '#',
     FRAGILE = 'o',
     STRONG = 'O',
 };
@@ -28,10 +28,10 @@ enum Block : char {
 
 typedef std::map<int, Block> Line;
 
-static const std::map<Block, std::string> blockPaths = {
-    {INVINCIBLE, "assets/diamond.png"},
-    {FRAGILE, "assets/dirt.png"},
-    {STRONG, "assets/stone.png"},
+static const std::map<Block, std::pair<std::string, sf::IntRect>> blockPaths = {
+    {INVINCIBLE, {"assets/tilemap.png", {51, 51, 17, 17}}},
+    {FRAGILE, {"assets/tilemap.png", {85, 51, 17, 17}}},
+    {STRONG, {"assets/tilemap.png", {68, 51, 17, 17}}},
 };
 
 class Editor

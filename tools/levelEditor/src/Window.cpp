@@ -74,8 +74,7 @@ void Window::handleEvents(Editor &editor)
 
 static void setToBlockSize(sf::Sprite &sprite)
 {
-    sprite.setScale(BLOCK_SIZE / sprite.getTexture()->getSize().x,
-        BLOCK_SIZE / sprite.getTexture()->getSize().y);
+    sprite.setScale(BLOCK_SIZE / sprite.getTextureRect().width, BLOCK_SIZE / sprite.getTextureRect().height);
 }
 
 void Window::drawMap(const Editor &editor)
@@ -89,6 +88,7 @@ void Window::drawMap(const Editor &editor)
             if (block == EMPTY)
                 continue;
             sprite.setTexture(getTexture(block));
+            sprite.setTextureRect(blockPaths.at(block).second);
             setToBlockSize(sprite);
             sprite.setPosition(j * BLOCK_SIZE, i * BLOCK_SIZE);
             _window.draw(sprite);
@@ -133,15 +133,16 @@ void Window::drawSelected(const Block selectedBlock)
         return;
 
     sprite.setTexture(getTexture(selectedBlock));
+    sprite.setTextureRect(blockPaths.at(selectedBlock).second);
     setToBlockSize(sprite);
     sprite.setPosition(mousePos.x * BLOCK_SIZE, mousePos.y * BLOCK_SIZE);
-    sprite.setColor(sf::Color(255, 255, 255, 75));
+    sprite.setColor(sf::Color(255, 255, 255, 127));
     _window.draw(sprite);
 }
 
 sf::Texture &Window::getTexture(const Block block)
 {
     if (_textures.find(block) == _textures.end())
-        _textures[block].loadFromFile(blockPaths.at(block));
+        _textures[block].loadFromFile(blockPaths.at(block).first);
     return _textures[block];
 }
