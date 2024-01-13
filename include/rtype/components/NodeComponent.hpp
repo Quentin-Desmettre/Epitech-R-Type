@@ -15,12 +15,12 @@ namespace rtype
         explicit NodeComponent(float delay = 0.f) :
             delay(delay){};
         ~NodeComponent() override = default;
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "NodeComponent";
         };
         float delay = 0;
         float rotate = 0;
-
 
         [[nodiscard]] std::vector<std::byte> encode() const override;
         void decode(const std::vector<std::byte> &encoded) override;

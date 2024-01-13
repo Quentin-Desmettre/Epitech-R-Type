@@ -16,8 +16,7 @@ namespace rtype
     class ButtonSystem : public aecs::ALogicSystem
     {
       public:
-        ButtonSystem(aecs::World &world,
-                                const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
+        ButtonSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
 
         ~ButtonSystem() override = default;
 

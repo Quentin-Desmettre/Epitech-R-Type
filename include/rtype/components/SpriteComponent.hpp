@@ -28,7 +28,8 @@ namespace rtype
         [[nodiscard]] std::vector<std::byte> encode() const override;
         void decode(const std::vector<std::byte> &encoded) override;
 
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "SpriteComponent";
         };
     };

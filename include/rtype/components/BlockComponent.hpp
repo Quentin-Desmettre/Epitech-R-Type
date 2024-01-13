@@ -13,8 +13,7 @@ namespace rtype
     class BlockComponent : public aecs::AbstractComponent
     {
       public:
-
-        enum UsedSide: std::uint8_t {
+        enum UsedSide : std::uint8_t {
             NONE = 0,
             LEFT = 1,
             RIGHT = 2,
@@ -25,18 +24,15 @@ namespace rtype
             BOTTOM_LEFT = 64,
             BOTTOM_RIGHT = 128
         };
-        std::uint8_t operator|(UsedSide side) const {
+        std::uint8_t operator|(UsedSide side) const
+        {
             return usedSides | side;
         }
 
-        explicit BlockComponent(std::string texturePath = "",
-                                bool canBeShot = false,
-                                bool canBeHitBySmallBullet = false,
-                                float health = 0,
-                                sf::IntRect textureRect = {0, 0, 0, 0},
-                                sf::Vector2f position = {0, 0},
-                                std::uint8_t usedSides = NONE
-        );
+        explicit BlockComponent(std::string texturePath = "", bool canBeShot = false,
+                                bool canBeHitBySmallBullet = false, float health = 0,
+                                sf::IntRect textureRect = {0, 0, 0, 0}, sf::Vector2f position = {0, 0},
+                                std::uint8_t usedSides = NONE);
         ~BlockComponent() override = default;
 
         const char *getName() const override;

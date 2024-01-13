@@ -6,23 +6,23 @@
 #include "aecs/InputComponent.hpp"
 #include "rtype/components/AnimComponent.hpp"
 #include "rtype/components/BlockComponent.hpp"
+#include "rtype/components/BossComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
+#include "rtype/components/BulletGenComponent.hpp"
 #include "rtype/components/CollidableComponent.hpp"
 #include "rtype/components/DamageCollisionComponent.hpp"
 #include "rtype/components/HPComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
+#include "rtype/components/NodeComponent.hpp"
 #include "rtype/components/ParallaxComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/PowerComponent.hpp"
 #include "rtype/components/ShaderComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
-#include "rtype/components/BossComponent.hpp"
-#include "rtype/components/NodeComponent.hpp"
-#include "rtype/components/BulletGenComponent.hpp"
-#include "rtype/systems/server/MapSystem.hpp"
 #include "rtype/components/TextComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
+#include "rtype/systems/server/MapSystem.hpp"
 #include <memory>
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
@@ -179,7 +179,8 @@ aecs::Entity &rtype::EntityFactory::createInputs(int input, std::function<void()
     return inputs;
 }
 
-aecs::Entity &rtype::EntityFactory::createButton(const std::string &text, int fontSize, sf::Color color, int zIndex, sf::Vector2f pos, std::function<void()> &&onClick)
+aecs::Entity &rtype::EntityFactory::createButton(const std::string &text, int fontSize, sf::Color color, int zIndex,
+                                                 sf::Vector2f pos, std::function<void()> &&onClick)
 {
     auto &buttons = _world->createEntity();
 
@@ -192,7 +193,6 @@ void rtype::EntityFactory::setWorld(aecs::World *world)
 {
     _world = world;
 }
-
 
 aecs::Entity &rtype::EntityFactory::toSnake(aecs::Entity &entity)
 {
@@ -228,24 +228,18 @@ void rtype::EntityFactory::createSnake(sf::Vector2f position, int nb)
     }
 }
 
-
 aecs::Entity &rtype::EntityFactory::toBlock(aecs::Entity &block)
 {
     auto &blockComponent = block.getComponent<BlockComponent>();
 
     block.addComponent<SpriteComponent>(blockComponent.texturePath,
                                         sf::Vector2f{MapSystem::BLOCK_SIZE * 1.01, MapSystem::BLOCK_SIZE * 1.01},
-                                        blockComponent.rect,
-                                        0,
-                                        false
-    );
+                                        blockComponent.rect, 0, false);
     block.addComponent<PositionComponent>(blockComponent.position.x, blockComponent.position.y, true);
     block.addComponent<VelocityComponent>(MapSystem::BLOCK_SPEED, 0);
     block.addComponent<CollidableComponent>(1000000);
-    if (blockComponent.canBeShot) {
-        block.addComponent<HPComponent>(blockComponent.health);
-        block.addComponent<DamageCollisionComponent>(1, blockComponent.health);
-    }
+    block.addComponent<HPComponent>(blockComponent.canBeShot ? blockComponent.health : 1000000000);
+    block.addComponent<DamageCollisionComponent>(1, blockComponent.canBeShot ? blockComponent.health : 1000000000);
     return block;
 }
 
@@ -259,8 +253,7 @@ aecs::Entity &rtype::EntityFactory::createBlock(sf::Vector2f position, const std
 }
 aecs::Entity &rtype::EntityFactory::toBossEnemy(aecs::Entity &entity)
 {
-    entity.addComponent<SpriteComponent>("assets/sprites/Boss.png", sf::Vector2f(531, 288),
-                                         sf::IntRect(0, 0, 177, 96));
+    entity.addComponent<SpriteComponent>("assets/sprites/Boss.png", sf::Vector2f(531, 288), sf::IntRect(0, 0, 177, 96));
     if (!_world->getIsServer()) {
         entity.addComponent<AnimComponent>(1);
         entity.addComponent<PositionComponent>(1200, 200);

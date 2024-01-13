@@ -80,13 +80,17 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     std::vector<ButtonData> buttons;
     std::map<Input, std::function<void()>> handlers;
     std::vector<aecs::SystemData> systems;
-    Menu menu(buttons, handlers, systems, [this] () {
+    Menu menu(buttons, handlers, systems, [this]() {
         float windowMid = 1080 / 2;
         EntityFactory::createBackground(1, sf::Vector2f(8, 0));
         EntityFactory::createBackground(3, sf::Vector2f(5, 0));
         EntityFactory::createButton("R-Type", 70, sf::Color::White, 0, sf::Vector2f(windowMid, 100));
-        EntityFactory::createButton("Start", 30, sf::Color::White, 0, sf::Vector2f(windowMid, 300), [this]() { _world.goToMenu(1); });
-        EntityFactory::createButton("Quit", 30, sf::Color::White, 0, sf::Vector2f(windowMid, 500), [this]() { _world.leave(); });
+        EntityFactory::createButton("Start", 30, sf::Color::White, 0, sf::Vector2f(windowMid, 300), [this]() {
+            _world.goToMenu(1);
+        });
+        EntityFactory::createButton("Quit", 30, sf::Color::White, 0, sf::Vector2f(windowMid, 500), [this]() {
+            _world.leave();
+        });
     });
     _world.addMenu(menu, 0);
     std::vector<aecs::SystemData> systems2 = {
@@ -102,11 +106,11 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         _world.makeSystem<BulletSystem>(1),
         _world.makeSystem<DamageCollisionSystem>(1),
         _world.makeSystem<DamageSoundSystem>(1),
-//         _world.makeSystem<MonsterGenSystem>(1),
+        //         _world.makeSystem<MonsterGenSystem>(1),
         _world.makeSystem<InvulSystem>(1),
         _world.makeSystem<ProfilingSystem>(2),
     };
-    std::function<void()> setup = [this] () {
+    std::function<void()> setup = [this]() {
         auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
         bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
         EntityFactory::createBackground(2, sf::Vector2f(5, 0));
@@ -120,14 +124,12 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
                 [](aecs::World &world) {
                     return std::to_string(world.getEntityCount());
                 },
-                "Entities"
-            )
+                "Entities")
             .addProfiling(
                 [](aecs::World &world) {
                     return std::to_string(world.getTick());
                 },
-                "Tick"
-            )
+                "Tick")
             .addProfiling(
                 [](aecs::World &) {
                     static sf::Clock clock;
@@ -141,13 +143,14 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
                     fps = std::to_string(int(1.0 / elapsed.asSeconds()));
                     return fps;
                 },
-                "FPS"
-            );
+                "FPS");
     };
 
     // commented to show that movement comes from server
     std::map<Input, std::function<void()>> handlers2;
-    handlers2[sf::Keyboard::Enter] = [this]() { _world.goToMenu(0); };
+    handlers2[sf::Keyboard::Enter] = [this]() {
+        _world.goToMenu(0);
+    };
     Menu game(buttons, handlers2, systems2, std::move(setup));
     _world.addMenu(game, 1);
 

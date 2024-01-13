@@ -53,8 +53,7 @@ namespace rtype
             }
             if (space && !shift && my.timeSinceLastShoot > 3) {
                 if (_world.getIsServer()) {
-                    EntityFactory::createBullet(sf::Vector2f(position.x + 20, position.y), sf::Vector2f(100, 0),
-                                                0);
+                    EntityFactory::createBullet(sf::Vector2f(position.x + 20, position.y), sf::Vector2f(100, 0), 0);
                     if (my.timeLeftShootPowerUp > 0)
                         EntityFactory::createBullet(sf::Vector2f(position.x + 20, position.y + 32),
                                                     sf::Vector2f(100, 0), 0);
@@ -74,10 +73,9 @@ namespace rtype
 
             if (space && shift && my.timeInShift > 6) {
                 if (_world.getIsServer())
-                    changes.editedEntities.insert(
-                        EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y), sf::Vector2f(100, 0),
-                                                    0, true)
-                            .getId());
+                    changes.editedEntities.insert(EntityFactory::createBullet(sf::Vector2f(position.x + 48, position.y),
+                                                                              sf::Vector2f(100, 0), 0, true)
+                                                      .getId());
                 my.timeSinceLastShoot = 0;
                 my.timeInShift = 0;
             }

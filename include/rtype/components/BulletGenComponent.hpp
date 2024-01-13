@@ -13,8 +13,15 @@ namespace rtype
     class BulletGenComponent : public aecs::AbstractComponent
     {
       public:
-        explicit BulletGenComponent(float timeBetween, bool big = false, bool shoot = true, int nb = 1, float padding = 0, int team = 1, sf::Vector2f velocity = {-50, 0}) :
-            shoot(shoot), timeBetween(timeBetween), big(big), team(team), velocity(velocity), nb(nb), padding(padding){};
+        explicit BulletGenComponent(float timeBetween, bool big = false, bool shoot = true, int nb = 1,
+                                    float padding = 0, int team = 1, sf::Vector2f velocity = {-50, 0}) :
+            shoot(shoot),
+            timeBetween(timeBetween),
+            big(big),
+            team(team),
+            velocity(velocity),
+            nb(nb),
+            padding(padding){};
         ~BulletGenComponent() override = default;
         const char *getName() const override
         {
@@ -30,6 +37,5 @@ namespace rtype
         float padding;
     };
 } // namespace rtype
-
 
 #endif // R_TYPE_BULLETGENCOMPONENT_HPP

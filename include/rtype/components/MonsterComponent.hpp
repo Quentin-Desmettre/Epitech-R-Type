@@ -12,7 +12,8 @@ namespace rtype
     {
       public:
         explicit MonsterComponent(bool lil = false) :
-            _lil(lil), _isShooting(!lil){};
+            _lil(lil),
+            _isShooting(!lil){};
         ~MonsterComponent() override = default;
         float timeSinceLastShoot = 0;
         bool _lil = false;

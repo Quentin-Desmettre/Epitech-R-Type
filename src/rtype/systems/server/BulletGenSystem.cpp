@@ -9,11 +9,11 @@
 namespace rtype
 {
     BulletGenSystem::BulletGenSystem(aecs::World &world,
-                                           const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+                                     const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
         ALogicSystem(world, entities, {typeid(BulletGenComponent), typeid(PositionComponent)})
     {
     }
-    
+
     aecs::EntityChanges BulletGenSystem::update(aecs::UpdateParams &updateParams)
     {
         for (auto &[id, entity] : _entitiesMap) {
@@ -33,8 +33,7 @@ namespace rtype
             pos.y -= bulletGen.padding * float(bulletGen.nb - 1) / 2.f;
             for (int i = 0; i < bulletGen.nb; ++i) {
                 updateParams.entityChanges.editedEntities.insert(
-                    EntityFactory::createBullet(pos, bulletGen.velocity, bulletGen.team, bulletGen.big).getId()
-                );
+                    EntityFactory::createBullet(pos, bulletGen.velocity, bulletGen.team, bulletGen.big).getId());
                 pos.y += bulletGen.padding;
             }
         }

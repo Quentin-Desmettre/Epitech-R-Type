@@ -43,7 +43,7 @@ aecs::EntityChanges rtype::MonsterGenSystem::update(aecs::UpdateParams &updatePa
             changes.editedEntities.insert(addRandomEnemy().getId());
         }
         if (bossTime < 0) {
-//            EntityFactory::createSnake(sf::Vector2f(1180, std::rand() % 540 + 50), 25);
+            //            EntityFactory::createSnake(sf::Vector2f(1180, std::rand() % 540 + 50), 25);
             EntityFactory::createBossEnemy(sf::Vector2f(1380, std::rand() % 540 + 50), sf::Vector2f(-10, 0));
             bossTime = 999999.f;
         }

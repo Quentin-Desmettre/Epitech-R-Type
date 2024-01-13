@@ -15,7 +15,8 @@ namespace rtype
         BossComponent() = default;
         ~BossComponent() override = default;
 
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "BossComponent";
         };
     };

@@ -6,7 +6,8 @@
 #include "shared/PacketBuilder.hpp"
 #include "shared/SFMLLoader.hpp"
 
-rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size, sf::IntRect rect, int zIndex, bool centered) :
+rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f size, sf::IntRect rect, int zIndex,
+                                        bool centered) :
     _size(size),
     zIndex(zIndex),
     centered(centered)

@@ -5,8 +5,13 @@
 #include "rtype/components/TextComponent.hpp"
 #include "shared/SFMLLoader.hpp"
 
-rtype::TextComponent::TextComponent(const std::string &text, int fontSize, sf::Color color, bool setCenter, int zIndex, std::function<void()> &&onClick) :
-    zIndex(zIndex), _character_size(fontSize), _over_size(fontSize + 30), _default_size(fontSize), _setCenter(setCenter)
+rtype::TextComponent::TextComponent(const std::string &text, int fontSize, sf::Color color, bool setCenter, int zIndex,
+                                    std::function<void()> &&onClick) :
+    zIndex(zIndex),
+    _character_size(fontSize),
+    _over_size(fontSize + 30),
+    _default_size(fontSize),
+    _setCenter(setCenter)
 {
 
     if (!_font.loadFromFile("assets/fonts/Minecraft.ttf"))

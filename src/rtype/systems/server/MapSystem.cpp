@@ -99,10 +99,8 @@ void rtype::MapSystem::onEntityRemoved(const aecs::EntityPtr &entity)
     if (!entity->hasComponent<BlockComponent>())
         return;
     auto &position = entity->getComponent<PositionComponent>();
-    _loadedPatterns.erase({
-        static_cast<std::size_t>(position.x / BLOCK_SIZE),
-        static_cast<std::size_t>(position.y / BLOCK_SIZE)
-    });
+    _loadedPatterns.erase(
+        {static_cast<std::size_t>(position.x / BLOCK_SIZE), static_cast<std::size_t>(position.y / BLOCK_SIZE)});
 }
 
 // Window size: 1044x640
@@ -125,11 +123,11 @@ aecs::EntityChanges rtype::MapSystem::update(aecs::UpdateParams &)
 
     aecs::EntityChanges changes;
     _occupiedSpace = 0;
-    for (auto &[id, entity]: _entitiesMap) {
+    for (auto &[id, entity] : _entitiesMap) {
         auto &position = entity->getComponent<PositionComponent>();
         _occupiedSpace = std::max(_occupiedSpace, position.x + BLOCK_SIZE);
     }
-    loadPatterns(changes, 0);
+    loadPatterns(changes);
     return changes;
 }
 
@@ -153,27 +151,16 @@ void rtype::MapSystem::preloadPatterns()
      * With the name of each folder being the difficulty of the patterns it contains
      */
     if (!std::filesystem::exists("assets/patterns")) {
-            std::cerr << "Failed to open directory assets/patterns" << std::endl;
-            return;
+        std::cerr << "Failed to open directory assets/patterns" << std::endl;
+        return;
     }
-    std::filesystem::directory_iterator it("assets/patterns");
-    for (auto &file : it) {
-        if (!file.is_directory())
-            continue;
-        preloadPatterns(file.path());
-    }
+    preloadPatterns("assets/patterns");
 }
 
 void rtype::MapSystem::preloadPatterns(const std::filesystem::path &directoryPath)
 {
     std::filesystem::directory_iterator it(directoryPath);
-    Difficulty difficulty = std::stoi(directoryPath.filename().string());
-    std::vector<Pattern> patterns;
 
-    if (difficulty < 0 || difficulty > 10) {
-        std::cerr << "Invalid difficulty: " << difficulty << std::endl;
-        return;
-    }
     for (auto &file : it) {
 
         // Open file
@@ -191,9 +178,10 @@ void rtype::MapSystem::preloadPatterns(const std::filesystem::path &directoryPat
 
         // Parse patterns
         auto pattern = parseBlocks(lines);
-        patterns.push_back(pattern);
+        if (pattern.second == 0)
+            continue;
+        _patterns.push_back(pattern);
     }
-    _patterns[difficulty] = patterns;
 }
 
 rtype::MapSystem::Pattern rtype::MapSystem::parseBlocks(const std::vector<std::string> &lines)
@@ -224,8 +212,7 @@ rtype::MapSystem::Pattern rtype::MapSystem::parseBlocks(const std::vector<std::s
                 continue;
             auto &metaData = _blocks.at(c);
             blocks.push_back(BlockComponent(metaData.texturePath, metaData.canBeShot, metaData.canBeHitBySmallBullet,
-                                            metaData.health,
-                                            rects[0],
+                                            metaData.health, rects[0],
                                             {static_cast<float>(x * BLOCK_SIZE), static_cast<float>(y * BLOCK_SIZE)}));
         }
     }
@@ -256,10 +243,9 @@ std::uint8_t rtype::MapSystem::getUsedSides(std::size_t x, std::size_t y) const
     return usedSides;
 }
 
-const rtype::MapSystem::Pattern &rtype::MapSystem::getRandomPattern(rtype::MapSystem::Difficulty difficulty) const
+const rtype::MapSystem::Pattern &rtype::MapSystem::getRandomPattern() const
 {
-    const auto &patterns = _patterns.at(difficulty);
-    return patterns[rand() % patterns.size()];
+    return _patterns[rand() % _patterns.size()];
 }
 
 void rtype::MapSystem::loadPatternInWorld(aecs::EntityChanges &changes, const rtype::MapSystem::Pattern &pattern,
@@ -268,12 +254,10 @@ void rtype::MapSystem::loadPatternInWorld(aecs::EntityChanges &changes, const rt
     using UsedSide = BlockComponent::UsedSide;
 
     for (const auto &block : pattern.first) {
-        _loadedPatterns[{
-            static_cast<std::size_t>((block.position.x + startX) / BLOCK_SIZE),
-            static_cast<std::size_t>(block.position.y / BLOCK_SIZE)
-        }] = block;
+        _loadedPatterns[{static_cast<std::size_t>((block.position.x + startX) / BLOCK_SIZE),
+                         static_cast<std::size_t>(block.position.y / BLOCK_SIZE)}] = block;
     }
-    for (const auto &block: pattern.first) {
+    for (const auto &block : pattern.first) {
         auto sides = getUsedSides((block.position.x + startX) / BLOCK_SIZE, block.position.y / BLOCK_SIZE);
         auto rect = rects[sides & 0b1111];
         int numDiag = bool(sides & UsedSide::TOP_LEFT) + bool(sides & UsedSide::TOP_RIGHT) +
@@ -293,20 +277,19 @@ void rtype::MapSystem::loadPatternInWorld(aecs::EntityChanges &changes, const rt
         else if (block.health == 50)
             rect = rects[21];
         changes.editedEntities.insert(EntityFactory::createBlock({block.position.x + startX, block.position.y},
-                                                                    block.texturePath, block.canBeShot, block.health, rect)
-                                                 .getId());
+                                                                 block.texturePath, block.canBeShot, block.health, rect)
+                                          .getId());
     }
 }
 
-void rtype::MapSystem::generatePattern(aecs::EntityChanges &changes, rtype::MapSystem::Difficulty maxDifficulty)
+void rtype::MapSystem::generatePattern(aecs::EntityChanges &changes)
 {
-    auto difficulty = static_cast<Difficulty>(rand() % (maxDifficulty + 1));
-    auto &pattern = getRandomPattern(difficulty);
+    auto &pattern = getRandomPattern();
     loadPatternInWorld(changes, pattern, _occupiedSpace);
     _occupiedSpace += pattern.second * BLOCK_SIZE;
 }
 
-void rtype::MapSystem::loadPatterns(aecs::EntityChanges &changes, rtype::MapSystem::Difficulty maxDifficulty)
+void rtype::MapSystem::loadPatterns(aecs::EntityChanges &changes)
 {
     // Generate patterns up until all the space has been filled
     const std::size_t WINDOW_WIDTH = 1088;
@@ -314,6 +297,6 @@ void rtype::MapSystem::loadPatterns(aecs::EntityChanges &changes, rtype::MapSyst
     if (_patterns.empty())
         return;
     while (_occupiedSpace < WINDOW_WIDTH * 1.2) {
-        generatePattern(changes, maxDifficulty);
+        generatePattern(changes);
     }
 }

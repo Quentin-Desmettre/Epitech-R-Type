@@ -11,7 +11,7 @@
 #include <iostream>
 
 #if defined(WIN64) || defined(WIN32) || defined(WINNT)
-    #include <winsock2.h>
+#include <winsock2.h>
 #else
 #include <sys/socket.h>
 #endif

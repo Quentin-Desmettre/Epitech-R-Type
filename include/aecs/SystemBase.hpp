@@ -8,10 +8,10 @@
 #include "SFML/Graphics.hpp"
 #include <map>
 #include <memory>
+#include <set>
 #include <stdexcept>
 #include <typeindex>
 #include <vector>
-#include <set>
 
 namespace aecs
 {

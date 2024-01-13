@@ -3,16 +3,16 @@
 //
 
 #include "rtype/systems/client/ButtonSystem.hpp"
+#include "aecs/Entity.hpp"
 #include "rtype/components/PositionComponent.hpp"
 #include "rtype/components/TextComponent.hpp"
-#include "aecs/Entity.hpp"
 #include <iostream>
 
 namespace rtype
 {
 
-    ButtonSystem::ButtonSystem(
-        aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+    ButtonSystem::ButtonSystem(aecs::World &world,
+                               const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
         ALogicSystem(world, entities, {typeid(TextComponent), typeid(PositionComponent)})
     {
     }

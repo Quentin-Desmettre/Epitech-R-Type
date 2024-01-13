@@ -6,8 +6,7 @@
 
 namespace rtype
 {
-    MonsterDie::MonsterDie(aecs::World &world,
-                                 const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+    MonsterDie::MonsterDie(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
         ALogicSystem(world, entities, {typeid(MonsterComponent), typeid(PositionComponent)})
     {
     }

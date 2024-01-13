@@ -35,7 +35,8 @@ namespace rtype
       private:
         typedef sf::Vector2<std::size_t> Position;
         struct PositionComparator {
-            bool operator()(const Position &lhs, const Position &rhs) const {
+            bool operator()(const Position &lhs, const Position &rhs) const
+            {
                 return lhs.x < rhs.x || (lhs.x == rhs.x && lhs.y < rhs.y);
             }
         };
@@ -46,7 +47,6 @@ namespace rtype
             BREAKABLE_MEDIUM = 'O',
             BREAKABLE_HEAVY = 'X',
         };
-        typedef int Difficulty;
         typedef std::pair<std::vector<BlockComponent>, std::size_t> Pattern;
 
         /**
@@ -56,14 +56,14 @@ namespace rtype
         void preloadPatterns(const std::filesystem::path &directoryPath);
         static Pattern parseBlocks(const std::vector<std::string> &lines);
 
-        [[nodiscard]] const Pattern &getRandomPattern(Difficulty difficulty) const;
+        [[nodiscard]] const Pattern &getRandomPattern() const;
         [[nodiscard]] std::uint8_t getUsedSides(std::size_t x, std::size_t y) const;
-        void generatePattern(aecs::EntityChanges &changes, Difficulty maxDifficulty);
-        void loadPatterns(aecs::EntityChanges &changes, Difficulty maxDifficulty);
+        void generatePattern(aecs::EntityChanges &changes);
+        void loadPatterns(aecs::EntityChanges &changes);
         void loadPatternInWorld(aecs::EntityChanges &changes, const Pattern &pattern, float startX);
         float _occupiedSpace;
 
-        std::map<Difficulty, std::vector<Pattern>> _patterns;
+        std::vector<Pattern> _patterns;
 
         std::map<Position, BlockComponent, PositionComparator> _loadedPatterns;
         static const std::map<BlockType, BlockComponent> _blocks;

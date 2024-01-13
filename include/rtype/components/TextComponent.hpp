@@ -14,7 +14,8 @@ namespace rtype
     class TextComponent : public aecs::AbstractComponent
     {
       public:
-        explicit TextComponent(const std::string &text, int fontSize = 30, sf::Color color = sf::Color::White, bool setCenter = 0, int zIndex = 0, std::function<void()> &&onClick = nullptr);
+        explicit TextComponent(const std::string &text, int fontSize = 30, sf::Color color = sf::Color::White,
+                               bool setCenter = 0, int zIndex = 0, std::function<void()> &&onClick = nullptr);
         ~TextComponent() override = default;
         void onOver();
         void removeOver();
@@ -35,7 +36,6 @@ namespace rtype
         int _over_size;
         int _default_size;
         bool _setCenter;
-
     };
 } // namespace rtype
 

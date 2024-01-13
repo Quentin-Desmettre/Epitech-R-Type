@@ -3,8 +3,8 @@
 //
 
 #include "rtype/systems/client/RenderSystem.hpp"
-#include "rtype/components/TextComponent.hpp"
 #include "rtype/components/CollidableComponent.hpp"
+#include "rtype/components/TextComponent.hpp"
 
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
@@ -58,11 +58,16 @@ void rtype::RenderSystem::_sortEntities()
     _sortedEntities.clear();
     for (auto &entity : _entitiesMap)
         _sortedEntities.push_back(entity.second);
-    std::sort(_sortedEntities.begin(), _sortedEntities.end(), [](const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) {
-        int lhsZindex = lhs->hasComponent<rtype::TextComponent>() ? lhs->getComponent<rtype::TextComponent>().zIndex : lhs->getComponent<rtype::SpriteComponent>().zIndex;
-        int rhsZindex = rhs->hasComponent<rtype::TextComponent>() ? rhs->getComponent<rtype::TextComponent>().zIndex : rhs->getComponent<rtype::SpriteComponent>().zIndex;
-        return lhsZindex < rhsZindex;
-    });
+    std::sort(_sortedEntities.begin(), _sortedEntities.end(),
+              [](const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) {
+                  int lhsZindex = lhs->hasComponent<rtype::TextComponent>()
+                                      ? lhs->getComponent<rtype::TextComponent>().zIndex
+                                      : lhs->getComponent<rtype::SpriteComponent>().zIndex;
+                  int rhsZindex = rhs->hasComponent<rtype::TextComponent>()
+                                      ? rhs->getComponent<rtype::TextComponent>().zIndex
+                                      : rhs->getComponent<rtype::SpriteComponent>().zIndex;
+                  return lhsZindex < rhsZindex;
+              });
 }
 
 aecs::RenderInputs rtype::RenderSystem::render()
@@ -79,15 +84,19 @@ aecs::RenderInputs rtype::RenderSystem::render()
             _window.close();
         if (event.type == sf::Event::MouseButtonPressed) {
             if (event.mouseButton.button == sf::Mouse::Left)
-                    mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_LEFT_CLICK_PRESSED, sf::Vector2f(sf::Mouse::getPosition(_window)));
+                mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_LEFT_CLICK_PRESSED,
+                                         sf::Vector2f(sf::Mouse::getPosition(_window)));
             if (event.mouseButton.button == sf::Mouse::Right)
-                    mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_RIGHT_CLICK_PRESSED, sf::Vector2f(sf::Mouse::getPosition(_window)));
+                mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_RIGHT_CLICK_PRESSED,
+                                         sf::Vector2f(sf::Mouse::getPosition(_window)));
         }
         if (event.type == sf::Event::MouseButtonReleased) {
             if (event.mouseButton.button == sf::Mouse::Left)
-                    mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_LEFT_CLICK_RELEASED, sf::Vector2f(sf::Mouse::getPosition(_window)));
+                mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_LEFT_CLICK_RELEASED,
+                                         sf::Vector2f(sf::Mouse::getPosition(_window)));
             if (event.mouseButton.button == sf::Mouse::Right)
-                    mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_RIGHT_CLICK_RELEASED, sf::Vector2f(sf::Mouse::getPosition(_window)));
+                mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_RIGHT_CLICK_RELEASED,
+                                         sf::Vector2f(sf::Mouse::getPosition(_window)));
         }
         if (event.type == sf::Event::MouseMoved)
             mouseInputs.emplace_back(aecs::MouseInputType::MOUSE_MOVE, sf::Vector2f(sf::Mouse::getPosition(_window)));

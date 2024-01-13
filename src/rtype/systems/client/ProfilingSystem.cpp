@@ -38,8 +38,8 @@ rtype::ProfilingSystem &rtype::ProfilingSystem::clear()
 aecs::EntityChanges rtype::ProfilingSystem::update(aecs::UpdateParams &updateParams)
 {
     _elapsedTime += updateParams.deltaTime;
-//    if (_elapsedTime < _timeBetweenUpdate)
-//        return {};
+    //    if (_elapsedTime < _timeBetweenUpdate)
+    //        return {};
     _elapsedTime = 0;
 
     // We iterate over all the entities that are registered in the system

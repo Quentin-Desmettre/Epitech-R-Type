@@ -3,9 +3,9 @@
 //
 
 #include "rtype/systems/shared/PhysicsSystem.hpp"
+#include "rtype/components/BlockComponent.hpp"
 #include "rtype/components/CollidableComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
-#include "rtype/components/BlockComponent.hpp"
 
 namespace rtype
 {
@@ -122,7 +122,9 @@ namespace rtype
         CollisionDirection direction;
         bool isBlock = entity->hasComponent<BlockComponent>();
         for (auto &[_id, entity2] : _collidableEntities) {
-            if ((isBlock && entity2->hasComponent<BlockComponent>()) || (entity == entity2 || !entity2->hasComponent<CollidableComponent>() || !entity->hasComponent<CollidableComponent>()))
+            if ((isBlock && entity2->hasComponent<BlockComponent>()) ||
+                (entity == entity2 || !entity2->hasComponent<CollidableComponent>() ||
+                 !entity->hasComponent<CollidableComponent>()))
                 continue;
             direction = getCollisionDirection(entity, entity2);
             if (direction != NONE)

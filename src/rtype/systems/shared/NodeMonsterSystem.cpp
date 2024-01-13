@@ -2,21 +2,22 @@
 // Created by edo on 03/01/24.
 //
 #include "rtype/systems/shared/NodeMonsterSystem.hpp"
-#include "rtype/components/NodeComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
+#include "rtype/components/NodeComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
-#include "rtype/components/VelocityComponent.hpp"
 #include "rtype/components/SpriteComponent.hpp"
+#include "rtype/components/VelocityComponent.hpp"
 #include <cmath>
 
 #if defined(WIN64) || defined(WIN32) || defined(WINNT)
-    #define M_PI		3.14159265358979323846
+#define M_PI 3.14159265358979323846
 #endif
 
-rtype::NodeMonsterSystem::
-    NodeMonsterSystem(aecs::World &world,
-                    const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-    ALogicSystem(world, entities, {typeid(NodeComponent), typeid(MonsterComponent), typeid(PositionComponent), typeid(VelocityComponent)})
+rtype::NodeMonsterSystem::NodeMonsterSystem(aecs::World &world,
+                                            const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+    ALogicSystem(
+        world, entities,
+        {typeid(NodeComponent), typeid(MonsterComponent), typeid(PositionComponent), typeid(VelocityComponent)})
 {
 }
 
@@ -24,7 +25,7 @@ void rtype::NodeMonsterSystem::follow(aecs::EntityPtr &entity1)
 {
     auto &node1 = entity1->getComponent<NodeComponent>();
     auto &pos1 = entity1->getComponent<PositionComponent>();
-    int i = int(positions.size()) -  int(node1.delay * 2 / 0.3);
+    int i = int(positions.size()) - int(node1.delay * 2 / 0.3);
     auto &sprite = entity1->getComponent<SpriteComponent>();
     sprite.zIndex = 40 - int(node1.delay);
     sprite.sprite.setRotation(node1.rotate);
@@ -39,11 +40,9 @@ void rtype::NodeMonsterSystem::follow(aecs::EntityPtr &entity1)
         angle += 2 * M_PI;
     node1.rotate = angle * 180 / M_PI;
 
-
     pos1.x = pos2.x;
     pos1.y = pos2.y;
 }
-
 
 aecs::EntityChanges rtype::NodeMonsterSystem::update(aecs::UpdateParams &updateParams)
 {
@@ -101,23 +100,23 @@ void rtype::NodeMonsterSystem::onEntityRemoved(const aecs::EntityPtr &entity)
 }
 void rtype::NodeMonsterSystem::wave(aecs::Entity &entity)
 {
-        auto &pos = entity.getComponent<PositionComponent>();
-        auto &vel = entity.getComponent<VelocityComponent>();
-        auto &sprite = entity.getComponent<SpriteComponent>();
-        sprite.zIndex = 40;
-        static float dir = -20;
-        if (vel.y == 0)
-            vel.y = dir;
-        else
-            dir = vel.y;
-        if (pos.y > 740 || pos.y < -100) {
-            vel.y = -vel.y;
-            pos.x -= 100;
-        }
-        vel.x = sinf(pos.y / 100) * 10;
-        float angle = atan2(vel.y, vel.x);
-        angle = angle - M_PI;
-        if (angle < 0)
-            angle += 2 * M_PI;
-        sprite.sprite.setRotation(angle * 180 / M_PI);
+    auto &pos = entity.getComponent<PositionComponent>();
+    auto &vel = entity.getComponent<VelocityComponent>();
+    auto &sprite = entity.getComponent<SpriteComponent>();
+    sprite.zIndex = 40;
+    static float dir = -20;
+    if (vel.y == 0)
+        vel.y = dir;
+    else
+        dir = vel.y;
+    if (pos.y > 740 || pos.y < -100) {
+        vel.y = -vel.y;
+        pos.x -= 100;
+    }
+    vel.x = sinf(pos.y / 100) * 10;
+    float angle = atan2(vel.y, vel.x);
+    angle = angle - M_PI;
+    if (angle < 0)
+        angle += 2 * M_PI;
+    sprite.sprite.setRotation(angle * 180 / M_PI);
 }

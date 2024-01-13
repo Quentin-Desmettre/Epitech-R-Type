@@ -12,14 +12,16 @@ namespace rtype
     }
     void BossSystem::onEntityRemoved(const aecs::EntityPtr &entity)
     {
-        if (entity->hasComponent<PlayerComponent>()&& std::find(players.begin(), players.end(), entity) != players.end()) {
+        if (entity->hasComponent<PlayerComponent>() &&
+            std::find(players.begin(), players.end(), entity) != players.end()) {
             players.erase(std::remove(players.begin(), players.end(), entity), players.end());
         }
         ASystem::onEntityRemoved(entity);
     }
     void BossSystem::onEntityModified(const aecs::EntityPtr &entity)
     {
-        if (entity->hasComponent<PlayerComponent>() && std::find(players.begin(), players.end(), entity) == players.end()) {
+        if (entity->hasComponent<PlayerComponent>() &&
+            std::find(players.begin(), players.end(), entity) == players.end()) {
             players.push_back(entity);
         }
         ASystem::onEntityModified(entity);
@@ -48,4 +50,4 @@ namespace rtype
         return updateParams.entityChanges;
     }
 
-}
+} // namespace rtype

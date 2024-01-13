@@ -4,12 +4,12 @@
 
 #include "rtype/RTypeServer.hpp"
 #include "rtype/EntityFactory.hpp"
+#include "rtype/systems/server/BulletGenSystem.hpp"
 #include "rtype/systems/server/DeleteClientSystem.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
 #include "rtype/systems/server/NewConnectionSystem.hpp"
 #include "rtype/systems/server/PlayerOnConnectionSystem.hpp"
 #include "rtype/systems/server/PowerSystem.hpp"
-#include "rtype/systems/server/BulletGenSystem.hpp"
 #include "rtype/systems/server/ServerCorrectionsSystem.hpp"
 #include "rtype/systems/server/ServerInputsSystem.hpp"
 #include "rtype/systems/shared/AnimPlayerSystem.hpp"
