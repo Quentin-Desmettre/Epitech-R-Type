@@ -12,7 +12,7 @@ namespace rtype
     {
       public:
         explicit HPComponent(float hp = 10) :
-            hp(hp){};
+            hp(hp), maxHp(hp) {}
 
         const char *getName() const override
         {
@@ -22,6 +22,7 @@ namespace rtype
         void decode(const std::vector<std::byte> &encoded) override;
         ~HPComponent() override = default;
         float hp = 0;
+        float maxHp = 10;
     };
 } // namespace rtype
 

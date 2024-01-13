@@ -39,6 +39,7 @@ namespace rtype
         void deleteEntity(std::size_t entityId);
         void drawSprite(const aecs::EntityPtr &entity);
         void drawText(const aecs::EntityPtr &entity);
+        void drawHealthBar(const aecs::EntityPtr &entity);
 
         std::vector<aecs::EntityPtr> _sortedEntities;
         std::vector<std::size_t> _entitiesToDelete;

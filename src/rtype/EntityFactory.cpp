@@ -23,6 +23,7 @@
 #include "rtype/components/TextComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
+#include "components/DrawHealthBar.hpp"
 #include <memory>
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
@@ -37,6 +38,7 @@ aecs::Entity &rtype::EntityFactory::toPlayer(aecs::Entity &entity)
     entity.addComponent<CollidableComponent>(0);
     entity.addComponent<DamageCollisionComponent>(0, 0);
     entity.addComponent<HPComponent>(50);
+    entity.addComponent<DrawHealthBar>();
     if (!_world->getIsServer()) {
         std::shared_ptr<sf::Shader> shader = std::make_shared<sf::Shader>();
         entity.addComponent<AnimComponent>(1);
@@ -116,6 +118,7 @@ aecs::Entity &rtype::EntityFactory::toEnemy(aecs::Entity &entity)
         entity.addComponent<VelocityComponent>(0, 20);
         entity.addComponent<HPComponent>();
     }
+    entity.addComponent<DrawHealthBar>();
     return entity;
 }
 
@@ -225,6 +228,7 @@ void rtype::EntityFactory::createSnake(sf::Vector2f position, int nb)
             enemy.addComponent<VelocityComponent>(0, 0);
         enemy.addComponent<DamageCollisionComponent>(1, 15);
         enemy.addComponent<HPComponent>(10);
+        enemy.addComponent<DrawHealthBar>();
     }
 }
 
@@ -251,6 +255,7 @@ aecs::Entity &rtype::EntityFactory::createBlock(sf::Vector2f position, const std
 
     return toBlock(block);
 }
+
 aecs::Entity &rtype::EntityFactory::toBossEnemy(aecs::Entity &entity)
 {
     entity.addComponent<SpriteComponent>("assets/sprites/Boss.png", sf::Vector2f(531, 288), sf::IntRect(0, 0, 177, 96));
@@ -261,9 +266,11 @@ aecs::Entity &rtype::EntityFactory::toBossEnemy(aecs::Entity &entity)
         entity.addComponent<VelocityComponent>(0, 20);
         entity.addComponent<BulletGenComponent>(20.f, true, true, 3, 64, 1, sf::Vector2f(-50, 0));
         entity.addComponent<HPComponent>();
+        entity.addComponent<DrawHealthBar>();
     }
     return entity;
 }
+
 aecs::Entity &rtype::EntityFactory::createBossEnemy(sf::Vector2f position, sf::Vector2f velocity)
 {
     auto &enemy = _world->createEntity();
