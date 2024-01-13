@@ -114,9 +114,11 @@ namespace aecs
         updateCurrentMenu();
 
         // Update systems
-        sf::Clock cl;
         for (auto &[system, _] : _sortedSystems) {
+//            sf::Clock cl2;
             auto changes = system->update(updateParams);
+//            std::cout << "time to update " << typeid(*system).name() << " : " << cl2.getElapsedTime().asMicroseconds()
+//                      << std::endl;
 
             // Update entity changes
             updateParams.entityChanges.deletedEntities.insert(changes.deletedEntities.begin(),

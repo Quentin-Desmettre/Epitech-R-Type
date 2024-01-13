@@ -17,13 +17,7 @@ namespace rtype
     aecs::EntityChanges BulletSystem::update(aecs::UpdateParams &updateParams)
     {
         (void)updateParams;
-        std::vector<std::shared_ptr<aecs::Entity>> entities;
         aecs::EntityChanges changes;
-
-        entities.reserve(_entitiesMap.size());
-        for (auto &[_id, entity] : _entitiesMap) {
-            entities.push_back(entity);
-        }
 
         for (auto &[_id, entity] : _entitiesMap) {
             auto &position = entity->getComponent<PositionComponent>();

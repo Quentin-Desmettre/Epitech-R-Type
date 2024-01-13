@@ -24,10 +24,17 @@ namespace rtype
 
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
 
+        void onEntityAdded(const aecs::EntityPtr &entity) override;
+        void onEntityRemoved(const aecs::EntityPtr &entity) override;
+        void onEntityModified(const aecs::EntityPtr &entity) override;
+
       private:
-        sf::Rect<float> getRect(const std::shared_ptr<aecs::Entity> &entity);
+        static sf::Rect<float> getRect(aecs::Entity *entity, const PositionComponent &position);
         bool killed(const std::shared_ptr<aecs::Entity> &entity, const std::shared_ptr<aecs::Entity> &entity2);
         void addPowerUp(aecs::EntityChanges &changes);
+        float notRootedDistance(const PositionComponent &position, const PositionComponent &position2);
+
+        std::vector<std::shared_ptr<aecs::Entity>> entities;
     };
 
 } // namespace rtype
