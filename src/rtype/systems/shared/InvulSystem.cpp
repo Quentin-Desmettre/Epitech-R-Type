@@ -3,12 +3,13 @@
 //
 
 #include "rtype/systems/shared/InvulSystem.hpp"
+#include "rtype/components/InvulComponent.hpp"
 
 namespace rtype
 {
 
     InvulSystem::InvulSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
-        ALogicSystem(world, entities, {typeid(SpriteComponent), typeid(DamageCollisionComponent)})
+        ALogicSystem(world, entities, {typeid(SpriteComponent), typeid(DamageCollisionComponent), typeid(InvulComponent)})
     {
     }
 

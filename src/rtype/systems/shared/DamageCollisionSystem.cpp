@@ -3,6 +3,7 @@
 //
 
 #include "rtype/systems/shared/DamageCollisionSystem.hpp"
+#include "rtype/components/InvulComponent.hpp"
 
 namespace rtype
 {
@@ -52,8 +53,8 @@ namespace rtype
             int random = rand() % 100;
             int dropChance = entity->second->getComponent<MonsterComponent>()._lil ? 15 : 30;
             if (random < dropChance) {
-                PositionComponent &position = entity->second->getComponent<PositionComponent>();
-                aecs::Entity &power = EntityFactory::createPower(sf::Vector2f(position.x, position.y), rand() % 2);
+                auto &position = entity->second->getComponent<PositionComponent>();
+                aecs::Entity &power = EntityFactory::createPower(sf::Vector2f(position.x, position.y), PowerComponent::getRandomPower());
                 changes.editedEntities.insert(power.getId());
             }
         }
@@ -74,9 +75,11 @@ namespace rtype
             auto &entity = entities[i];
             auto &damage = entity->getComponent<DamageCollisionComponent>();
             auto &hp = entity->getComponent<HPComponent>();
+            bool hasInvulFrames = entity->hasComponent<InvulComponent>();
             sf::Rect rect = getRect(entity);
             for (size_t j = i + 1; j < entities.size(); j++) {
                 auto &entity2 = entities[j];
+                bool hasInvulFrames2 = entity2->hasComponent<InvulComponent>();
                 auto &damage2 = entity2->getComponent<DamageCollisionComponent>();
                 auto &hp2 = entity2->getComponent<HPComponent>();
                 sf::Rect rect2 = getRect(entity2);
@@ -84,14 +87,14 @@ namespace rtype
                     continue;
                 if (damage.damage != 0 && damage.invulnerability == 0) {
                     hp2.hp -= damage.damage;
-                    if (damage2.type != DamageCollisionComponent::ObjectType::LG_BULLET)
+                    if (damage2.type != DamageCollisionComponent::ObjectType::LG_BULLET && hasInvulFrames2)
                         damage2.invulnerability = 5;
                     damage2.damaged = true;
                     changes.editedEntities.insert(entity2->getId());
                 }
                 if (damage2.damage != 0 && damage.invulnerability == 0) {
                     hp.hp -= damage2.damage;
-                    if (damage.type != DamageCollisionComponent::ObjectType::LG_BULLET)
+                    if (damage.type != DamageCollisionComponent::ObjectType::LG_BULLET && hasInvulFrames)
                         damage.invulnerability = 5;
                     damage.damaged = true;
                     changes.editedEntities.insert(entity->getId());

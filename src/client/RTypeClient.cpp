@@ -53,7 +53,7 @@ void rtype::RTypeClient::setDecodeMap()
         entity.addComponent<PowerComponent>();
         auto &component = entity.getComponent<PowerComponent>();
         component.decode(data);
-        EntityFactory::toPower(entity, component.isPowerUp);
+        EntityFactory::toPower(entity, component.type);
     });
     _world.addDecodeMap("BlockComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
         entity.addComponent<BlockComponent>().decode(data);

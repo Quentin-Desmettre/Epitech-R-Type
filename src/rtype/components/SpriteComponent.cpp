@@ -15,7 +15,7 @@ rtype::SpriteComponent::SpriteComponent(const std::string &path, sf::Vector2f si
     sf::Texture *texture = SFMLLoader::loadTexture(path);
 
     if (!texture)
-        throw std::runtime_error("Cannot load texture: " + path);
+        return;
     texture->setRepeated(true);
     sprite.setTexture(*texture);
     if (rect.width == 0 && rect.height == 0) {

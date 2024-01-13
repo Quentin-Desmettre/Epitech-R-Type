@@ -25,6 +25,7 @@
 #include "rtype/components/TextComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
+#include "rtype/components/InvulComponent.hpp"
 #include <memory>
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
@@ -35,6 +36,7 @@ aecs::Entity &rtype::EntityFactory::toPlayer(aecs::Entity &entity)
     entity.addComponent<SpriteComponent>("assets/sprites/PlayerNew.png", sf::Vector2f{96, 96},
                                          sf::IntRect(0, 0, 32, 32));
     entity.addComponent<PositionComponent>(50, 300);
+    entity.addComponent<InvulComponent>();
     entity.addComponent<VelocityComponent>(0, 0);
     entity.addComponent<CollidableComponent>(0);
     entity.addComponent<DamageCollisionComponent>(0, 0);
@@ -154,21 +156,30 @@ aecs::Entity &rtype::EntityFactory::createBackground(int id, sf::Vector2f speed)
     return back;
 }
 
-aecs::Entity &rtype::EntityFactory::createPower(sf::Vector2f position, bool isPowerUp)
+aecs::Entity &rtype::EntityFactory::createPower(sf::Vector2f position, rtype::PowerComponent::PowerType type)
 {
     auto &power = _world->createEntity();
-    power.addComponent<PowerComponent>(isPowerUp);
-    toPower(power, isPowerUp);
+    power.addComponent<PowerComponent>(type);
+    toPower(power, type);
     power.addComponent<PositionComponent>(position.x, position.y);
-    power.addComponent<VelocityComponent>(-20, 4);
+    if (position.y > 640.0f / 2) {
+        power.addComponent<VelocityComponent>(-20, -4);
+    } else {
+        power.addComponent<VelocityComponent>(-20, 4);
+    }
     return power;
 }
 
-aecs::Entity &rtype::EntityFactory::toPower(aecs::Entity &entity, bool isPowerUp)
+aecs::Entity &rtype::EntityFactory::toPower(aecs::Entity &entity, rtype::PowerComponent::PowerType type)
 {
-    std::string path = isPowerUp ? "assets/sprites/PowerUp.png" : "assets/sprites/PowerDown.png";
+    static const std::map<rtype::PowerComponent::PowerType, std::string> powerTypeToTexture = {
+        {rtype::PowerComponent::PowerType::DOUBLE_SHOT, "assets/sprites/DoubleShot.png"},
+        {rtype::PowerComponent::PowerType::INVERSE_DIR, "assets/sprites/InverseDir.png"},
+        {rtype::PowerComponent::PowerType::HEALTH_PACK, "assets/sprites/HealthPack.png"},
+    };
+    std::string path = powerTypeToTexture.at(type);
 
-    entity.addComponent<SpriteComponent>(path, sf::Vector2f{57, 42}, sf::IntRect{0, 0, 19, 14});
+    entity.addComponent<SpriteComponent>(path, sf::Vector2f{57, 42});
     if (!_world->getIsServer()) {
         entity.addComponent<PositionComponent>();
         entity.addComponent<VelocityComponent>();
@@ -286,8 +297,10 @@ aecs::Entity &rtype::EntityFactory::createBossEnemy(sf::Vector2f position, sf::V
 
 aecs::Entity &rtype::EntityFactory::toDifficulty(aecs::Entity &entity)
 {
-    entity.addComponent<TextComponent>("Difficulty: 1", 30, sf::Color::White, true, 0, nullptr);
+    entity.addComponent<TextComponent>("Difficulty: 1", 30, sf::Color::White, true, 0, nullptr)
+            .zIndex = 100;
     entity.addComponent<PositionComponent>(1088 - 200, 20);
+    return entity;
 }
 
 aecs::Entity &rtype::EntityFactory::createDifficulty()

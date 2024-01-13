@@ -7,6 +7,9 @@
 #include "aecs/Entity.hpp"
 #include <SFML/Graphics.hpp>
 #include <functional>
+#include "rtype/systems/server/PowerSystem.hpp"
+#include "rtype/components/PowerComponent.hpp"
+
 #define FLOAT_MAX 3.402823466e+38F
 
 namespace aecs
@@ -29,9 +32,9 @@ namespace rtype
         static void createSnake(sf::Vector2f position, int nb);
         static aecs::Entity &toEnemy(aecs::Entity &entity);
         static aecs::Entity &createBackground(int id, sf::Vector2f speed);
-        static aecs::Entity &createPower(sf::Vector2f position, bool isPowerUp);
         static aecs::Entity &createInputs(int input, std::function<void()> &&onInput);
-        static aecs::Entity &toPower(aecs::Entity &entity, bool isPowerUp);
+        static aecs::Entity &createPower(sf::Vector2f position, PowerComponent::PowerType type);
+        static aecs::Entity &toPower(aecs::Entity &entity, PowerComponent::PowerType type);
         static aecs::Entity &createButton(const std::string &text, int fontSize, sf::Color color, int zIndex = 0,
                                           sf::Vector2f pos = {0, 0}, std::function<void()> &&onClick = nullptr);
         static void setWorld(aecs::World *world);

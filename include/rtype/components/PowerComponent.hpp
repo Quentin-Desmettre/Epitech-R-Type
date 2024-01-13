@@ -11,10 +11,19 @@ namespace rtype
     class PowerComponent : public aecs::AbstractComponent
     {
       public:
-        explicit PowerComponent(bool isPowerUp = true) :
-            isPowerUp(isPowerUp){};
+        enum PowerType {
+            DOUBLE_SHOT,
+            INVERSE_DIR,
+            HEALTH_PACK,
+            MAX_TYPE // Keep last
+        };
+        static PowerType getRandomPower();
+
+        explicit PowerComponent(PowerType type = DOUBLE_SHOT) :
+            type(type){};
+
         ~PowerComponent() override = default;
-        bool isPowerUp = true;
+        PowerType type;
 
         const char *getName() const override
         {

@@ -3,6 +3,7 @@
 //
 
 #include "rtype/systems/server/PowerSystem.hpp"
+#include "rtype/components/HPComponent.hpp"
 
 namespace rtype
 {
@@ -50,19 +51,32 @@ namespace rtype
 
             auto &power = entity->getComponent<PowerComponent>();
             auto &position = entity->getComponent<PositionComponent>();
+
+            // Remove power if out of screen
             if (position.x < -100 || position.x > 1920 + 100 || position.y < -100 || position.y > 1080 + 100) {
                 changes.deletedEntities.insert(entity->getId());
                 continue;
             }
-            sf::Rect rect = getRect(entity);
 
-            if (playerRect.intersects(rect)) {
-                changes.deletedEntities.insert(entity->getId());
-                auto &playerComponent = player->getComponent<PlayerComponent>();
-                if (power.isPowerUp)
+            // Check if player is in range
+            sf::Rect rect = getRect(entity);
+            if (!playerRect.intersects(rect))
+                continue;
+            changes.deletedEntities.insert(entity->getId());
+            auto &playerComponent = player->getComponent<PlayerComponent>();
+            auto &hp = player->getComponent<HPComponent>();
+            switch (power.type) {
+                case PowerComponent::PowerType::DOUBLE_SHOT:
                     playerComponent.timeLeftShootPowerUp = 10;
-                else
+                    break;
+                case PowerComponent::PowerType::INVERSE_DIR:
                     playerComponent.timeLeftMovePowerDown = 10;
+                    break;
+                case PowerComponent::PowerType::HEALTH_PACK:
+                    hp.hp = std::min(hp.hp + hp.maxHp * 0.25f, hp.maxHp);
+                    break;
+                default:
+                    break;
             }
         }
 

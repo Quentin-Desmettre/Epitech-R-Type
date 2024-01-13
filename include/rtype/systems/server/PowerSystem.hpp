@@ -19,6 +19,7 @@ namespace rtype
     class PowerSystem : public aecs::ALogicSystem
     {
       public:
+
         PowerSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
         ~PowerSystem() override = default;
 
@@ -29,7 +30,7 @@ namespace rtype
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
 
       private:
-        sf::Rect<float> getRect(const std::shared_ptr<aecs::Entity> &entity);
+        static sf::Rect<float> getRect(const std::shared_ptr<aecs::Entity> &entity);
         aecs::EntityPtr &getPlayerId();
     };
 

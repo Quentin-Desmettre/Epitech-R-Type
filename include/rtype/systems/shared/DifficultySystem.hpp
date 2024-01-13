@@ -18,9 +18,20 @@ namespace rtype
 
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
 
+        void onEntityAdded(const aecs::EntityPtr &entity) override;
+        void onEntityRemoved(const aecs::EntityPtr &entity) override;
+        void onEntityModified(const aecs::EntityPtr &entity) override;
+
       private:
+        static constexpr const float DIFFICULTY_INCREASE_LIL_MONSTER = 0.01;
+        static constexpr const float DIFFICULTY_INCREASE_BIG_MONSTER = 0.05;
+        static constexpr const float DIFFICULTY_INCREASE_BOSS = 1;
+
         aecs::EntityChanges updateDifficultyText();
         aecs::EntityChanges increaseDifficulty(aecs::UpdateParams &updateParams);
+
+        aecs::EntityPtr _difficulty;
+        std::set<aecs::EntityPtr> _nodes;
     };
 
 } // namespace rtype

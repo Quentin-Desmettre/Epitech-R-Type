@@ -13,10 +13,9 @@ rtype::TextComponent::TextComponent(const std::string &text, int fontSize, sf::C
     _default_size(fontSize),
     _setCenter(setCenter)
 {
-
-    if (!_font.loadFromFile("assets/fonts/Minecraft.ttf"))
-        throw std::runtime_error("Cannot load font: assets/fonts/Minecraft.ttf");
-    _text.setFont(_font);
+    sf::Font *font = SFMLLoader::loadFont("assets/fonts/Minecraft.ttf");
+    if (font)
+        _text.setFont(*font);
     _text.setString(text);
     _text.setCharacterSize(fontSize);
     _text.setFillColor(color);

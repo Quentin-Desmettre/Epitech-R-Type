@@ -115,6 +115,8 @@ set(SHARED_SRC
         include/rtype/components/DifficultyComponent.hpp
         src/rtype/systems/shared/DifficultySystem.cpp
         include/rtype/systems/shared/DifficultySystem.hpp
+        src/rtype/components/InvulComponent.cpp
+        include/rtype/components/InvulComponent.hpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
