@@ -12,7 +12,10 @@ namespace rtype
     {
       public:
         explicit HPComponent(float hp = 10) :
-            hp(hp), maxHp(hp) {}
+            hp(hp),
+            maxHp(hp)
+        {
+        }
 
         const char *getName() const override
         {

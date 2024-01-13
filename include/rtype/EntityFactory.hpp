@@ -41,6 +41,9 @@ namespace rtype
         static aecs::Entity &toBossEnemy(aecs::Entity &entity);
         static aecs::Entity &createBossEnemy(sf::Vector2f position, sf::Vector2f velocity);
 
+        static aecs::Entity &createDifficulty();
+        static aecs::Entity &toDifficulty(aecs::Entity &entity);
+
       private:
         static aecs::World *_world;
     };

@@ -7,17 +7,19 @@
 
 #include "aecs/AbstractComponent.hpp"
 
-namespace rtype {
-    class DrawHealthBar: public aecs::AbstractComponent {
-    public:
+namespace rtype
+{
+    class DrawHealthBar : public aecs::AbstractComponent
+    {
+      public:
         DrawHealthBar() = default;
         ~DrawHealthBar() override = default;
 
-        const char *getName() const override {
+        const char *getName() const override
+        {
             return "DrawHealthBar";
         };
     };
-}
+} // namespace rtype
 
-
-#endif //R_TYPE_DRAWHEALTHBAR_HPP
+#endif // R_TYPE_DRAWHEALTHBAR_HPP

@@ -4,11 +4,9 @@
 
 #include "rtype/systems/client/RenderSystem.hpp"
 #include "rtype/components/CollidableComponent.hpp"
-#include "rtype/components/TextComponent.hpp"
+#include "rtype/components/DrawHealthBar.hpp"
 #include "rtype/components/HPComponent.hpp"
-#include "rtype/components/MonsterComponent.hpp"
-#include "rtype/components/PlayerComponent.hpp"
-#include "../../components/DrawHealthBar.hpp"
+#include "rtype/components/TextComponent.hpp"
 
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
@@ -157,10 +155,7 @@ void rtype::RenderSystem::drawHealthBar(const aecs::EntityPtr &entity)
     sf::RectangleShape empty({maxSize, 10});
     auto origin = sprite.sprite.getOrigin();
 
-    sf::Vector2f rectsPos = {
-            pos.x - origin.x - (sprite._size.x - maxSize),
-            pos.y - origin.y - 40
-    };
+    sf::Vector2f rectsPos = {pos.x - origin.x - (sprite._size.x - maxSize), pos.y - origin.y - 40};
     filled.setPosition(rectsPos);
     empty.setPosition(rectsPos);
     empty.setFillColor(sf::Color::White);

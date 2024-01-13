@@ -26,12 +26,14 @@
 #include "rtype/components/BlockComponent.hpp"
 #include "rtype/components/BossComponent.hpp"
 #include "rtype/components/BulletComponent.hpp"
+#include "rtype/components/DifficultyComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/MusicComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PowerComponent.hpp"
 #include "rtype/systems/client/ProfilingSystem.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
+#include "rtype/systems/shared/DifficultySystem.hpp"
 
 void rtype::RTypeClient::setDecodeMap()
 {
@@ -58,14 +60,16 @@ void rtype::RTypeClient::setDecodeMap()
         EntityFactory::toBlock(entity);
     });
     _world.addDecodeMap("NodeComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
-        entity.addComponent<NodeComponent>();
-        auto &component = entity.getComponent<NodeComponent>();
-        component.decode(data);
+        entity.addComponent<NodeComponent>().decode(data);
         EntityFactory::toSnake(entity);
     });
     _world.addDecodeMap("BossComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
         entity.addComponent<BossComponent>();
         EntityFactory::toBossEnemy(entity);
+    });
+    _world.addDecodeMap("DifficultyComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<DifficultyComponent>().decode(data);
+        EntityFactory::toDifficulty(entity);
     });
 }
 
@@ -94,22 +98,15 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     });
     _world.addMenu(menu, 0);
     std::vector<aecs::SystemData> systems2 = {
-        _world.makeSystem<ClientServerDataHandlerSystem>(-2),
-        _world.makeSystem<ClientInputSenderSystem>(-1),
-        _world.makeSystem<ClientPingSystem>(0),
-        _world.makeSystem<ControlPlayerSystem>(0),
-        _world.makeSystem<AnimPlayerSystem>(1),
-        _world.makeSystem<AnimSystem>(1),
-        _world.makeSystem<PhysicsSystem>(2),
-        _world.makeSystem<ParallaxSystem>(1),
-        _world.makeSystem<NodeMonsterSystem>(1),
-        _world.makeSystem<BulletSystem>(1),
-        _world.makeSystem<DamageCollisionSystem>(1),
+        _world.makeSystem<ClientServerDataHandlerSystem>(-2), _world.makeSystem<ClientInputSenderSystem>(-1),
+        _world.makeSystem<ClientPingSystem>(0), _world.makeSystem<ControlPlayerSystem>(0),
+        _world.makeSystem<AnimPlayerSystem>(1), _world.makeSystem<AnimSystem>(1), _world.makeSystem<PhysicsSystem>(2),
+        _world.makeSystem<ParallaxSystem>(1), _world.makeSystem<NodeMonsterSystem>(1),
+        _world.makeSystem<BulletSystem>(1), _world.makeSystem<DamageCollisionSystem>(1),
         _world.makeSystem<DamageSoundSystem>(1),
         //         _world.makeSystem<MonsterGenSystem>(1),
-        _world.makeSystem<InvulSystem>(1),
-        _world.makeSystem<ProfilingSystem>(2),
-    };
+        _world.makeSystem<InvulSystem>(1), _world.makeSystem<ProfilingSystem>(2),
+        _world.makeSystem<DifficultySystem>(10)};
     std::function<void()> setup = [this]() {
         auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
         bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);

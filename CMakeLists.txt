@@ -110,7 +110,11 @@ set(SHARED_SRC
         include/rtype/systems/shared/BossSystem.hpp
         src/rtype/systems/shared/BossSystem.cpp
         src/rtype/systems/server/MapSystem.cpp
-        src/rtype/components/DrawHealthBar.hpp
+        include/rtype/components/DrawHealthBar.hpp
+        src/rtype/components/DifficultyComponent.cpp
+        include/rtype/components/DifficultyComponent.hpp
+        src/rtype/systems/shared/DifficultySystem.cpp
+        include/rtype/systems/shared/DifficultySystem.hpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp

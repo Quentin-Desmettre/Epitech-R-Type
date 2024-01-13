@@ -11,6 +11,8 @@
 #include "rtype/components/BulletGenComponent.hpp"
 #include "rtype/components/CollidableComponent.hpp"
 #include "rtype/components/DamageCollisionComponent.hpp"
+#include "rtype/components/DifficultyComponent.hpp"
+#include "rtype/components/DrawHealthBar.hpp"
 #include "rtype/components/HPComponent.hpp"
 #include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/NodeComponent.hpp"
@@ -23,7 +25,6 @@
 #include "rtype/components/TextComponent.hpp"
 #include "rtype/components/VelocityComponent.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
-#include "components/DrawHealthBar.hpp"
 #include <memory>
 
 aecs::World *rtype::EntityFactory::_world = nullptr;
@@ -281,4 +282,19 @@ aecs::Entity &rtype::EntityFactory::createBossEnemy(sf::Vector2f position, sf::V
     enemy.addComponent<VelocityComponent>(velocity.x, velocity.y);
     enemy.addComponent<BulletGenComponent>(50.f, true, true, 3, 96, 1, sf::Vector2f(-25, 0));
     return toBossEnemy(enemy);
+}
+
+aecs::Entity &rtype::EntityFactory::toDifficulty(aecs::Entity &entity)
+{
+    entity.addComponent<TextComponent>("Difficulty: 1", 30, sf::Color::White, true, 0, nullptr);
+    entity.addComponent<PositionComponent>(1088 - 200, 20);
+}
+
+aecs::Entity &rtype::EntityFactory::createDifficulty()
+{
+    auto &difficulty = _world->createEntity();
+    difficulty.addComponent<DifficultyComponent>();
+    if (!_world->getIsServer())
+        return toDifficulty(difficulty);
+    return difficulty;
 }
