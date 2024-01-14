@@ -9,13 +9,15 @@
 #include "PlayerOnConnectionSystem.hpp"
 #include "ControlPlayerSystem.hpp"
 #include "PhysicsSystem.hpp"
+#include "BallSystem.hpp"
 
 pong::PongServer::PongServer(int logicRefreshRate, int ac, char **av) :
         _world(true, ac, av),
         _logicRefreshRate(logicRefreshRate)
 {
     EntityFactory::setWorld(&_world);
-//
+    EntityFactory::createBall();
+
 //    // Network systems
     _world.registerSystem<NewConnectionSystem>(-3);
     _world.registerSystem<ServerInputsSystem>(-2);
@@ -23,6 +25,7 @@ pong::PongServer::PongServer(int logicRefreshRate, int ac, char **av) :
     _world.registerSystem<PlayerOnConnectionSystem>(-1);
 
     _world.registerSystem<ControlPlayerSystem>(0);
+    _world.registerSystem<BallSystem>(1);
     _world.registerSystem<PhysicsSystem>(1);
 //    _world.registerSystem<AnimPlayerSystem>(1);
 //    _world.registerSystem<AnimSystem>(1);

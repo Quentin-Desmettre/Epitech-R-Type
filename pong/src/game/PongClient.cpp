@@ -8,14 +8,20 @@
 #include "ClientPingSystem.hpp"
 #include "ControlPlayerSystem.hpp"
 #include "PhysicsSystem.hpp"
+#include "BallComponent.hpp"
+#include "BallSystem.hpp"
+#include "AISystem.hpp"
+#include "ScoreSystem.hpp"
 
 void PongClient::setDecodeMap()
 {
-    _world.addDecodeMap(typeid(PlayerComponent), [](aecs::Entity &entity, const std::vector<std::byte> &data) {
-        entity.addComponent<PlayerComponent>();
-        auto &component = entity.getComponent<PlayerComponent>();
-        component.decode(data);
+    _world.addDecodeMap("PlayerComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<PlayerComponent>().decode(data);
         EntityFactory::toPlayer(entity);
+    });
+    _world.addDecodeMap("BallComponent", [](aecs::Entity &entity, const std::vector<std::byte> &data) {
+        entity.addComponent<BallComponent>().decode(data);
+        EntityFactory::toBall(entity);
     });
 }
 
@@ -31,21 +37,34 @@ PongClient::PongClient(int renderRefreshRate, int logicRefreshRate, int ac, char
 //    TODO  REMETTRE LA MUSIQUE
 //    bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
 
+    EntityFactory::createScore();
+    EntityFactory::createScore(true);
+
+    // Create the player
+    EntityFactory::createPlayer();
+    EntityFactory::createPlayer(true);
+
+    EntityFactory::createBall();
+
+    // Create the score and health
 //    EntityFactory::createScore();
 //    EntityFactory::createHealth();
 
     // Network systems
-    _world.registerSystem<ClientServerDataHandlerSystem>(-2);
-    _world.registerSystem<ClientInputSenderSystem>(-1);
-    _world.registerSystem<ClientPingSystem>(0);
+//    _world.registerSystem<ClientServerDataHandlerSystem>(-2);
+//    _world.registerSystem<ClientInputSenderSystem>(-1);
+//    _world.registerSystem<ClientPingSystem>(0);
 
     // commented to show that movement comes from server
     _world.registerSystem<ControlPlayerSystem>(0);
+    _world.registerSystem<BallSystem>(1);
+    _world.registerSystem<AISystem>(1);
     _world.registerSystem<PhysicsSystem>(1);
+    _world.registerSystem<ScoreSystem>(1);
 //    _world.registerSystem<AnimPlayerSystem>(1);
 //    _world.registerSystem<AnimSystem>(1);
 //    _world.registerSystem<ParallaxSystem>(1);
-////    _world.registerSystem<BulletSystem>(1);
+//    _world.registerSystem<BulletSystem>(1);
 //    _world.registerSystem<DamageCollisionSystem>(1);
 //    _world.registerSystem<DamageSoundSystem>(1);
 //    // _world.registerSystem<MonsterGenSystem>(1);
