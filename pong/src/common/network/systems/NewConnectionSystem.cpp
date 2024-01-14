@@ -10,13 +10,14 @@
 #include "PlayerComponent.hpp"
 #include <iostream>
 
-#ifdef SFML_SYSTEM_WINDOWS
+#if defined(WIN64) || defined(WIN32) || defined(WINNT)
 #include <winsock2.h>
 #else
 
 #include <sys/socket.h>
 
 #endif
+
 
 sf::Socket::Status RTypeListener::listen(unsigned short port, const sf::IpAddress &address)
 {
@@ -69,7 +70,7 @@ NewConnectionSystem::NewConnectionSystem(aecs::World &world,
         ALogicSystem(world, entities, {typeid(ClientAddressComponent), typeid(PlayerComponent)}),
         _listener()
 {
-    _listener.listen(SERVER_TCP_PORT);
+    _listener.listen(_world.getTcpPort());
     _listener.setBlocking(false);
 }
 
@@ -80,25 +81,24 @@ aecs::EntityChanges NewConnectionSystem::update(aecs::UpdateParams &updateParams
     aecs::EntityChanges changes;
 
     socket.setBlocking(false);
-    if (_entitiesMap.size() >= 2)
+    if (_entitiesMap.size() >= 4)
         return {};
     while (_listener.accept(socket) == sf::Socket::Done) {
         auto [isConnected, player] = getClientInfo(socket.getRemoteAddress());
         if (isConnected) {
             std::cout << "Client already connected" << std::endl;
-            changes.deletedEntities.push_back(player->getId());
+            changes.deletedEntities.insert(player->getId());
             auto *playerComponent = player->safeGetComponent<PlayerComponent>();
             if (playerComponent)
                 playerComponent->unUsePlayerId();
         } else {
-            _world.playersConnected++;
+            _world.playerConnected++;
         }
 
         std::cout << "New connection from " << socket.getRemoteAddress() << std::endl;
         auto entity = handleClient(socket);
-        if (entity) {
-            updateParams.entityChanges.editedEntities.push_back(entity->getId());
-        }
+        if (entity)
+            updateParams.entityChanges.editedEntities.insert(entity->getId());
         socket.disconnect();
     }
     return changes;

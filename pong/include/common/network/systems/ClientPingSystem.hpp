@@ -12,7 +12,8 @@
 #include "NetworkGlobals.hpp"
 #include "common/network/components/ClientPingComponent.hpp"
 
-class ClientPingSystem : public aecs::ALogicSystem {
+class ClientPingSystem : public aecs::ALogicSystem
+{
     public:
         ClientPingSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
 

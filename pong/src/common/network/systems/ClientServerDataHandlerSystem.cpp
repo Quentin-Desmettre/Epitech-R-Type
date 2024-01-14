@@ -10,7 +10,7 @@ ClientServerDataHandlerSystem::ClientServerDataHandlerSystem(
         _tcpHandshakeSystem(world, entities),
         _maxReceivedTick(0)
 {
-    _socket.bind(CLIENT_CORRECTIONS_PORT);
+    _socket.bind(_world.getClientPort());
     _socket.setBlocking(false);
 }
 
@@ -44,7 +44,7 @@ aecs::EntityChanges ClientServerDataHandlerSystem::update(aecs::UpdateParams &up
         // Send pong with tick
         unsigned tick = parsed.tick;
         sf::Packet pongPacket = aecs::StaticPacketBuilder::buildClientPongPacket(std::max(tick, _maxReceivedTick));
-        _socket.send(pongPacket, sender, SERVER_INPUTS_PORT);
+        _socket.send(pongPacket, sender, _world.getServerPort());
 
         // Reset ping clock
         for (auto &[_, entity]: _entitiesMap)

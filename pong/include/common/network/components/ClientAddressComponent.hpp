@@ -13,6 +13,10 @@ class ClientAddressComponent : public aecs::AbstractComponent {
 
         ~ClientAddressComponent() override = default;
 
+        const char *getName() const override
+        {
+            return "ClientAdressComponent";
+        };
         unsigned int address = 0;
 };
 

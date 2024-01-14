@@ -16,7 +16,8 @@
 
 class ServerConnectionSystem : public aecs::ALogicSystem {
     public:
-        ServerConnectionSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
+        ServerConnectionSystem(aecs::World &world,
+                               const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
 
         ~ServerConnectionSystem() override = default;
 

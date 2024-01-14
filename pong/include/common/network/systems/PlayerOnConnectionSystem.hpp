@@ -9,10 +9,11 @@
 #include "World.hpp"
 #include <iostream>
 
-class PlayerOnConnectionSystem : public aecs::ALogicSystem {
+class PlayerOnConnectionSystem : public aecs::ALogicSystem
+{
     public:
-        PlayerOnConnectionSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
-
+        PlayerOnConnectionSystem(aecs::World &world,
+                                 const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
         ~PlayerOnConnectionSystem() override = default;
 
         std::vector<uint> _deletedEntities;
@@ -25,5 +26,6 @@ class PlayerOnConnectionSystem : public aecs::ALogicSystem {
 
         void onEntityRemoved(const aecs::EntityPtr &entity) override;
 };
+
 
 #endif // R_TYPE_PLAYERONCONNECTIONSYSTEM_HPP

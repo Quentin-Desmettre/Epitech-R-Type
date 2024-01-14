@@ -23,7 +23,7 @@ aecs::EntityChanges ServerConnectionSystem::update(aecs::UpdateParams &updatePar
         return {};
 
     // Connect to server
-    sf::Socket::Status status = _socket.connect(_world.getIp(), SERVER_TCP_PORT, sf::seconds(5));
+    sf::Socket::Status status = _socket.connect(_world.getIp(), _world.getTcpPort(), sf::seconds(5));
     if (status != sf::Socket::Done) {
         std::cerr << "Error connecting to server" << std::endl;
         return {};

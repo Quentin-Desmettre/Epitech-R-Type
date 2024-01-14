@@ -16,7 +16,8 @@
 /**
  * @brief Sends inputs to server
  */
-class ClientInputSenderSystem : public aecs::ALogicSystem {
+class ClientInputSenderSystem : public aecs::ALogicSystem
+{
     public:
         ClientInputSenderSystem(aecs::World &world,
                                 const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);

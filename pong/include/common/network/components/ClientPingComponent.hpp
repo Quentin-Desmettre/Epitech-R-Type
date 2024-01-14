@@ -8,12 +8,16 @@
 #include "AbstractComponent.hpp"
 #include "SFML/Network.hpp"
 
-class ClientPingComponent : public aecs::AbstractComponent {
+class ClientPingComponent : public aecs::AbstractComponent
+{
     public:
         explicit ClientPingComponent() = default;
-
         ~ClientPingComponent() override = default;
 
+        const char *getName() const override
+        {
+            return "ClientPingComponent";
+        };
         sf::Clock clock;
 };
 

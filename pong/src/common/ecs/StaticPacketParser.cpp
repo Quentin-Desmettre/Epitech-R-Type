@@ -32,20 +32,20 @@ namespace aecs
             return {.type = NONE};
 
         switch (type) {
-        case CONNECTED:
-            return parseConnected(packet, clientId);
-        case GAME_CHANGES:
-            return parseGameChanges(packet, clientId);
-        case SERVER_PONG:
-            return parseServerPong(packet, clientId);
-        case GAME_INPUT:
-            return parseGameInput(packet, clientId);
-        case PING:
-            return parsePing(packet, clientId);
-        case CLIENT_PONG:
-            return parseClientPong(packet, clientId);
-        default:
-            return {.type = NONE};
+            case CONNECTED:
+                return parseConnected(packet, clientId);
+            case GAME_CHANGES:
+                return parseGameChanges(packet, clientId);
+            case SERVER_PONG:
+                return parseServerPong(packet, clientId);
+            case GAME_INPUT:
+                return parseGameInput(packet, clientId);
+            case PING:
+                return parsePing(packet, clientId);
+            case CLIENT_PONG:
+                return parseClientPong(packet, clientId);
+            default:
+                return {.type = NONE};
         }
     }
 
@@ -56,9 +56,9 @@ namespace aecs
 
         aecs::World::EncodedGameState state = parseGameState(packet);
         return {
-            .type = CONNECTED,
-            .entityChanges = {state},
-            .clientId = myClientId,
+                .type = CONNECTED,
+                .entityChanges = {state},
+                .clientId = myClientId,
         };
     }
 
@@ -96,7 +96,7 @@ namespace aecs
 
         // Get changes
         ParsedData parsedData = {
-            .type = GAME_CHANGES,
+                .type = GAME_CHANGES,
         };
         for (std::uint8_t i = 0; i < changeCount && packet; i++) {
             aecs::World::EncodedGameState state = parseGameState(packet);
@@ -107,15 +107,14 @@ namespace aecs
         std::sort(parsedData.entityChanges.begin(), parsedData.entityChanges.end(), [](const auto &a, const auto &b) {
             return a.tick < b.tick;
         });
-//        std::cout << "Received " << parsedData.entityChanges.size() << " changes" << std::endl;
+        //        std::cout << "Received " << parsedData.entityChanges.size() << " changes" << std::endl;
         return parsedData;
     }
 
     StaticPacketParser::ParsedData StaticPacketParser::parseServerPong(PacketBuilder &, std::size_t)
     {
-        std::cout << "Pong" << std::endl;
         return {
-            .type = SERVER_PONG,
+                .type = SERVER_PONG,
         };
     }
 
@@ -137,7 +136,7 @@ namespace aecs
     StaticPacketParser::ParsedData StaticPacketParser::parsePing(PacketBuilder &, std::size_t)
     {
         return {
-            .type = PING,
+                .type = PING,
         };
     }
 
@@ -146,10 +145,10 @@ namespace aecs
         std::uint8_t tick;
 
         packet >> tick;
-//        std::cout << "Client pong: " << static_cast<int>(tick) << std::endl;
+        //        std::cout << "Client pong: " << static_cast<int>(tick) << std::endl;
         return {
-            .type = CLIENT_PONG,
-            .tick = tick,
+                .type = CLIENT_PONG,
+                .tick = tick,
         };
     }
 

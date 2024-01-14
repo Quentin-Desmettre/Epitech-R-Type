@@ -16,7 +16,8 @@
 #include <iostream>
 #include <map>
 
-class ServerInputsSystem : public aecs::ALogicSystem {
+class ServerInputsSystem : public aecs::ALogicSystem
+{
     public:
         ServerInputsSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
 
@@ -26,10 +27,8 @@ class ServerInputsSystem : public aecs::ALogicSystem {
 
     private:
         aecs::EntityPtr &findClient(std::size_t &clientId);
-
         void handlePacket(aecs::StaticPacketParser::ParsedData &packet, aecs::UpdateParams &updateParams,
                           std::size_t clientId);
-
         void sendPong(sf::IpAddress &sender);
 
         sf::UdpSocket _socket;

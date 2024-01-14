@@ -25,9 +25,11 @@
 /**
  * @brief System that handle the data received from the server
  */
-class ClientServerDataHandlerSystem : public aecs::ALogicSystem {
+class ClientServerDataHandlerSystem : public aecs::ALogicSystem
+{
     public:
-        ClientServerDataHandlerSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
+        ClientServerDataHandlerSystem(aecs::World &world,
+                                      const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
 
         ~ClientServerDataHandlerSystem() override = default;
 

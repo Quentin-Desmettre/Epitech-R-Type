@@ -18,7 +18,8 @@
 
 #endif
 
-class RTypeListener : public sf::TcpListener {
+class RTypeListener : public sf::TcpListener
+{
     public:
         Socket::Status listen(unsigned short port, const sf::IpAddress &address = sf::IpAddress::Any);
 
@@ -27,7 +28,8 @@ class RTypeListener : public sf::TcpListener {
         static sockaddr_in createAddress(unsigned int address, unsigned short port);
 };
 
-class NewConnectionSystem : public aecs::ALogicSystem {
+class NewConnectionSystem : public aecs::ALogicSystem
+{
     public:
         NewConnectionSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
 

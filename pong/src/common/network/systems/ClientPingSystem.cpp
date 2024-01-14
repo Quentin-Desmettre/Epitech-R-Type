@@ -14,14 +14,14 @@ ClientPingSystem::ClientPingSystem(aecs::World &world,
 
 aecs::EntityChanges ClientPingSystem::update(aecs::UpdateParams &updateParams)
 {
-    (void) updateParams;
-    for (auto &[_, entity]: _entitiesMap) {
+    (void)updateParams;
+    for (auto &[_, entity] : _entitiesMap) {
         auto &component = entity->getComponent<ClientPingComponent>();
         if (component.clock.getElapsedTime().asMilliseconds() < 1000)
             continue;
 
         sf::Packet packet = aecs::StaticPacketBuilder::buildPingPacket();
-        _socket.send(packet, _world.getIp(), SERVER_INPUTS_PORT); // TODO: get from ac/av
+        _socket.send(packet, _world.getIp(), _world.getServerPort());
 
         component.clock.restart();
     }

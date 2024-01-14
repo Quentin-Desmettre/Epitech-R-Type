@@ -4,13 +4,11 @@
 
 #include "ClientInputSenderSystem.hpp"
 
-
 ClientInputSenderSystem::ClientInputSenderSystem(
         aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
         ALogicSystem(world, entities, {typeid(ClientPingComponent)})
 {
     _socket.setBlocking(false);
-    _socket.bind(CLIENT_INPUTS_PORT);
 }
 
 /*
@@ -24,7 +22,7 @@ aecs::EntityChanges ClientInputSenderSystem::update(aecs::UpdateParams &updatePa
     // Get the first inputs, as a client only has one player
     std::vector<aecs::RenderInput> inputs = updateParams.inputs.begin()->second;
     sf::Packet packet = aecs::StaticPacketBuilder::buildGameInputPacket(inputs);
-    _socket.send(packet, _world.getIp(), SERVER_INPUTS_PORT); // TODO: get from ac/av
+    _socket.send(packet, _world.getIp(), _world.getServerPort()); // TODO: get from ac/av
     for (auto &[_, entity]: _entitiesMap)
         entity->getComponent<ClientPingComponent>().clock.restart();
     return {};
