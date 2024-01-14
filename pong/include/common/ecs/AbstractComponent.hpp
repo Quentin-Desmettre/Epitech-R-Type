@@ -14,11 +14,12 @@ namespace aecs
 {
     class AbstractComponent
     {
-      public:
-        virtual ~AbstractComponent() = 0;
+        public:
+            virtual ~AbstractComponent() = 0;
+            [[nodiscard]] virtual const char *getName() const = 0;
 
-        [[nodiscard]] virtual std::vector<std::byte> encode() const;
-        virtual void decode(const std::vector<std::byte> &data);
+            [[nodiscard]] virtual std::vector<std::byte> encode() const;
+            virtual void decode(const std::vector<std::byte> &data);
     };
 } // namespace aecs
 

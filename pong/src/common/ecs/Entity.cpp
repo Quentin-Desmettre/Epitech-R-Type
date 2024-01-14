@@ -10,7 +10,7 @@ namespace aecs
 {
     std::size_t Entity::_idCounter = 0;
     Entity::Entity(World &world, std::size_t id) :
-        _world(world)
+            _world(world)
     {
         if (!_idCounter && !_world.getIsServer())
             _idCounter = 1;
@@ -43,7 +43,7 @@ namespace aecs
         PacketBuilder pb;
 
         for (auto &component : _components) {
-            pb << hashString(typeid(*component.second).name());
+            pb << hashString((*component.second).getName());
             pb += component.second->encode();
         }
         std::vector<std::byte> data = pb.getData();
@@ -75,10 +75,8 @@ namespace aecs
 
     AbstractComponent &Entity::getComponentByComponentId(uint id)
     {
-        std::cout << "id: " << id << std::endl;
-        std::cout << _components.size() << std::endl;
         for (auto &component : _components) {
-            if (hashString(typeid(*component.second).name()) == id)
+            if (hashString((*component.second).getName()) == id)
                 return *component.second;
         }
         throw std::runtime_error("Invalid component id " + std::to_string(id));

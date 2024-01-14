@@ -7,7 +7,7 @@
 #include "ClientPingComponent.hpp"
 
 DeleteClientSystem::DeleteClientSystem(aecs::World &world,
-                                       const std::map <std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
+                                       const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
         ALogicSystem(world, entities, {typeid(ClientAddressComponent), typeid(ClientPingComponent)})
 {
 }
@@ -15,12 +15,13 @@ DeleteClientSystem::DeleteClientSystem(aecs::World &world,
 aecs::EntityChanges DeleteClientSystem::update(aecs::UpdateParams &updateParams)
 {
     for (auto &[id, entity]: _entitiesMap) {
-        auto &clientAddress = entity->getComponent<ClientAddressComponent>();
+        auto &clientAdress = entity->getComponent<ClientAddressComponent>();
         sf::Clock &clock = entity->getComponent<ClientPingComponent>().clock;
-        if (clientAddress.address == 0 || clock.getElapsedTime().asSeconds() >= 5) {
-            std::cout << "Client disconnected after " << clock.getElapsedTime().asSeconds() << " seconds" << std::endl;
-            updateParams.entityChanges.deletedEntities.push_back(id);
-            _world.playersConnected--;
+        if (clientAdress.address == 0 || clock.getElapsedTime().asSeconds() >= 5) {
+            std::cout << "Client disconnected after " << clock.getElapsedTime().asSeconds() << " seconds"
+                      << std::endl;
+            _world.playerConnected--;
+            updateParams.entityChanges.deletedEntities.insert(id);
         }
     }
     return {};

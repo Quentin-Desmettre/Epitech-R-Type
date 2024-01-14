@@ -4,17 +4,19 @@
 
 #include "World.hpp"
 #include "Entity.hpp"
-#include "ServerInputsSystem.hpp"
+#include "MenuInputSystem.hpp"
+#include "ButtonSystem.hpp"
 #include "shared/PacketBuilder.hpp"
 #include <algorithm>
 #include <iostream>
 
+#include <thread>
 
 namespace aecs
 {
     World::World(bool isServer, int ac, char **av) :
-        _isServer(isServer),
-        _argParser(ac, av)
+            _isServer(isServer),
+            _argParser(ac, av)
     {
     }
 
@@ -89,6 +91,11 @@ namespace aecs
         });
     }
 
+    void World::leave()
+    {
+        _needLeave = true;
+    }
+
     void World::update()
     {
         float deltaTime = clock.getElapsedTime().asSeconds() * 10;
@@ -97,20 +104,24 @@ namespace aecs
         // Lock inputs
         {
             std::lock_guard<std::mutex> lock(_renderInputsMutex);
-            updateParams = {
-                .inputs = _isServer ? getInputs() : popInputs(), .deltaTime = deltaTime, .entityChanges = {}};
+            updateParams = {.inputs = _isServer ? getInputs() : popInputs(),
+                    .mouseInputs = _mouseInputs,
+                    .deltaTime = deltaTime,
+                    .entityChanges = {}};
         }
 
+        // Update current menu
+        updateCurrentMenu();
+
         // Update systems
+        sf::Clock cl;
         for (auto &[system, _] : _sortedSystems) {
             auto changes = system->update(updateParams);
 
             // Update entity changes
-            updateParams.entityChanges.deletedEntities.insert(updateParams.entityChanges.deletedEntities.end(),
-                                                              changes.deletedEntities.begin(),
+            updateParams.entityChanges.deletedEntities.insert(changes.deletedEntities.begin(),
                                                               changes.deletedEntities.end());
-            updateParams.entityChanges.editedEntities.insert(updateParams.entityChanges.editedEntities.end(),
-                                                             changes.editedEntities.begin(),
+            updateParams.entityChanges.editedEntities.insert(changes.editedEntities.begin(),
                                                              changes.editedEntities.end());
         }
 
@@ -123,6 +134,7 @@ namespace aecs
 
         // Clear
         // _renderInputs.clear();
+        _mouseInputs.clear();
         _tick++;
     }
 
@@ -130,10 +142,13 @@ namespace aecs
     {
         // Render system
         if (_renderSystem) {
+            if (_needLeave)
+                _renderSystem->close();
             auto tmp = _renderSystem->render();
             {
                 std::lock_guard<std::mutex> lock(_renderInputsMutex);
-                setClientInputs(_clientId, tmp);
+                setClientInputs(_clientId, tmp.first);
+                _mouseInputs = tmp.second;
             }
         }
     }
@@ -159,10 +174,9 @@ namespace aecs
         entity.decode(data);
     }
 
-    void World::addDecodeMap(const std::type_info &type,
-                             const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map)
+    void World::addDecodeMap(const char *name, const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map)
     {
-        decodeMap[aecs::Entity::hashString(type.name())] = map;
+        decodeMap[aecs::Entity::hashString(name)] = map;
     }
 
     bool World::getIsServer() const
@@ -271,12 +285,86 @@ namespace aecs
         _tick = entities.tick;
     }
 
-    std::string World::getIp() {
+    std::string World::getIp()
+    {
         return _argParser.getIp();
     }
 
-    unsigned short World::getPort() {
-        return _argParser.getPort();
+    unsigned short World::getServerPort()
+    {
+        return _argParser.getServerPort();
     }
 
+    unsigned short World::getClientPort()
+    {
+        return _argParser.getClientPort();
+    }
+
+    unsigned short World::getTcpPort()
+    {
+        return _argParser.getTcpPort();
+    }
+
+    void World::registerSystem(const std::shared_ptr<ISystem> &system, int priority, std::type_index type)
+    {
+        _systems[type] = {system, priority};
+        sortSystems();
+    }
+
+    int World::addMenu(const Menu &menu, int id)
+    {
+        if (id == -1)
+            id = _menus.size();
+        _menus.emplace(id, menu);
+        return id;
+    }
+
+    void World::goToMenu(int id)
+    {
+        if (_currentMenu == id)
+            return;
+        if (_menus.find(id) == _menus.end())
+            return;
+        _nextMenu = id;
+    }
+
+    void World::updateCurrentMenu()
+    {
+        if (_nextMenu == _currentMenu)
+            return;
+        _currentMenu = _nextMenu;
+
+        this->_renderInputsMutex.lock();
+        this->_renderInputs.clear();
+        this->_renderInputsMutex.unlock();
+        this->_systems.clear();
+        this->_sortedSystems.clear();
+        this->_mouseInputs.clear();
+
+        for (size_t size = this->_entities.size(); size > 0; size--) {
+            auto &entity = *this->_entities.begin();
+            this->destroyEntity(*entity.second);
+        }
+        this->_entities.clear();
+
+        this->registerSystem<MenuInputSystem>(0);
+        this->registerSystem<rtype::ButtonSystem>(0);
+
+        //        for (auto &button : _menus.at(_currentMenu)._buttons) {
+        //            auto &entity = createEntity();
+        //            entity.addComponent<rtype::components::Button>(button._text, button._texture, button._sprite,
+        //            button._pos, button._rect); entity.addComponent<rtype::components::Transform>(button._pos);
+        //            entity.addComponent<rtype::components::Clickable>(button._handler);
+        //        }
+
+        for (auto &system : _menus.at(_currentMenu)._systems) {
+            this->registerSystem(system.system, system.priority, system.typeIndex);
+        }
+
+        _menus.at(_currentMenu)._setup();
+
+        for (auto &handler : _menus.at(_currentMenu)._handlers) {
+            EntityFactory::createInputs(handler.first, std::move(handler.second));
+        }
+    }
 } // namespace aecs

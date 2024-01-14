@@ -9,8 +9,8 @@ namespace aecs
 {
     ASystem::ASystem(aecs::World &world, const std::map<std::size_t, EntityPtr> &entities,
                      const std::vector<std::type_index> &componentsNeeded) :
-        _world(world),
-        _componentsNeeded(componentsNeeded)
+            _world(world),
+            _componentsNeeded(componentsNeeded)
     {
         for (auto &[_, entity] : entities)
             ASystem::onEntityAdded(entity);
@@ -39,7 +39,7 @@ namespace aecs
     // Render systems
     ARenderSystem::ARenderSystem(aecs::World &world, const std::map<std::size_t, EntityPtr> &entities,
                                  const std::vector<std::type_index> &componentsNeeded) :
-        ASystem(world, entities, componentsNeeded)
+            ASystem(world, entities, componentsNeeded)
     {
     }
 
@@ -51,16 +51,20 @@ namespace aecs
     // Logic systems
     ALogicSystem::ALogicSystem(aecs::World &world, const std::map<std::size_t, EntityPtr> &entities,
                                const std::vector<std::type_index> &componentsNeeded) :
-        ASystem(world, entities, componentsNeeded)
+            ASystem(world, entities, componentsNeeded)
     {
     }
 
-    ClientInputs ALogicSystem::render()
+    RenderInputs ALogicSystem::render()
     {
         throw std::runtime_error("IRenderSystem::render() should not be called");
     }
     bool ALogicSystem::isOpen() const
     {
         throw std::runtime_error("IRenderSystem::isOpen() should not be called");
+    }
+    void ALogicSystem::close()
+    {
+        throw std::runtime_error("IRenderSystem::close() should not be called");
     }
 } // namespace aecs
