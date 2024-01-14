@@ -10,12 +10,6 @@
 #include "rtype/components/PlayerComponent.hpp"
 #include <iostream>
 
-#if defined(WIN64) || defined(WIN32) || defined(WINNT)
-#include <winsock2.h>
-#else
-#include <sys/socket.h>
-#endif
-
 namespace rtype
 {
 

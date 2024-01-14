@@ -9,6 +9,7 @@
 #include "rtype/components/MonsterComponent.hpp"
 #include "rtype/components/BossComponent.hpp"
 #include <iomanip>
+#include <sstream>
 #include "rtype/components/NodeComponent.hpp"
 #include "rtype/components/HPComponent.hpp"
 
