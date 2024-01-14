@@ -14,7 +14,7 @@
     #include <windows.h>
 #else
     #include <netinet/in.h>
-    #include <sys/socket.h
+    #include <sys/socket.h>
 #endif
 
 namespace rtype
