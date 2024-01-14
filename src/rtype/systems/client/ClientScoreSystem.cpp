@@ -6,6 +6,7 @@
 #include "rtype/components/HPComponent.hpp"
 #include "rtype/components/TagComponent.hpp"
 #include "rtype/components/TextComponent.hpp"
+#include "rtype/components/PositionComponent.hpp"
 
 namespace rtype {
     ClientScoreSystem::ClientScoreSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
@@ -34,10 +35,10 @@ namespace rtype {
 
         auto &monster = entity->getComponent<MonsterComponent>();
         auto &hp = entity->getComponent<HPComponent>();
+        auto &position = entity->getComponent<PositionComponent>();
 
-        // TODO Les hp sont jamais a 0 :/
-//        std::cout << hp.hp << std::endl;
-//        if (hp.hp > 0) return;
+        if (position.x < 0)
+            return;
 
         if (monster._lil)
             _score += 1;
