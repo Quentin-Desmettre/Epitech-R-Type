@@ -1,5 +1,5 @@
 //
-// Created by Clément Vandeville on 07/01/2024.
+// Created by qdesmettre on 05/12/23.
 //
 
 #ifndef R_TYPE_TEXTCOMPONENT_HPP
@@ -7,25 +7,36 @@
 
 #include "AbstractComponent.hpp"
 #include <SFML/Graphics.hpp>
+#include <functional>
 
 class TextComponent : public aecs::AbstractComponent {
     public:
-        explicit TextComponent(std::string string, int fontSize = 12, sf::Color color = sf::Color::White, int zIndex = 0);
+        explicit TextComponent(const std::string &text, int fontSize = 30, sf::Color color = sf::Color::White, bool setCenter = 0, int zIndex = 0, std::function<void()> &&onClick = nullptr);
 
         ~TextComponent() override = default;
 
-        int zIndex;
-        sf::Text text;
+        void onOver();
 
-        static sf::Font font;
-        static bool loadFont;
+        void removeOver();
+
+        void onPress();
+
+        sf::Text _text;
+        sf::Font _font;
+        std::function<void()> onClick;
+        int zIndex;
+
+        const char *getName() const override
+        {
+            return "TextComponent";
+        };
 
     private:
-        std::string _string;
-        int _fontSize;
-        sf::Color _color;
+        int _character_size = 30;
+        int _over_size;
+        int _default_size;
+        bool _setCenter;
 
 };
 
-
-#endif //R_TYPE_TEXTCOMPONENT_HPP
+#endif // R_TYPE_TEXTCOMPONENT_HPP

@@ -20,6 +20,11 @@ class SpriteComponent : public aecs::AbstractComponent {
         sf::Vector2f _size;
         int zIndex;
 
+        [[nodiscard]] const char *getName() const override
+        {
+            return "SpriteComponent";
+        };
+
     private:
         sf::Texture _texture;
 };
