@@ -105,7 +105,7 @@ void rtype::MapSystem::onEntityRemoved(const aecs::EntityPtr &entity)
 
 // Window size: 1044x640
 
-aecs::EntityChanges rtype::MapSystem::update(aecs::UpdateParams &)
+aecs::EntityChanges rtype::MapSystem::update(aecs::UpdateParams &params)
 {
     // procedure to generate map:
     // - check if enough time has passed since last generation
@@ -122,11 +122,7 @@ aecs::EntityChanges rtype::MapSystem::update(aecs::UpdateParams &)
     //      - <space> for empty space
 
     aecs::EntityChanges changes;
-    _occupiedSpace = 0;
-    for (auto &[id, entity] : _entitiesMap) {
-        auto &position = entity->getComponent<PositionComponent>();
-        _occupiedSpace = std::max(_occupiedSpace, position.x + BLOCK_SIZE);
-    }
+    _occupiedSpace += params.deltaTime * BLOCK_SPEED;
     loadPatterns(changes);
     return changes;
 }
@@ -285,6 +281,7 @@ void rtype::MapSystem::loadPatternInWorld(aecs::EntityChanges &changes, const rt
 void rtype::MapSystem::generatePattern(aecs::EntityChanges &changes)
 {
     auto &pattern = getRandomPattern();
+    std::cout << "putting pattern starting at " << _occupiedSpace << std::endl;
     loadPatternInWorld(changes, pattern, _occupiedSpace);
     _occupiedSpace += pattern.second * BLOCK_SIZE;
 }
@@ -296,6 +293,7 @@ void rtype::MapSystem::loadPatterns(aecs::EntityChanges &changes)
 
     if (_patterns.empty())
         return;
+    std::cout << "occupied space: " << _occupiedSpace << std::endl;
     while (_occupiedSpace < WINDOW_WIDTH * 1.2) {
         generatePattern(changes);
     }
