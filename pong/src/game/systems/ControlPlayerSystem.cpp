@@ -13,11 +13,17 @@ aecs::EntityChanges ControlPlayerSystem::update(aecs::UpdateParams &updateParams
 {
     aecs::EntityChanges changes;
     for (auto &[_id, entity]: _entitiesMap) {
+        if (!entity->hasComponent<PlayerComponent>())
+            continue;
+
         const auto &position = entity->getComponent<PositionComponent>();
         auto &velocity = entity->getComponent<VelocityComponent>();
         auto &sprite = entity->getComponent<SpriteComponent>();
         auto &player = entity->getComponent<PlayerComponent>();
-        changes.editedEntities.push_back(entity->getId());
+
+        if (player.isAI) continue;
+
+        changes.editedEntities.insert(entity->getId());
 
         velocity.x = 0;
         velocity.y = 0;
