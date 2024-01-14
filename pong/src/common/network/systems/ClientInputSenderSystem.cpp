@@ -22,7 +22,7 @@ aecs::EntityChanges ClientInputSenderSystem::update(aecs::UpdateParams &updatePa
     // Get the first inputs, as a client only has one player
     std::vector<aecs::RenderInput> inputs = updateParams.inputs.begin()->second;
     sf::Packet packet = aecs::StaticPacketBuilder::buildGameInputPacket(inputs);
-    _socket.send(packet, _world.getIp(), _world.getServerPort()); // TODO: get from ac/av
+    _socket.send(packet, _world.getIp(), _world.getServerPort());
     for (auto &[_, entity]: _entitiesMap)
         entity->getComponent<ClientPingComponent>().clock.restart();
     return {};
