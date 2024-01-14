@@ -3,7 +3,6 @@
 //
 
 #include "aecs/StaticPacketBuilder.hpp"
-#include <snappy.h>
 
 namespace aecs
 {
@@ -69,17 +68,7 @@ namespace aecs
         packet << static_cast<std::uint8_t>(packetType);
         packet.add(from.getData().data(), from.size());
 
-        // Compress data
-        std::vector<std::byte> &data = packet.getData();
-        std::string compressed;
-        snappy::Compress(reinterpret_cast<const char *>(data.data()), packet.size(), &compressed);
-
-        // Put it in the packet
-        sf::Packet sfPacket;
-        std::uint16_t compressedSize = compressed.size();
-        sfPacket.append(&compressedSize, sizeof(compressedSize));
-        sfPacket.append(compressed.data(), compressed.size());
-        return sfPacket;
+        return packet.toSfPacket();
     }
 
 } // namespace aecs

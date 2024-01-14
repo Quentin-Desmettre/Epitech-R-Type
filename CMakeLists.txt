@@ -170,16 +170,9 @@ FetchContent_Declare(SFML
 FetchContent_MakeAvailable(SFML)
 INCLUDE_DIRECTORIES(${SFML_SOURCE_DIR}/include)
 
-## snappy
-FetchContent_Declare(snappy
-        GIT_REPOSITORY https://github.com/google/snappy.git
-        GIT_TAG 1.1.10)
-FetchContent_MakeAvailable(snappy)
-INCLUDE_DIRECTORIES(${snappy_SOURCE_DIR})
-
 add_library(r-type_static STATIC ${SHARED_SRC})
 
-target_link_libraries(r-type_static PUBLIC sfml-graphics sfml-network sfml-audio snappy)
+target_link_libraries(r-type_static PUBLIC sfml-graphics sfml-network sfml-audio)
 
 add_executable(r-type_client ${CLIENT_SRC})
 add_executable(r-type_server ${SERVER_SRC})

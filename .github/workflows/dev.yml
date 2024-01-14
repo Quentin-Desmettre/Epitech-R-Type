@@ -14,7 +14,7 @@ jobs:
       matrix:
         vars:
           - { os: 'ubuntu-latest', version: 'Linux', zip: 'r-type--Linux.tar.gz' }
-#          - { os: 'macos-latest', version: 'Mac', zip: 'r-type--Darwin.tar.gz' }
+          - { os: 'macos-latest', version: 'Mac', zip: 'r-type--Darwin.tar.gz' }
           - { os: 'windows-latest', version: 'Windows', zip: 'r-type--win64.tar.gz' }
 
     runs-on: ${{ matrix.vars.os }}

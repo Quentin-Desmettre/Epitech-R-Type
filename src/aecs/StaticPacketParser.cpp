@@ -6,7 +6,6 @@
 */
 
 #include "aecs/StaticPacketParser.hpp"
-#include <snappy.h>
 
 namespace aecs
 {
@@ -19,21 +18,11 @@ namespace aecs
 
     StaticPacketParser::ParsedData StaticPacketParser::parsePacket(const sf::Packet &sfPack, std::size_t clientId)
     {
-        // Base check
-        PacketBuilder basePacket(sfPack);
-        if (!isPacketValid(basePacket))
+        PacketBuilder packet(sfPack);
+
+        if (!isPacketValid(packet))
             return {.type = NONE};
 
-        // Decompress
-        std::string decompressed;
-        const std::vector<std::byte> &data = basePacket.getData();
-        snappy::Uncompress(reinterpret_cast<const char *>(data.data() + 2), basePacket.size() - 2, &decompressed);
-
-        // Put it in a packet
-        PacketBuilder packet;
-        packet.add(reinterpret_cast<const std::byte *>(decompressed.data()), decompressed.size());
-
-        // Parse
         sf::Uint16 size = 0;
         sf::Uint8 type = NONE;
 
