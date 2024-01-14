@@ -23,6 +23,9 @@ namespace rtype
     {
       public:
         ~EntityFactory() = default;
+        static void setWorld(aecs::World *world);
+        static void setDifficulty(float *difficulty);
+
         static aecs::Entity &createPlayer();
         static aecs::Entity &toPlayer(aecs::Entity &entity);
         static aecs::Entity &createBullet(sf::Vector2f position, sf::Vector2f velocity, int team = 0, bool big = false);
@@ -37,7 +40,6 @@ namespace rtype
         static aecs::Entity &toPower(aecs::Entity &entity, PowerComponent::PowerType type);
         static aecs::Entity &createButton(const std::string &text, int fontSize, sf::Color color, int zIndex = 0,
                                           sf::Vector2f pos = {0, 0}, std::function<void()> &&onClick = nullptr);
-        static void setWorld(aecs::World *world);
         static aecs::Entity &toBlock(aecs::Entity &entity);
         static aecs::Entity &createBlock(sf::Vector2f position, const std::string &texture, bool breakable = false,
                                          float hp = FLOAT_MAX, sf::IntRect rect = {0, 0, 0, 0});
@@ -49,6 +51,7 @@ namespace rtype
 
       private:
         static aecs::World *_world;
+        static float *_difficulty;
     };
 } // namespace rtype
 #include "aecs/World.hpp"

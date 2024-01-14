@@ -30,6 +30,7 @@ void rtype::DifficultySystem::onEntityAdded(const aecs::EntityPtr &entity)
     // For difficulty component
     if (entity->hasComponent<DifficultyComponent>()) {
         _difficulty = entity;
+        EntityFactory::setDifficulty(&entity->getComponent<DifficultyComponent>().difficulty);
     }
 }
 
@@ -43,6 +44,7 @@ void rtype::DifficultySystem::onEntityRemoved(const aecs::EntityPtr &entity)
     // For difficulty component
     if (entity->hasComponent<DifficultyComponent>()) {
         _difficulty = nullptr;
+        EntityFactory::setDifficulty(nullptr);
     }
 }
 
@@ -56,6 +58,7 @@ void rtype::DifficultySystem::onEntityModified(const aecs::EntityPtr &entity)
     // For difficulty component
     if (entity->hasComponent<DifficultyComponent>()) {
         _difficulty = entity;
+        EntityFactory::setDifficulty(&entity->getComponent<DifficultyComponent>().difficulty);
     }
 }
 

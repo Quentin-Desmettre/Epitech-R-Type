@@ -5,6 +5,7 @@
 #include "rtype/systems/server/BulletGenSystem.hpp"
 #include "rtype/components/BulletGenComponent.hpp"
 #include "rtype/components/PositionComponent.hpp"
+#include "rtype/components/DifficultyComponent.hpp"
 
 namespace rtype
 {

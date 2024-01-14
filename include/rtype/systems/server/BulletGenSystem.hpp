@@ -14,10 +14,12 @@ namespace rtype
     {
       public:
         BulletGenSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
-
         ~BulletGenSystem() override = default;
 
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
+
+    private:
+        aecs::EntityPtr _difficulty;
     };
 } // namespace rtype
 
