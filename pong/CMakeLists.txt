@@ -62,6 +62,19 @@ set(SHARED_SRC
         src/game/systems/ControlPlayerSystem.cpp
         include/game/systems/PhysicsSystem.hpp
         src/game/systems/PhysicsSystem.cpp
+        include/shared/SFMLLoader.hpp
+        src/shared/SFMLLoader.cpp
+        src/shared/Menu.cpp
+        src/game/systems/MenuInputSystem.cpp
+        src/game/components/InputComponent.cpp
+        include/game/components/InputComponent.hpp
+        include/game/systems/ButtonSystem.hpp
+        src/game/systems/ButtonSystem.cpp
+        include/game/components/BallComponent.hpp
+        src/game/components/BallComponent.cpp
+        src/game/systems/BallSystem.cpp
+        include/game/systems/BallSystem.hpp
+        src/game/systems/AISystem.cpp
 )
 
 set(SERVER_SRC
@@ -92,6 +105,13 @@ set(CLIENT_SRC
         include/common/network/systems/ClientInputSenderSystem.hpp
         include/common/network/systems/ClientPingSystem.hpp
         src/common/network/systems/ClientPingSystem.cpp
+        include/shared/Menu.hpp
+        include/game/systems/MenuInputSystem.hpp
+        include/game/systems/AISystem.hpp
+        src/game/systems/ScoreSystem.cpp
+        include/game/systems/ScoreSystem.hpp
+        src/game/components/TagComponent.cpp
+        include/game/components/TagComponent.hpp
 )
 
 include(FetchContent)
