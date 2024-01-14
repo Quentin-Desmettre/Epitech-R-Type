@@ -31,7 +31,7 @@ namespace rtype
 
       private:
         static sf::Rect<float> getRect(const std::shared_ptr<aecs::Entity> &entity);
-        aecs::EntityPtr &getPlayerId();
+        std::vector<aecs::EntityPtr> getPlayers();
     };
 
 } // namespace rtype

@@ -30,7 +30,7 @@ void rtype::RenderSystem::onEntityRemoved(const aecs::EntityPtr &entity)
 {
     if (entity->hasComponents({typeid(SpriteComponent), typeid(PositionComponent)}) ||
         entity->hasComponents({typeid(TextComponent), typeid(PositionComponent)})) {
-        deleteEntity(entity->getId());
+        deleteEntity(entity);
     }
 }
 
@@ -43,7 +43,7 @@ void rtype::RenderSystem::onEntityModified(const aecs::EntityPtr &entity)
     if ((isSprite || isText) && !isInMap) {
         addEntity(entity);
     } else if (!isSprite && !isText && isInMap) {
-        deleteEntity(entity->getId());
+        deleteEntity(entity);
     }
 }
 
@@ -52,9 +52,9 @@ void rtype::RenderSystem::addEntity(const aecs::EntityPtr &entity)
     _entitiesToAdd.push_back(entity);
 }
 
-void rtype::RenderSystem::deleteEntity(std::size_t entityId)
+void rtype::RenderSystem::deleteEntity(const aecs::EntityPtr &entity)
 {
-    _entitiesToDelete.push_back(entityId);
+    _entitiesToDelete.push_back(entity);
 }
 
 void rtype::RenderSystem::_sortEntities()
@@ -218,8 +218,8 @@ void rtype::RenderSystem::_flushBuffers()
         _entitiesMap[entity->getId()] = entity;
 
     // Delete entities
-    for (auto &id: _entitiesToDelete) {
-        _entitiesMap.erase(id);
+    for (auto &entity: _entitiesToDelete) {
+        _entitiesMap.erase(entity->getId());
     }
 
     // Sort entities

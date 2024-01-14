@@ -42,7 +42,8 @@ namespace rtype
 
         if (_entitiesMap.empty())
             return changes;
-        aecs::EntityPtr &player = getPlayerId();
+        auto players = getPlayers();
+        for (auto &player : players) {
         sf::Rect playerRect = getRect(player);
 
         for (auto &[id, entity] : _entitiesMap) {
@@ -79,6 +80,7 @@ namespace rtype
                     break;
             }
         }
+        }
 
         return changes;
     }
@@ -98,13 +100,15 @@ namespace rtype
         return rect;
     }
 
-    aecs::EntityPtr &PowerSystem::getPlayerId()
+    std::vector<aecs::EntityPtr> PowerSystem::getPlayers()
     {
+        std::vector<aecs::EntityPtr> players;
+
         for (auto &[id, entity] : _entitiesMap) {
             if (entity->hasComponent<PlayerComponent>())
-                return entity;
+                players.push_back(entity);
         }
-        return _entitiesMap.begin()->second;
+        return players;
     }
 
 } // namespace rtype

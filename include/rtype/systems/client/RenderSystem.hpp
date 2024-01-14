@@ -36,7 +36,7 @@ namespace rtype
 
         void _flushBuffers();
         void addEntity(const aecs::EntityPtr &entity);
-        void deleteEntity(std::size_t entityId);
+        void deleteEntity(const aecs::EntityPtr &entity);
         void drawSprite(const aecs::EntityPtr &entity);
         void drawText(const aecs::EntityPtr &entity);
         void drawHealthBar(const aecs::EntityPtr &entity);
@@ -44,7 +44,7 @@ namespace rtype
         void drawBar(float width, float percentage, sf::Color color, sf::Vector2f position);
 
         std::vector<aecs::EntityPtr> _sortedEntities;
-        std::vector<std::size_t> _entitiesToDelete;
+        std::vector<aecs::EntityPtr> _entitiesToDelete;
         std::vector<aecs::EntityPtr> _entitiesToAdd;
 
         sf::RenderWindow _window;
