@@ -25,10 +25,11 @@ namespace rtype
         ~EntityFactory() = default;
         static void setWorld(aecs::World *world);
         static void setDifficulty(float *difficulty);
+        static float getDifficulty();
 
         static aecs::Entity &createPlayer();
         static aecs::Entity &toPlayer(aecs::Entity &entity);
-        static aecs::Entity &createBullet(sf::Vector2f position, sf::Vector2f velocity, int team = 0, bool big = false);
+        static aecs::Entity &createBullet(sf::Vector2f position, sf::Vector2f velocity, int team = 0, bool big = false, std::size_t shotBy = 0);
         static aecs::Entity &toBullet(aecs::Entity &entity);
         static aecs::Entity &createEnemy(sf::Vector2f position, sf::Vector2f velocity, bool lil = false);
         static aecs::Entity &toSnake(aecs::Entity &entity);

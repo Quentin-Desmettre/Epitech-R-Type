@@ -4,6 +4,7 @@
 
 #include "rtype/systems/shared/MonsterGenSystem.hpp"
 #include "rtype/components/DifficultyComponent.hpp"
+#include <cmath>
 
 rtype::MonsterGenSystem::MonsterGenSystem(aecs::World &world,
                                           const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
@@ -38,9 +39,10 @@ aecs::EntityChanges rtype::MonsterGenSystem::update(aecs::UpdateParams &updatePa
     bossTime -= updateParams.deltaTime;
 
     int rnd;
+    float difficulty = EntityFactory::getDifficulty();
     while (time > 1) {
         rnd = std::rand() % 100;
-        if (rnd * nbPlayer < 10) {
+        if (rnd * nbPlayer < 10 * (1 + difficulty / 10.f)) {
             changes.editedEntities.insert(addRandomEnemy().getId());
         }
         if (bossTime < 0) {

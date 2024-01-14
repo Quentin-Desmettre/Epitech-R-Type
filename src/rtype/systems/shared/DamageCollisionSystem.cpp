@@ -4,6 +4,10 @@
 
 #include "rtype/systems/shared/DamageCollisionSystem.hpp"
 #include "rtype/components/InvulComponent.hpp"
+#include "rtype/components/BossComponent.hpp"
+#include "rtype/components/NodeComponent.hpp"
+#include "rtype/components/XPComponent.hpp"
+#include "rtype/components/BulletComponent.hpp"
 
 namespace rtype
 {
@@ -136,14 +140,18 @@ namespace rtype
                     changes.editedEntities.insert(entity->getId());
                 }
                 if (hp2.hp <= 0) {
-                    if (_world.getIsServer())
+                    if (_world.getIsServer()) {
+                        handleKilledBy(entity, entity2, changes);
                         changes.deletedEntities.insert(entity2->getId());
+                    }
                     entities.erase(entities.begin() + j);
                     j--;
                 }
                 if (hp.hp <= 0) {
-                    if (_world.getIsServer())
+                    if (_world.getIsServer()) {
+                        handleKilledBy(entity2, entity, changes);
                         changes.deletedEntities.insert(entity->getId());
+                    }
                     entities.erase(entities.begin() + i);
                     i--;
                     break;
@@ -152,6 +160,37 @@ namespace rtype
         }
         addPowerUp(changes);
         return changes;
+    }
+
+    void DamageCollisionSystem::handleKilledBy(aecs::Entity *by, aecs::Entity *killed, aecs::EntityChanges &changes)
+    {
+        // If not directly killed by player, find the player who shot the bullet (if it was a bullet)
+        if (!by->hasComponent<PlayerComponent>()) {
+            if (!by->hasComponent<BulletComponent>())
+                return;
+            by = _world.getEntity(by->getComponent<BulletComponent>().shotBy).get();
+            if (!by || !by->hasComponent<PlayerComponent>()) {
+                return;
+            }
+        }
+        auto *monster = killed->safeGetComponent<MonsterComponent>();
+        bool isBoss = killed->hasComponent<BossComponent>();
+        bool isNode = killed->hasComponent<NodeComponent>();
+        auto &xpComponent = by->getComponent<XPComponent>();
+
+        if (!monster && !isBoss && !isNode)
+            return;
+        int oldLevel = xpComponent.getLevel();
+        if (monster)
+            xpComponent.increaseXp(monster->_lil ? LIL_MONSTER_KILLED_XP : BIG_MONSTER_KILLED_XP);
+        else if (isBoss)
+            xpComponent.increaseXp(BOSS_KILLED_XP);
+        else // if (isNode)
+            xpComponent.increaseXp(BOSS_KILLED_XP / 25.0f);
+        if (oldLevel != xpComponent.getLevel()) {
+            by->getComponent<PlayerComponent>().levelUp(by);
+        }
+        changes.editedEntities.insert(by->getId());
     }
 
 } // namespace rtype

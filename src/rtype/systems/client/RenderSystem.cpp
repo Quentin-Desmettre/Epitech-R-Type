@@ -7,6 +7,8 @@
 #include "rtype/components/DrawHealthBar.hpp"
 #include "rtype/components/HPComponent.hpp"
 #include "rtype/components/TextComponent.hpp"
+#include "rtype/components/XPComponent.hpp"
+#include "shared/SFMLLoader.hpp"
 
 rtype::RenderSystem::RenderSystem(aecs::World &world,
                                   const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
@@ -117,8 +119,11 @@ aecs::RenderInputs rtype::RenderSystem::render()
             drawSprite(entity);
         if (entity->hasComponent<TextComponent>())
             drawText(entity);
-        if (entity->hasComponent<DrawHealthBar>())
+        if (entity->hasComponent<DrawHealthBar>()) {
             drawHealthBar(entity);
+            if (entity->hasComponent<XPComponent>())
+                drawXPBar(entity);
+        }
     }
     _window.display();
     return {inputs, mouseInputs};
@@ -150,18 +155,48 @@ void rtype::RenderSystem::drawHealthBar(const aecs::EntityPtr &entity)
     auto &sprite = entity->getComponent<SpriteComponent>();
     auto &pos = entity->getComponent<PositionComponent>();
     float maxSize = sprite._size.x * 0.8f;
-    float rectWidth = maxSize * hp.hp / hp.maxHp;
-    sf::RectangleShape filled({rectWidth, 10});
-    sf::RectangleShape empty({maxSize, 10});
     auto origin = sprite.sprite.getOrigin();
-
     sf::Vector2f rectsPos = {pos.x - origin.x - (sprite._size.x - maxSize), pos.y - origin.y - 40};
-    filled.setPosition(rectsPos);
-    empty.setPosition(rectsPos);
-    empty.setFillColor(sf::Color::White);
-    filled.setFillColor(sf::Color::Red);
     if (hp.hp <= 0)
         return;
+    drawBar(maxSize, hp.hp / hp.maxHp, sf::Color::Red, rectsPos);
+}
+
+void rtype::RenderSystem::drawXPBar(const aecs::EntityPtr &entity)
+{
+    auto &xp = entity->getComponent<XPComponent>();
+    auto &sprite = entity->getComponent<SpriteComponent>();
+    auto &pos = entity->getComponent<PositionComponent>();
+    float maxSize = sprite._size.x * 0.7f;
+    auto origin = sprite.sprite.getOrigin();
+    sf::Vector2f rectsPos = {pos.x - origin.x - (sprite._size.x - maxSize) + sprite._size.x * 0.2f, pos.y - origin.y - 60};
+    drawBar(maxSize, static_cast<float>(xp.getXp()) / static_cast<float>(xp.getXpForLevelup()), sf::Color::Green, rectsPos);
+    sf::Text text;
+    text.setString(std::to_string(xp.getLevel()));
+    sf::Font *f = SFMLLoader::loadFont("assets/fonts/Minecraft.ttf");
+    if (f)
+        text.setFont(*f);
+    text.setCharacterSize(16);
+    text.setFillColor(sf::Color::White);
+    text.setPosition({rectsPos.x - sprite._size.x * 0.1f, rectsPos.y - 5});
+    _window.draw(text);
+}
+
+void rtype::RenderSystem::drawBar(float width, float percentage, sf::Color color, sf::Vector2f position)
+{
+    sf::RectangleShape filled({width * percentage, 10});
+    sf::RectangleShape empty({width, 10});
+    sf::Color emptyColor = {
+            static_cast<sf::Uint8>(color.r / 2),
+            static_cast<sf::Uint8>(color.g / 2),
+            static_cast<sf::Uint8>(color.b / 2),
+            static_cast<sf::Uint8>(color.a / 2)
+    };
+
+    filled.setPosition(position);
+    empty.setPosition(position);
+    empty.setFillColor(emptyColor);
+    filled.setFillColor(color);
     _window.draw(empty);
     _window.draw(filled);
 }

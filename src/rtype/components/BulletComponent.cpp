@@ -8,7 +8,7 @@
 std::vector<std::byte> rtype::BulletComponent::encode() const
 {
     PacketBuilder pb;
-    pb << big;
+    pb << big << shotBy;
     return pb.getData();
 }
 
@@ -16,5 +16,5 @@ void rtype::BulletComponent::decode(const std::vector<std::byte> &encoded)
 {
     PacketBuilder pb;
     pb << encoded;
-    pb >> big;
+    pb >> big >> shotBy;
 }

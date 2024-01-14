@@ -70,10 +70,10 @@ namespace rtype
                     playerComponent.timeLeftShootPowerUp = 10;
                     break;
                 case PowerComponent::PowerType::INVERSE_DIR:
-                    playerComponent.timeLeftMovePowerDown = 10;
+                    playerComponent.timeLeftMovePowerDown = 5;
                     break;
                 case PowerComponent::PowerType::HEALTH_PACK:
-                    hp.hp = std::min(hp.hp + hp.maxHp * 0.25f, hp.maxHp);
+                    hp.hp = std::min(hp.hp + 25, hp.maxHp);
                     break;
                 default:
                     break;

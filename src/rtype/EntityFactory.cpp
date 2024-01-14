@@ -26,6 +26,7 @@
 #include "rtype/components/VelocityComponent.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
 #include "rtype/components/InvulComponent.hpp"
+#include "rtype/components/XPComponent.hpp"
 #include <memory>
 #include <cmath>
 
@@ -44,6 +45,7 @@ aecs::Entity &rtype::EntityFactory::toPlayer(aecs::Entity &entity)
     entity.addComponent<DamageCollisionComponent>(0, 0);
     entity.addComponent<HPComponent>(50);
     entity.addComponent<DrawHealthBar>();
+    entity.addComponent<XPComponent>();
     if (!_world->getIsServer()) {
         std::shared_ptr<sf::Shader> shader = std::make_shared<sf::Shader>();
         entity.addComponent<AnimComponent>(1);
@@ -59,6 +61,11 @@ aecs::Entity &rtype::EntityFactory::toPlayer(aecs::Entity &entity)
 void rtype::EntityFactory::setDifficulty(float *difficulty)
 {
     _difficulty = difficulty;
+}
+
+float rtype::EntityFactory::getDifficulty()
+{
+    return _difficulty ? *_difficulty : 1;
 }
 
 aecs::Entity &rtype::EntityFactory::createPlayer()
@@ -90,18 +97,24 @@ aecs::Entity &rtype::EntityFactory::toBullet(aecs::Entity &entity)
     return entity;
 }
 
-aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vector2f velocity, int team, bool big)
+aecs::Entity &rtype::EntityFactory::createBullet(sf::Vector2f position, sf::Vector2f velocity, int team, bool big, std::size_t shooterId)
 {
     float dif = _difficulty ? *_difficulty : 1;
-    float velocityFactor = std::sqrt(dif);
+    float velocityFactor = dif * dif / 10.f + 9.f/10.f;
     auto &bullet = _world->createEntity();
-    bullet.addComponent<BulletComponent>(big);
+    bullet.addComponent<BulletComponent>(big, shooterId);
     toBullet(bullet);
     float damage = big ? 50 : 5;
     if (team == 1) {
         if (big)
             damage = 25;
         damage *= velocityFactor;
+    } else if (team == 0) {
+        auto player = _world->getEntity(shooterId);
+        if (player && player->hasComponent<PlayerComponent>() && player->hasComponent<XPComponent>()) {
+            auto &xp = player->getComponent<XPComponent>();
+            damage *= 1 + xp.getLevel() / 10.f;
+        }
     }
 
     bullet.addComponent<DamageCollisionComponent>(
@@ -139,8 +152,9 @@ aecs::Entity &rtype::EntityFactory::toEnemy(aecs::Entity &entity)
 
 aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vector2f velocity, bool lil)
 {
+    const float divisor = 8.f;
     float dif = _difficulty ? *_difficulty : 1;
-    float healthFactor = dif * dif / 8.f + 7.f/8.f;
+    float healthFactor = dif * dif / divisor + (divisor - 1) / divisor;
     float velocityFactor = std::sqrt(dif);
     auto &enemy = _world->createEntity();
 
@@ -153,9 +167,9 @@ aecs::Entity &rtype::EntityFactory::createEnemy(sf::Vector2f position, sf::Vecto
     }
     enemy.addComponent<PositionComponent>(position.x, position.y);
     if (lil)
-        enemy.addComponent<VelocityComponent>(velocity.x * 1.25 * velocityFactor, velocity.y * 1.25 * velocityFactor);
+        enemy.addComponent<VelocityComponent>(velocity.x * 1.25, velocity.y * 1.25);
     else
-        enemy.addComponent<VelocityComponent>(velocity.x * 0.75 * velocityFactor, velocity.y * 0.75 * velocityFactor);
+        enemy.addComponent<VelocityComponent>(velocity.x * 0.75, velocity.y * 0.75);
     if (lil) {
         enemy.addComponent<DamageCollisionComponent>(1, 5 * healthFactor);
         enemy.addComponent<HPComponent>(1 * healthFactor);
@@ -247,7 +261,7 @@ aecs::Entity &rtype::EntityFactory::toSnake(aecs::Entity &entity)
 void rtype::EntityFactory::createSnake(sf::Vector2f position, int nb)
 {
     float dif = _difficulty ? *_difficulty : 1;
-    float healthFactor = dif * dif / 8.f + 7.f/8.f;
+    float healthFactor = dif * dif / 4.f + 3.f/4.f;
     float velocityFactor = std::sqrt(dif);
 
     for (int i = 0; i < nb; i++) {
@@ -310,7 +324,7 @@ aecs::Entity &rtype::EntityFactory::toBossEnemy(aecs::Entity &entity)
 aecs::Entity &rtype::EntityFactory::createBossEnemy(sf::Vector2f position, sf::Vector2f velocity)
 {
     float dif = _difficulty ? *_difficulty : 1;
-    float healthFactor = dif * dif / 8.f + 7.f/8.f;
+    float healthFactor = dif * dif / 4.f + 3.f/4.f;
     float velocityFactor = std::sqrt(dif);
     auto &enemy = _world->createEntity();
     enemy.addComponent<BossComponent>();

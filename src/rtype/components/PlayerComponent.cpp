@@ -4,6 +4,8 @@
 
 #include "rtype/components/PlayerComponent.hpp"
 #include "shared/PacketBuilder.hpp"
+#include "aecs/Entity.hpp"
+#include "rtype/components/HPComponent.hpp"
 
 std::uint8_t rtype::PlayerComponent::_playerIds[255] = {
     0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,  14,  15,  16,  17,  18,  19,  20,  21,
@@ -58,4 +60,12 @@ void rtype::PlayerComponent::decode(const std::vector<std::byte> &encoded)
     pb << encoded;
     pb >> timeInShift >> timeSinceLastShoot >> tmp;
     playerId = tmp;
+}
+
+void rtype::PlayerComponent::levelUp(aecs::Entity *player)
+{
+    timeLeftMovePowerDown = 0;
+    auto &hp = player->getComponent<HPComponent>();
+    hp.maxHp += 10;
+    hp.hp = hp.maxHp;
 }

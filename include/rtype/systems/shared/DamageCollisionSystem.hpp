@@ -29,10 +29,15 @@ namespace rtype
         void onEntityModified(const aecs::EntityPtr &entity) override;
 
       private:
+        static constexpr const int LIL_MONSTER_KILLED_XP = 1;
+        static constexpr const int BIG_MONSTER_KILLED_XP = 3;
+        static constexpr const int BOSS_KILLED_XP = 20;
+
         static sf::Rect<float> getRect(aecs::Entity *entity, const PositionComponent &position);
         bool killed(const std::shared_ptr<aecs::Entity> &entity, const std::shared_ptr<aecs::Entity> &entity2);
         void addPowerUp(aecs::EntityChanges &changes);
         float notRootedDistance(const PositionComponent &position, const PositionComponent &position2);
+        void handleKilledBy(aecs::Entity *by, aecs::Entity *killed, aecs::EntityChanges &changes);
 
         std::vector<std::shared_ptr<aecs::Entity>> entities;
     };

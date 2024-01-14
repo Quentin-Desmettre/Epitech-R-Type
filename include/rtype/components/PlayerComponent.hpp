@@ -6,6 +6,7 @@
 #define R_TYPE_PLAYERCOMPONENT_HPP
 
 #include "aecs/AbstractComponent.hpp"
+#include "aecs/Entity.hpp"
 
 namespace rtype
 {
@@ -19,6 +20,7 @@ namespace rtype
         void decode(const std::vector<std::byte> &encoded) override;
 
         void unUsePlayerId() const;
+        void levelUp(aecs::Entity *entity);
 
         float timeSinceLastShoot = 0;
         float timeInShift = 0;

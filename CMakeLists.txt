@@ -117,6 +117,8 @@ set(SHARED_SRC
         include/rtype/systems/shared/DifficultySystem.hpp
         src/rtype/components/InvulComponent.cpp
         include/rtype/components/InvulComponent.hpp
+        src/rtype/components/XPComponent.cpp
+        include/rtype/components/XPComponent.hpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
@@ -158,18 +160,26 @@ set(CLIENT_SRC src/client/main.cpp
         include/rtype/systems/client/ProfilingSystem.hpp
 )
 
-
+# Third party
 include(FetchContent)
+
+## SFML
 FetchContent_Declare(SFML
         GIT_REPOSITORY https://github.com/SFML/SFML.git
         GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
-
 INCLUDE_DIRECTORIES(${SFML_SOURCE_DIR}/include)
+
+## snappy
+FetchContent_Declare(snappy
+        GIT_REPOSITORY https://github.com/google/snappy.git
+        GIT_TAG 1.1.10)
+FetchContent_MakeAvailable(snappy)
+INCLUDE_DIRECTORIES(${snappy_SOURCE_DIR})
 
 add_library(r-type_static STATIC ${SHARED_SRC})
 
-target_link_libraries(r-type_static PUBLIC sfml-graphics sfml-network sfml-audio)
+target_link_libraries(r-type_static PUBLIC sfml-graphics sfml-network sfml-audio snappy)
 
 add_executable(r-type_client ${CLIENT_SRC})
 add_executable(r-type_server ${SERVER_SRC})

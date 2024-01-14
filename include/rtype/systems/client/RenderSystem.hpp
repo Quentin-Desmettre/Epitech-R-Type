@@ -40,6 +40,8 @@ namespace rtype
         void drawSprite(const aecs::EntityPtr &entity);
         void drawText(const aecs::EntityPtr &entity);
         void drawHealthBar(const aecs::EntityPtr &entity);
+        void drawXPBar(const aecs::EntityPtr &entity);
+        void drawBar(float width, float percentage, sf::Color color, sf::Vector2f position);
 
         std::vector<aecs::EntityPtr> _sortedEntities;
         std::vector<std::size_t> _entitiesToDelete;

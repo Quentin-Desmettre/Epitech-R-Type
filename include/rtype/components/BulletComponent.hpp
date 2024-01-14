@@ -12,10 +12,11 @@ namespace rtype
     class BulletComponent : public aecs::AbstractComponent
     {
       public:
-        explicit BulletComponent(bool big = false) :
-            big(big){};
+        explicit BulletComponent(bool big = false, std::size_t shotBy = 0) :
+            big(big), shotBy(shotBy){};
         ~BulletComponent() override = default;
         bool big = false;
+        std::size_t shotBy = 0;
 
         const char *getName() const override
         {
