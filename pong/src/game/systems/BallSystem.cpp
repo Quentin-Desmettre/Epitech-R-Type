@@ -4,6 +4,7 @@
 
 #include "BallSystem.hpp"
 #include "BallComponent.hpp"
+#include <cmath>
 const double PI = 3.14159265358979323846;
 
 BallSystem::BallSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
@@ -25,9 +26,9 @@ sf::Vector2f BallSystem::moveTo(sf::Vector2f from, sf::Vector2f to, float speed)
     float vectorX = to.x - from.x;
     float vectorY = to.y - from.y;
 
-    float angle = atan2(vectorY, vectorX);
-    float x = speed * cos(angle);
-    float y = speed * sin(angle);
+    float angle = std::atan2(vectorY, vectorX);
+    float x = speed * std::cos(angle);
+    float y = speed * std::sin(angle);
 
     if (vectorX == 0 && vectorY == 0)
         return {0, 0};

@@ -75,6 +75,8 @@ set(SHARED_SRC
         src/game/systems/BallSystem.cpp
         include/game/systems/BallSystem.hpp
         src/game/systems/AISystem.cpp
+        src/game/components/TagComponent.cpp
+        include/game/components/TagComponent.hpp
 )
 
 set(SERVER_SRC
@@ -110,8 +112,6 @@ set(CLIENT_SRC
         include/game/systems/AISystem.hpp
         src/game/systems/ScoreSystem.cpp
         include/game/systems/ScoreSystem.hpp
-        src/game/components/TagComponent.cpp
-        include/game/components/TagComponent.hpp
 )
 
 include(FetchContent)
@@ -124,7 +124,7 @@ INCLUDE_DIRECTORIES(${SFML_SOURCE_DIR}/include)
 
 add_library(pong_static STATIC ${SHARED_SRC})
 
-target_link_libraries(pong_static PUBLIC sfml-graphics sfml-network sfml-audio)
+target_link_libraries(pong_static PUBLIC sfml-graphics sfml-network sfml-audio m)
 
 add_executable(pong_client ${CLIENT_SRC})
 add_executable(pong_server ${SERVER_SRC})
