@@ -65,26 +65,27 @@ void rtype::DifficultySystem::onEntityModified(const aecs::EntityPtr &entity)
 
 aecs::EntityChanges rtype::DifficultySystem::update(aecs::UpdateParams &updateParams)
 {
+    aecs::EntityChanges changes;
+
+    if (!_difficulty)
+        changes.editedEntities.insert(EntityFactory::createDifficulty().getId());
     if (_world.getIsServer())
-        return increaseDifficulty(updateParams);
-    return updateDifficultyText();
+        return increaseDifficulty(updateParams, changes);
+    return updateDifficultyText(changes);
 }
 
-aecs::EntityChanges rtype::DifficultySystem::updateDifficultyText()
+aecs::EntityChanges rtype::DifficultySystem::updateDifficultyText(aecs::EntityChanges changes)
 {
     auto &difficulty = _difficulty->getComponent<DifficultyComponent>().difficulty;
     auto &text = _difficulty->getComponent<TextComponent>();
     std::stringstream difficultyStr;
     difficultyStr << "Difficulty: " << std::fixed << std::setprecision(2) << difficulty;
     text._text.setString(difficultyStr.str());
-    return {};
+    return changes;
 }
 
-aecs::EntityChanges rtype::DifficultySystem::increaseDifficulty(aecs::UpdateParams &updateParams)
+aecs::EntityChanges rtype::DifficultySystem::increaseDifficulty(aecs::UpdateParams &updateParams, aecs::EntityChanges changes)
 {
-    aecs::EntityChanges changes;
-    if (!_difficulty)
-        changes.editedEntities.insert(EntityFactory::createDifficulty().getId());
     float &difficulty = _difficulty->getComponent<DifficultyComponent>().difficulty;
     const float baseDifficulty = difficulty;
     std::size_t deletedNodes = 0;

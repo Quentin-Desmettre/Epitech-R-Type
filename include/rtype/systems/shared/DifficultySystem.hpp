@@ -27,8 +27,8 @@ namespace rtype
         static constexpr const float DIFFICULTY_INCREASE_BIG_MONSTER = 0.05;
         static constexpr const float DIFFICULTY_INCREASE_BOSS = 1;
 
-        aecs::EntityChanges updateDifficultyText();
-        aecs::EntityChanges increaseDifficulty(aecs::UpdateParams &updateParams);
+        aecs::EntityChanges updateDifficultyText(aecs::EntityChanges changes);
+        aecs::EntityChanges increaseDifficulty(aecs::UpdateParams &updateParams, aecs::EntityChanges changes);
 
         aecs::EntityPtr _difficulty;
         std::set<aecs::EntityPtr> _nodes;
