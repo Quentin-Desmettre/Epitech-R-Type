@@ -21,6 +21,11 @@ class PositionComponent : public aecs::AbstractComponent {
 
         void decode(const std::vector<std::byte> &encoded) override;
 
+        [[nodiscard]] const char *getName() const override
+        {
+            return "PositionComponent";
+        };
+
         float x;
         float y;
 };

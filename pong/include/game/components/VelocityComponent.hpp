@@ -23,6 +23,11 @@ class VelocityComponent : public aecs::AbstractComponent {
 
         float x;
         float y;
+
+        [[nodiscard]] const char *getName() const override
+        {
+            return "VelocityComponent";
+        };
 };
 
 #endif // R_TYPE_VELOCITYCOMPONENT_HPP

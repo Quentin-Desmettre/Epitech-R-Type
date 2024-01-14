@@ -3,6 +3,7 @@
 //
 
 #include "PhysicsSystem.hpp"
+#include "PlayerComponent.hpp"
 
 PhysicsSystem::PhysicsSystem(aecs::World &world,
                              const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities) :
@@ -21,13 +22,15 @@ aecs::EntityChanges PhysicsSystem::update(aecs::UpdateParams &updateParams)
         position.x += velocity.x * updateParams.deltaTime;
         position.y += velocity.y * updateParams.deltaTime;
 
-        if (position.y < 0)
-            position.y = 0;
-        if (position.y > 640 - 160)
-            position.y = 640 - 160;
+        if (entity->hasComponent<PlayerComponent>()) {
+            if (position.y < 0)
+                position.y = 0;
+            if (position.y > 640 - 160)
+                position.y = 640 - 160;
+        }
 
         if (velocity.x != 0 || velocity.y != 0)
-            changes.editedEntities.push_back(entity->getId());
+            changes.editedEntities.insert(entity->getId());
     }
     return changes;
 }
