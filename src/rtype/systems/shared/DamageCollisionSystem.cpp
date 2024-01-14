@@ -126,7 +126,6 @@ namespace rtype
                 if (!rect.intersects(rect2) || damage.team == damage2.team)
                     continue;
                 if (damage.damage != 0 && damage2.invulnerability == 0) {
-                    std::cout << hp2.hp << " "<< damage.damage << std::endl;
                     hp2.hp -= damage.damage;
                     if (damage2.type != DamageCollisionComponent::ObjectType::LG_BULLET && hasInvulFrames2)
                         damage2.invulnerability = 5;
