@@ -5,8 +5,10 @@
 #ifndef R_TYPE_SYSTEMBASE_HPP
 #define R_TYPE_SYSTEMBASE_HPP
 
+#include "SFML/Graphics.hpp"
 #include <map>
 #include <memory>
+#include <set>
 #include <stdexcept>
 #include <typeindex>
 #include <vector>
@@ -14,21 +16,32 @@
 namespace aecs
 {
 
+    enum MouseInputType {
+        MOUSE_MOVE = 0,
+        MOUSE_LEFT_CLICK_PRESSED,
+        MOUSE_LEFT_CLICK_RELEASED,
+        MOUSE_RIGHT_CLICK_PRESSED,
+        MOUSE_RIGHT_CLICK_RELEASED,
+    };
+
     class Entity;
     class World;
 
     typedef std::shared_ptr<Entity> EntityPtr;
     typedef int RenderInput;
+    typedef std::vector<std::pair<MouseInputType, sf::Vector2f>> MouseInputs;
     typedef std::vector<RenderInput> ClientInputs;
     typedef std::map<unsigned, ClientInputs> ServerInputs;
+    typedef std::pair<ClientInputs, MouseInputs> RenderInputs;
 
     typedef struct EntityChanges {
-        std::vector<unsigned int> deletedEntities;
-        std::vector<unsigned int> editedEntities;
+        std::set<unsigned int> deletedEntities;
+        std::set<unsigned int> editedEntities;
     } EntityChanges;
 
     typedef struct UpdateParams {
         ServerInputs inputs;
+        MouseInputs mouseInputs;
         float deltaTime = 0;
         EntityChanges entityChanges;
     } UpdateParams;
@@ -46,8 +59,15 @@ namespace aecs
         virtual EntityChanges update(aecs::UpdateParams &updateParams) = 0;
 
         // For render systems
-        virtual ClientInputs render() = 0;
+        virtual RenderInputs render() = 0;
         [[nodiscard]] virtual bool isOpen() const = 0;
+        virtual void close() = 0;
+    };
+
+    struct SystemData {
+        std::shared_ptr<ISystem> system;
+        int priority;
+        std::type_index typeIndex;
     };
 
     class ASystem : public ISystem
@@ -86,8 +106,9 @@ namespace aecs
         ~ALogicSystem() override = default;
 
         // For render systems ONLY
-        ClientInputs render() override;
+        RenderInputs render() override;
         [[nodiscard]] bool isOpen() const override;
+        void close() override;
     };
 
 } // namespace aecs

@@ -27,6 +27,10 @@ namespace rtype
             type(type){};
         ~DamageCollisionComponent() override = default;
 
+        const char *getName() const override
+        {
+            return "DamageCollisionComponent";
+        };
         [[nodiscard]] std::vector<std::byte> encode() const override;
         void decode(const std::vector<std::byte> &encoded) override;
         int team = 0;

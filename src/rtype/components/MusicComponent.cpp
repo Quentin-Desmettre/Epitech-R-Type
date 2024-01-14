@@ -3,7 +3,7 @@
 //
 #include "rtype/components/MusicComponent.hpp"
 
-rtype::MusicComponent::MusicComponent(const std::string& path, float volume, bool loop)
+rtype::MusicComponent::MusicComponent(const std::string &path, float volume, bool loop)
 {
     music.openFromFile(path);
     music.setVolume(volume);

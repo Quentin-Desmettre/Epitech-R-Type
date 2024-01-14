@@ -6,6 +6,7 @@
 #define R_TYPE_PLAYERCOMPONENT_HPP
 
 #include "aecs/AbstractComponent.hpp"
+#include "aecs/Entity.hpp"
 
 namespace rtype
 {
@@ -19,10 +20,18 @@ namespace rtype
         void decode(const std::vector<std::byte> &encoded) override;
 
         void unUsePlayerId() const;
+        void levelUp(aecs::Entity *entity);
 
         float timeSinceLastShoot = 0;
         float timeInShift = 0;
         std::uint8_t playerId = 0;
+        float timeLeftShootPowerUp = 0;
+        float timeLeftMovePowerDown = 0;
+
+        const char *getName() const override
+        {
+            return "PlayerComponent";
+        };
 
       private:
         static std::uint8_t _playerIds[255];

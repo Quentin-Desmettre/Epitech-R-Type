@@ -67,6 +67,7 @@ namespace aecs
         packet << static_cast<std::uint16_t>(from.size() + 1); // +1 for the packetType
         packet << static_cast<std::uint8_t>(packetType);
         packet.add(from.getData().data(), from.size());
+
         return packet.toSfPacket();
     }
 

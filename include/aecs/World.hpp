@@ -10,6 +10,8 @@
 #include "SystemBase.hpp"
 #include "rtype/EntityFactory.hpp"
 #include "rtype/components/ClientAdressComponent.hpp"
+#include "shared/ArgParser.hpp"
+#include "shared/Menu.hpp"
 #include "shared/PacketBuilder.hpp"
 #include <SFML/Graphics.hpp>
 #include <cstddef>
@@ -19,7 +21,6 @@
 #include <mutex>
 #include <typeindex>
 #include <vector>
-#include "shared/ArgParser.hpp"
 
 namespace aecs
 {
@@ -41,8 +42,7 @@ namespace aecs
         // Methods
         Entity &createEntity(size_t id = -1);
 
-        void addDecodeMap(const std::type_info &type,
-                          const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map);
+        void addDecodeMap(const char *name, const std::function<void(aecs::Entity &, std::vector<std::byte>)> &map);
 
         void decodeNewEntity(Entity &entity, const std::vector<std::byte> &data);
 
@@ -96,14 +96,27 @@ namespace aecs
         template <typename T, typename... Args>
         T &registerSystem(int priority, Args &&...args)
         {
+            auto sys = makeSystem<T>(priority, std::forward<Args>(args)...);
+            _systems[typeid(T)] = {sys.system, sys.priority};
+            sortSystems();
+            return *std::dynamic_pointer_cast<T>(sys.system);
+        }
+
+        void registerSystem(const std::shared_ptr<ISystem> &system, int priority, std::type_index typeIndex);
+
+        template <typename T, typename... Args>
+        SystemData makeSystem(int priority, Args &&...args)
+        {
             static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
 
             // To avoid changes in the entities vector while building the system
             const auto &constRefEntities = _entities;
-            const auto &built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
-            _systems[typeid(T)] = {built, priority};
-            sortSystems();
-            return *built;
+            std::shared_ptr<ISystem> built = std::make_shared<T>(*this, constRefEntities, std::forward<Args>(args)...);
+            return {
+                .system = built,
+                .priority = priority,
+                .typeIndex = typeid(T),
+            };
         }
 
         template <typename T>
@@ -113,6 +126,16 @@ namespace aecs
 
             _systems[typeid(T)].second = priority;
             sortSystems();
+        }
+
+        template <typename T>
+        T &getSystem()
+        {
+            static_assert(std::is_base_of_v<ISystem, T>, "T must inherit from ISystem");
+
+            if (_systems.find(typeid(T)) == _systems.end())
+                throw std::runtime_error("System not found");
+            return *std::dynamic_pointer_cast<T>(_systems[typeid(T)].first);
         }
 
         template <typename T>
@@ -127,10 +150,22 @@ namespace aecs
         [[nodiscard]] bool getIsServer() const;
 
         [[nodiscard]] std::string getIp();
-        [[nodiscard]] unsigned short getPort();
+        [[nodiscard]] unsigned short getServerPort();
+        [[nodiscard]] unsigned short getClientPort();
+        [[nodiscard]] unsigned short getTcpPort();
+
+        int addMenu(const Menu &menu, int id = -1);
+        void goToMenu(int id);
+        void leave();
+
+        [[nodiscard]] std::size_t getEntityCount() const
+        {
+            return _entities.size();
+        }
 
       private:
         void sortSystems();
+        void updateCurrentMenu();
 
         void onEntityAdded(const EntityPtr &entity);
         void onEntityRemoved(const EntityPtr &entity);
@@ -148,8 +183,13 @@ namespace aecs
         std::shared_ptr<ISystem> _renderSystem;
         sf::Clock clock;
         std::map<unsigned, ServerInputs> _renderInputs;
+        MouseInputs _mouseInputs;
         std::mutex _renderInputsMutex;
         ArgParser _argParser;
+        std::map<int, Menu> _menus;
+        bool _needLeave = false;
+        int _currentMenu = -1;
+        int _nextMenu = -1;
     };
 } // namespace aecs
 

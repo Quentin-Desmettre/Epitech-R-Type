@@ -6,8 +6,8 @@
 #define R_TYPE_DAMAGESOUNDSYSTEM_HPP
 
 #include "aecs/SystemBase.hpp"
-#include <SFML/Audio.hpp>
 #include "aecs/World.hpp"
+#include <SFML/Audio.hpp>
 
 namespace rtype
 {
@@ -27,6 +27,5 @@ namespace rtype
         sf::Sound _sound;
     };
 } // namespace rtype
-
 
 #endif // R_TYPE_DAMAGESOUNDSYSTEM_HPP

@@ -27,7 +27,7 @@ namespace rtype
                 position.x = 0;
             }
             sprite.sprite.setTextureRect(rect);
-            changes.editedEntities.push_back(entity->getId());
+            changes.editedEntities.insert(entity->getId());
         }
         return changes;
     }

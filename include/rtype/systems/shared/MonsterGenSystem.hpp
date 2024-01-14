@@ -17,9 +17,12 @@ namespace rtype
         MonsterGenSystem(aecs::World &world, const std::map<std::size_t, std::shared_ptr<aecs::Entity>> &entities);
         ~MonsterGenSystem() override = default;
 
-        static aecs::Entity &addRandomEnemy();
+        aecs::Entity &addRandomEnemy();
 
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
+
+    private:
+        aecs::EntityPtr _difficulty;
     };
 
 } // namespace rtype

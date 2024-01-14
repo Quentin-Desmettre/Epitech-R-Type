@@ -14,6 +14,11 @@ namespace rtype
       public:
         explicit ClientPingComponent() = default;
         ~ClientPingComponent() override = default;
+
+        const char *getName() const override
+        {
+            return "ClientPingComponent";
+        };
         sf::Clock clock;
     };
 } // namespace rtype

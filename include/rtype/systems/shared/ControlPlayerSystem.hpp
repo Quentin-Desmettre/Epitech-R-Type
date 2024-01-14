@@ -24,6 +24,9 @@ namespace rtype
         ~ControlPlayerSystem() override = default;
 
         aecs::EntityChanges update(aecs::UpdateParams &updateParams) override;
+
+      private:
+        sf::Keyboard::Key reverseKey(sf::Keyboard::Key key, bool reverse);
     };
 
 } // namespace rtype

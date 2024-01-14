@@ -10,12 +10,6 @@
 #include "rtype/components/PlayerComponent.hpp"
 #include <iostream>
 
-#ifdef SFML_SYSTEM_WINDOWS
-#include <winsock2.h>
-#else
-#include <sys/socket.h>
-#endif
-
 namespace rtype
 {
 
@@ -70,7 +64,7 @@ namespace rtype
         ALogicSystem(world, entities, {typeid(ClientAdressComponent), typeid(PlayerComponent)}),
         _listener()
     {
-        _listener.listen(SERVER_TCP_PORT);
+        _listener.listen(_world.getTcpPort());
         _listener.setBlocking(false);
     }
 
@@ -87,7 +81,7 @@ namespace rtype
             auto [isConnected, player] = getClientInfo(socket.getRemoteAddress());
             if (isConnected) {
                 std::cout << "Client already connected" << std::endl;
-                changes.deletedEntities.push_back(player->getId());
+                changes.deletedEntities.insert(player->getId());
                 auto *playerComponent = player->safeGetComponent<PlayerComponent>();
                 if (playerComponent)
                     playerComponent->unUsePlayerId();
@@ -96,7 +90,7 @@ namespace rtype
             std::cout << "New connection from " << socket.getRemoteAddress() << std::endl;
             auto entity = handleClient(socket);
             if (entity)
-                updateParams.entityChanges.editedEntities.push_back(entity->getId());
+                updateParams.entityChanges.editedEntities.insert(entity->getId());
             socket.disconnect();
         }
         return changes;
