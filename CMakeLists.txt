@@ -65,6 +65,7 @@ set(SHARED_SRC
         src/rtype/components/VelocityComponent.cpp
         src/rtype/components/PowerComponent.cpp
         src/rtype/components/TextComponent.cpp
+        include/rtype/components/TextComponent.hpp
 
         # Systems
         include/rtype/systems/shared/AnimPlayerSystem.hpp
@@ -109,7 +110,6 @@ set(SHARED_SRC
         include/rtype/components/BossComponent.hpp
         include/rtype/systems/shared/BossSystem.hpp
         src/rtype/systems/shared/BossSystem.cpp
-        src/rtype/systems/server/MapSystem.cpp
         include/rtype/components/DrawHealthBar.hpp
         src/rtype/components/DifficultyComponent.cpp
         include/rtype/components/DifficultyComponent.hpp
@@ -119,6 +119,8 @@ set(SHARED_SRC
         include/rtype/components/InvulComponent.hpp
         src/rtype/components/XPComponent.cpp
         include/rtype/components/XPComponent.hpp
+        src/rtype/components/TagComponent.cpp
+        include/rtype/components/TagComponent.hpp
 )
 set(SERVER_SRC src/server/main.cpp
         src/server/RTypeServer.cpp
@@ -158,6 +160,8 @@ set(CLIENT_SRC src/client/main.cpp
         src/rtype/components/TextComponent.cpp
         src/rtype/systems/client/ProfilingSystem.cpp
         include/rtype/systems/client/ProfilingSystem.hpp
+        src/rtype/systems/client/ClientScoreSystem.cpp
+        include/rtype/systems/client/ClientScoreSystem.hpp
 )
 
 # Third party

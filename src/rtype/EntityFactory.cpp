@@ -27,6 +27,7 @@
 #include "rtype/systems/server/MapSystem.hpp"
 #include "rtype/components/InvulComponent.hpp"
 #include "rtype/components/XPComponent.hpp"
+#include "rtype/components/TagComponent.hpp"
 #include <memory>
 #include <cmath>
 
@@ -338,9 +339,9 @@ aecs::Entity &rtype::EntityFactory::createBossEnemy(sf::Vector2f position, sf::V
 
 aecs::Entity &rtype::EntityFactory::toDifficulty(aecs::Entity &entity)
 {
-    entity.addComponent<TextComponent>("Difficulty: 1", 30, sf::Color::White, true, 0, nullptr)
-            .zIndex = 100;
-    entity.addComponent<PositionComponent>(1088 - 200, 20);
+    auto &text = entity.addComponent<TextComponent>("Difficulty: 1.00", 20, sf::Color::White, true, 0, nullptr);
+    text.zIndex = 100;
+    entity.addComponent<PositionComponent>(1088 - 130, 20);
     return entity;
 }
 
@@ -351,4 +352,14 @@ aecs::Entity &rtype::EntityFactory::createDifficulty()
     if (!_world->getIsServer())
         return toDifficulty(difficulty);
     return difficulty;
+}
+
+aecs::Entity &rtype::EntityFactory::createScore()
+{
+    auto &score = _world->createEntity();
+    auto &text = score.addComponent<TextComponent>("Score: 0", 20);
+    text.zIndex = 100;
+    score.addComponent<PositionComponent>(1088 - 200, 50);
+    score.addComponent<TagComponent>("scoreText");
+    return score;
 }

@@ -60,7 +60,7 @@ void rtype::RenderSystem::deleteEntity(std::size_t entityId)
 void rtype::RenderSystem::_sortEntities()
 {
     _sortedEntities.clear();
-    for (auto &entity : _entitiesMap)
+    for (auto &entity: _entitiesMap)
         _sortedEntities.push_back(entity.second);
     std::sort(_sortedEntities.begin(), _sortedEntities.end(),
               [](const aecs::EntityPtr &lhs, const aecs::EntityPtr &rhs) {
@@ -214,11 +214,11 @@ bool rtype::RenderSystem::isOpen() const
 void rtype::RenderSystem::_flushBuffers()
 {
     // Add entities
-    for (auto &entity : _entitiesToAdd)
+    for (auto &entity: _entitiesToAdd)
         _entitiesMap[entity->getId()] = entity;
 
     // Delete entities
-    for (auto &id : _entitiesToDelete) {
+    for (auto &id: _entitiesToDelete) {
         _entitiesMap.erase(id);
     }
 

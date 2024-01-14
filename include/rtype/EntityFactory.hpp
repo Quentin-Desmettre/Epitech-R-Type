@@ -49,6 +49,7 @@ namespace rtype
 
         static aecs::Entity &createDifficulty();
         static aecs::Entity &toDifficulty(aecs::Entity &entity);
+        static aecs::Entity &createScore();
 
       private:
         static aecs::World *_world;

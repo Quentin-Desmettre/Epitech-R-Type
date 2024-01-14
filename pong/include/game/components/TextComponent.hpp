@@ -5,20 +5,20 @@
 #ifndef R_TYPE_TEXTCOMPONENT_HPP
 #define R_TYPE_TEXTCOMPONENT_HPP
 
-#include "aecs/AbstractComponent.hpp"
+#include "AbstractComponent.hpp"
 #include <SFML/Graphics.hpp>
 #include <functional>
 
-namespace rtype
-{
-    class TextComponent : public aecs::AbstractComponent
-    {
-      public:
-        explicit TextComponent(const std::string &text, int fontSize = 30, sf::Color color = sf::Color::White,
-                               bool setCenter = false, int zIndex = 0, std::function<void()> &&onClick = nullptr);
+class TextComponent : public aecs::AbstractComponent {
+    public:
+        explicit TextComponent(const std::string &text, int fontSize = 30, sf::Color color = sf::Color::White, bool setCenter = 0, int zIndex = 0, std::function<void()> &&onClick = nullptr);
+
         ~TextComponent() override = default;
+
         void onOver();
+
         void removeOver();
+
         void onPress();
 
         sf::Text _text;
@@ -31,12 +31,12 @@ namespace rtype
             return "TextComponent";
         };
 
-      private:
+    private:
         int _character_size = 30;
         int _over_size;
         int _default_size;
         bool _setCenter;
-    };
-} // namespace rtype
+
+};
 
 #endif // R_TYPE_TEXTCOMPONENT_HPP

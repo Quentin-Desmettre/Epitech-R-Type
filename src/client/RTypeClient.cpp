@@ -31,6 +31,7 @@
 #include "rtype/components/MusicComponent.hpp"
 #include "rtype/components/PlayerComponent.hpp"
 #include "rtype/components/PowerComponent.hpp"
+#include "rtype/systems/client/ClientScoreSystem.hpp"
 #include "rtype/systems/client/ProfilingSystem.hpp"
 #include "rtype/systems/server/MapSystem.hpp"
 #include "rtype/systems/shared/DifficultySystem.hpp"
@@ -98,15 +99,24 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     });
     _world.addMenu(menu, 0);
     std::vector<aecs::SystemData> systems2 = {
-        _world.makeSystem<ClientServerDataHandlerSystem>(-2), _world.makeSystem<ClientInputSenderSystem>(-1),
-        _world.makeSystem<ClientPingSystem>(0), _world.makeSystem<ControlPlayerSystem>(0),
-        _world.makeSystem<AnimPlayerSystem>(1), _world.makeSystem<AnimSystem>(1), _world.makeSystem<PhysicsSystem>(2),
-        _world.makeSystem<ParallaxSystem>(1), _world.makeSystem<NodeMonsterSystem>(1),
-        _world.makeSystem<BulletSystem>(1), _world.makeSystem<DamageCollisionSystem>(1),
+        _world.makeSystem<ClientServerDataHandlerSystem>(-2),
+        _world.makeSystem<ClientInputSenderSystem>(-1),
+        _world.makeSystem<ClientPingSystem>(0),
+        _world.makeSystem<ControlPlayerSystem>(0),
+        _world.makeSystem<AnimPlayerSystem>(1),
+        _world.makeSystem<AnimSystem>(1),
+        _world.makeSystem<PhysicsSystem>(2),
+        _world.makeSystem<ParallaxSystem>(1),
+        _world.makeSystem<NodeMonsterSystem>(1),
+        _world.makeSystem<BulletSystem>(1),
+        _world.makeSystem<DamageCollisionSystem>(1),
         _world.makeSystem<DamageSoundSystem>(1),
         //         _world.makeSystem<MonsterGenSystem>(1),
-        _world.makeSystem<InvulSystem>(1), _world.makeSystem<ProfilingSystem>(2),
-        _world.makeSystem<DifficultySystem>(10)};
+        _world.makeSystem<InvulSystem>(1),
+        _world.makeSystem<ClientScoreSystem>(1),
+        _world.makeSystem<ProfilingSystem>(2),
+        _world.makeSystem<DifficultySystem>(10)
+    };
     std::function<void()> setup = [this]() {
         auto &bg = EntityFactory::createBackground(1, sf::Vector2f(8, 0));
         bg.addComponent<MusicComponent>("assets/sounds/music.ogg", 30);
@@ -114,6 +124,7 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
         EntityFactory::createBackground(3, sf::Vector2f(3, 0));
         EntityFactory::createBackground(4, sf::Vector2f(12, 0));
         EntityFactory::createBackground(5, sf::Vector2f(15, 0));
+        EntityFactory::createScore();
 
         _world.getSystem<ProfilingSystem>()
             .clear()
@@ -150,7 +161,6 @@ rtype::RTypeClient::RTypeClient(int renderRefreshRate, int logicRefreshRate, int
     };
     Menu game(buttons, handlers2, systems2, std::move(setup));
     _world.addMenu(game, 1);
-
     _world.goToMenu(0);
 }
 
