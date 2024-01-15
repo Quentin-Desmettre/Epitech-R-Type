@@ -50,11 +50,13 @@ namespace rtype
             //      don't move current entity
             // if current entity has a higher priority than the other
             //      move the other entity in the same direction
-            if (!entity->hasComponent<CollidableComponent>() || isOutOfScreen(position, size))
+            if (!entity->hasComponent<PlayerComponent>() || isOutOfScreen(position, size))
                 continue;
             int priority = entity->getComponent<CollidableComponent>().getPriority();
             auto collisions = getCollisions(entity);
             for (auto &[entityOther, direction] : collisions) {
+                if (entityOther->hasComponent<PlayerComponent>())
+                    continue;
                 int priorityOther = entityOther->getComponent<CollidableComponent>().getPriority();
                 if (priority <= priorityOther) {
                     // If after cancel dx, no more collision, do not cancel dy

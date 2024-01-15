@@ -90,21 +90,3 @@ jobs:
           asset_path: ${{ github.workspace }}/build/${{ matrix.vars.zip }}
           asset_name: ${{ matrix.vars.version }}.tar.gz
           asset_content_type: application/gzip
-
-  push:
-    needs: build_all
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: "Push to remote"
-        uses: pixta-dev/repository-mirroring-action@v1
-        with:
-          target_repo_url:
-            ${{ env.TARGET_REPO_URL }}
-          ssh_private_key:
-            ${{ env.LOCAL_SSH_KEY }}
-
